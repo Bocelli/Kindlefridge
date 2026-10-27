@@ -53,6 +53,30 @@ def save_config(cfg):
     with open(CONFIG_FILE, "w", encoding="utf-8") as f:
         json.dump(cfg, f, indent=2)
 
+def get_recycle_for_day(dt=None):
+    """Calcola il rifiuto da esporre in base al calendario specificato."""
+    if dt is None:
+        dt = datetime.now()
+    weekday = dt.weekday() # 0 = Lunedì, 6 = Domenica
+    day = dt.day
+
+    # 1° o 3° venerdì del mese: c'è anche il vetro
+    is_glass_friday = (1 <= day <= 7) or (15 <= day <= 21)
+
+    schedule = {
+        0: {"type": "🌱 ORGANICO (Umido)", "details": "Esporre il mastello dell'organico"},
+        1: {"type": "📦 CARTA E CARTONE", "details": "Esporre il bidoncino della carta"},
+        2: {"type": "🌱 ORGANICO (Umido)", "details": "Esporre il mastello dell'organico"},
+        3: {"type": "🟡 PLASTICA E METALLI", "details": "Esporre sacco giallo plastica/metalli"},
+        4: {
+            "type": "🌱 ORGANICO + 🍾 VETRO" if is_glass_friday else "🌱 ORGANICO (Umido)",
+            "details": "⚠️ 1°/3° Venerdì: oggi esporre ANCHE il Vetro!" if is_glass_friday else "Esporre il mastello dell'organico"
+        },
+        5: {"type": "🗑️ INDIFFERENZIATA", "details": "Esporre il sacco secco residuo"},
+        6: {"type": "⛔ NESSUNA RACCOLTA", "details": "Domenica riposo • Domani: Organico"}
+    }
+    return schedule.get(weekday, schedule[6])
+
 def sync_axios_safe():
     """Scarica da Axios e aggiorna data.json in modo thread-safe."""
     result = fetch_axios_data()
@@ -122,6 +146,8 @@ def handle_telegram_message(token, msg):
             "  <i>(aggiunge alla spesa sul Kindle)</i>\n\n"
             "• <code>nota Comprare il pane</code>\n"
             "  <i>(attacca una nota sul frigo)</i>\n\n"
+            "• <code>/cancella pane</code> o <code>/cancellanote</code>\n"
+            "  <i>(elimina una nota specifica o tutte le note)</i>\n\n"
             "• <code>zaino Sacca ginnastica</code>\n"
             "  <i>(aggiorna avviso zaino scuola)</i>\n\n"
             "• <code>/compiti</code> o <code>/axios</code>\n"
@@ -132,6 +158,25 @@ def handle_telegram_message(token, msg):
             "  <i>(spunta un articolo dalla spesa)</i>"
         )
         send_telegram_message(token, chat_id, reply)
+        return
+
+    # 1. COMANDO CANCELLA NOTE DA TELEGRAM
+    if text_lower in ["/cancellanote", "/puliscinote", "/svuotanote"]:
+        data["notes"] = []
+        save_data(data)
+        send_telegram_message(token, chat_id, "🗑️ <b>Tutte le note sul frigo sono state cancellate!</b>")
+        return
+
+    if text_lower.startswith("/cancella ") or text_lower.startswith("/elimina "):
+        target_str = text[10:] if text_lower.startswith("/cancella ") else text[9:]
+        target_str = target_str.strip().lower()
+        matched = [n for n in data.get("notes", []) if target_str in n.get("text", "").lower()]
+        if matched:
+            data["notes"] = [n for n in data.get("notes", []) if target_str not in n.get("text", "").lower()]
+            save_data(data)
+            send_telegram_message(token, chat_id, f"🗑️ <b>Eliminata nota dal frigo:</b> \"{html.escape(matched[0]['text'])}\"")
+        else:
+            send_telegram_message(token, chat_id, f"❓ Non ho trovato nessuna nota contenente \"{html.escape(target_str)}\".")
         return
 
     # 1. COMANDO AXIOS COMPITI
@@ -295,6 +340,7 @@ class FridgeRequestHandler(SimpleHTTPRequestHandler):
             data = load_data()
             cfg = load_config()
             data["bot_active"] = bool(cfg.get("bot_token", "").strip())
+            data["recycle"] = get_recycle_for_day()
             self.wfile.write(json.dumps(data, ensure_ascii=False).encode("utf-8"))
             return
 
@@ -319,6 +365,19 @@ class FridgeRequestHandler(SimpleHTTPRequestHandler):
             req_data = {}
 
         data = load_data()
+
+        if parsed.path == "/api/delete-note":
+            nid = req_data.get("id")
+            data["notes"] = [n for n in data.get("notes", []) if n.get("id") != nid]
+            save_data(data)
+            self._send_json({"ok": True, "data": data})
+            return
+
+        if parsed.path == "/api/clear-notes":
+            data["notes"] = []
+            save_data(data)
+            self._send_json({"ok": True, "data": data})
+            return
 
         if parsed.path == "/api/toggle-grocery":
             gid = req_data.get("id")

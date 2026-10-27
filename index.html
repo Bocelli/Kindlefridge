@@ -758,9 +758,9 @@
           <div class="card-header-row">
             <div class="card-title-text">
               <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
-              Note Telegram Famiglia
+              Note Famiglia
             </div>
-            <div class="pill inverted" id="notes-badge">Live Sync</div>
+            <button class="pill" onclick="clearNotesBackend()" style="cursor:pointer;" title="Cancella tutte le note">Svuota</button>
           </div>
           <div class="card-body" id="telegram-feed-list">
             <!-- Popolato dinamicamente da /api/data -->
@@ -1098,14 +1098,20 @@
           div.innerHTML = `
             <div class="tg-bubble-meta">
               <span class="tg-author-tag">${escapeHtml(note.author)} • ${escapeHtml(note.time)}</span>
-              <span>Telegram</span>
+              <span onclick="deleteNoteBackend(${note.id})" style="cursor:pointer; font-weight:900; padding:1px 6px; border:1px solid var(--fg); border-radius:2px;" title="Elimina questa nota">✕</span>
             </div>
             <div class="tg-bubble-text">${escapeHtml(note.text)}</div>
           `;
           notesContainer.appendChild(div);
         });
       } else {
-        notesContainer.innerHTML = '<div style="font-size:0.95rem; font-weight:700; padding:12px 0;">Nessun messaggio recente. Invia una nota dal bot Telegram!</div>';
+        notesContainer.innerHTML = '<div style="font-size:0.9rem; font-weight:700; padding:8px 0;">Nessun messaggio. Scrivi una nota su Telegram!</div>';
+      }
+
+      // RECYCLE BANNER (CALCOLATO AUTOMATICAMENTE)
+      if (data.recycle) {
+        document.getElementById('recycle-type').textContent = data.recycle.type;
+        document.getElementById('recycle-details').textContent = data.recycle.details;
       }
 
       // C. SPESA TELEGRAM
@@ -1179,6 +1185,22 @@
     }
 
     // 4. AZIONI TOUCH CON SYNC BACKEND
+    async function deleteNoteBackend(id) {
+      await fetch('/api/delete-note', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+      fetchLiveBackendData();
+    }
+
+    async function clearNotesBackend() {
+      if (confirm("Vuoi cancellare tutte le note dal frigo?")) {
+        await fetch('/api/clear-notes', { method: 'POST' });
+        fetchLiveBackendData();
+      }
+    }
+
     async function toggleGroceryBackend(id) {
       await fetch('/api/toggle-grocery', {
         method: 'POST',

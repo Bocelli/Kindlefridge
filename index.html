@@ -385,12 +385,11 @@
     }
 
     .timetable-row {
-      display: grid;
-      grid-template-columns: 48px 1fr;
-      padding: 5px 2px;
-      border-bottom: var(--border-hairline);
+      display: flex;
       align-items: center;
-      gap: 6px;
+      padding: 6px 4px;
+      border-bottom: var(--border-hairline);
+      gap: 10px;
     }
 
     .tt-hour {
@@ -398,6 +397,28 @@
       font-weight: 900;
       font-variant-numeric: tabular-nums;
       font-family: var(--font-mono);
+      min-width: 50px;
+      flex-shrink: 0;
+    }
+
+    .tt-hour-badge {
+      font-size: 0.78rem;
+      font-weight: 900;
+      font-family: var(--font-mono);
+      border: var(--border-thin);
+      padding: 2px 6px;
+      white-space: nowrap;
+      letter-spacing: 0.3px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-shrink: 0;
+    }
+
+    .tt-time-sub {
+      font-weight: 700;
+      font-size: 0.72rem;
+      opacity: 0.8;
     }
 
     .tt-subject {
@@ -409,6 +430,18 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      flex: 1;
+    }
+
+    .tt-subject-name {
+      font-size: 1.05rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.4px;
+      flex: 1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .tt-teacher {
@@ -422,17 +455,18 @@
     /* TASK COMPITI */
     .task-entry {
       border: var(--border-thin);
-      padding: 6px 10px;
-      margin-bottom: 5px;
+      padding: 7px 10px;
+      margin-bottom: 6px;
       display: flex;
       align-items: flex-start;
-      gap: 8px;
+      gap: 10px;
       cursor: pointer;
+      background: var(--bg);
     }
 
     .task-entry.done {
       border-style: dashed;
-      opacity: 0.6;
+      opacity: 0.5;
     }
 
     .task-entry.done .task-title {
@@ -446,7 +480,7 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-top: 1px;
+      margin-top: 2px;
       flex-shrink: 0;
       font-weight: 900;
       font-size: 1.1rem;
@@ -454,22 +488,47 @@
 
     .task-content-block {
       flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      overflow: hidden;
+    }
+
+    .task-top-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 2px;
+      gap: 6px;
     }
 
     .task-subject-tag {
-      font-size: 0.75rem;
+      font-size: 0.78rem;
       font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      border-bottom: var(--border-hairline);
-      display: inline-block;
-      margin-bottom: 2px;
+      background: var(--fg);
+      color: var(--bg);
+      padding: 1px 6px;
+      border-radius: 2px;
+      white-space: nowrap;
+    }
+
+    .task-date-tag {
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      font-weight: 800;
+      border: var(--border-hairline);
+      padding: 1px 5px;
+      text-transform: uppercase;
+      white-space: nowrap;
     }
 
     .task-title {
       font-size: 0.95rem;
       font-weight: 700;
-      line-height: 1.2;
+      line-height: 1.25;
+      word-break: break-word;
     }
 
     .backpack-alert-card {
@@ -853,23 +912,23 @@
               <svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="0"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
               Orario Lezioni
             </div>
-            <div class="pill inverted" id="student-name-pill">ALUNNO: IRVINE</div>
+            <div class="pill inverted" id="school-day-pill">OGGI</div>
           </div>
 
           <div class="days-pill-bar">
-            <button class="day-selector-btn" onclick="filterSchoolDay('LUN', this)">LUN</button>
-            <button class="day-selector-btn active" onclick="filterSchoolDay('MAR', this)">MAR</button>
-            <button class="day-selector-btn" onclick="filterSchoolDay('MER', this)">MER</button>
-            <button class="day-selector-btn" onclick="filterSchoolDay('GIO', this)">GIO</button>
-            <button class="day-selector-btn" onclick="filterSchoolDay('VEN', this)">VEN</button>
+            <button class="day-selector-btn" id="day-btn-LUN" onclick="filterSchoolDay('LUN', this)">LUN</button>
+            <button class="day-selector-btn" id="day-btn-MAR" onclick="filterSchoolDay('MAR', this)">MAR</button>
+            <button class="day-selector-btn" id="day-btn-MER" onclick="filterSchoolDay('MER', this)">MER</button>
+            <button class="day-selector-btn" id="day-btn-GIO" onclick="filterSchoolDay('GIO', this)">GIO</button>
+            <button class="day-selector-btn" id="day-btn-VEN" onclick="filterSchoolDay('VEN', this)">VEN</button>
           </div>
 
           <div class="card-body" id="school-hours-list"></div>
 
           <div class="backpack-alert-card">
             <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-            <div style="font-size: 0.95rem; font-weight: 800;">
-              <strong>NELLO ZAINO OGGI:</strong> <span id="backpack-text">Sacca scarpe per palestra + Quaderno ad anelli</span>
+            <div style="font-size: 0.9rem; font-weight: 800;">
+              <strong>AVVISO ZAINO:</strong> <span id="backpack-text">Nessun promemoria particolare</span>
             </div>
           </div>
         </div>
@@ -880,15 +939,11 @@
               <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
               Compiti da Axios RE
             </div>
-            <div class="pill">Sincronizzato 15:02</div>
+            <div class="pill" id="tasks-count-pill">COMPITI</div>
           </div>
 
           <div class="card-body" id="axios-tasks-container">
             <!-- Popolato dinamicamente da /api/data -->
-          </div>
-
-          <div style="border: var(--border-thin); padding: 8px 10px; margin-top: auto; font-size: 0.88rem; font-weight: 700;">
-            📌 <strong>Circolare n. 42:</strong> Giovedì assemblea sindacale prime 2 ore (ingresso posticipato alle 10:15).
           </div>
         </div>
 
@@ -1142,26 +1197,50 @@
       const tasksContainer = document.getElementById('axios-tasks-container');
       tasksContainer.innerHTML = '';
       if (data.tasks && data.tasks.length > 0) {
-        data.tasks.forEach(t => {
+        // Ordina compiti: prima quelli da fare, poi per data
+        const sortedTasks = [...data.tasks].sort((a, b) => {
+          if (a.done !== b.done) return a.done ? 1 : -1;
+          return (a.date || '').localeCompare(b.date || '');
+        });
+
+        sortedTasks.forEach(t => {
+          // Materia pulita e data
+          let cleanSubj = (t.subject || 'COMPITO').split(' • ')[0].trim();
+          let rawDate = t.date;
+          if (!rawDate && t.subject && t.subject.includes(' • ')) {
+            rawDate = t.subject.split(' • ')[1].trim();
+          }
+          const dateTag = formatTaskDate(rawDate);
+
+          // Pulisci il testo se ripete la materia all'inizio
+          let cleanText = (t.text || '').trim();
+          if (cleanSubj && cleanText.toUpperCase().startsWith(cleanSubj.toUpperCase() + ':')) {
+            cleanText = cleanText.substring(cleanSubj.length + 1).trim();
+          }
+
           const div = document.createElement('div');
           div.className = `task-entry ${t.done ? 'done' : ''}`;
           div.onclick = () => toggleTaskBackend(t.id);
           div.innerHTML = `
             <div class="check-box-graphic">${t.done ? '✓' : ''}</div>
             <div class="task-content-block">
-              <span class="task-subject-tag">${escapeHtml(t.subject)}</span>
-              <div class="task-title">${escapeHtml(t.text)}</div>
+              <div class="task-top-meta">
+                <span class="task-subject-tag">${escapeHtml(cleanSubj)}</span>
+                ${dateTag ? `<span class="task-date-tag">${escapeHtml(dateTag)}</span>` : ''}
+              </div>
+              <div class="task-title">${escapeHtml(cleanText)}</div>
             </div>
           `;
           tasksContainer.appendChild(div);
         });
-      } else {
-        tasksContainer.innerHTML = '<div style="font-size:1rem; font-weight:700; padding:12px;">Nessun compito registrato su Axios.</div>';
-      }
 
-      if (data.student_name) {
-        const studentPill = document.getElementById('student-name-pill');
-        if (studentPill) studentPill.textContent = 'ALUNNO: ' + data.student_name.toUpperCase();
+        const pending = data.tasks.filter(t => !t.done).length;
+        const countEl = document.getElementById('tasks-count-pill');
+        if (countEl) countEl.textContent = `${pending} DA FARE`;
+      } else {
+        tasksContainer.innerHTML = '<div style="font-size:1rem; font-weight:700; padding:16px; text-align:center;">Nessun compito registrato su Axios.</div>';
+        const countEl = document.getElementById('tasks-count-pill');
+        if (countEl) countEl.textContent = '0 COMPITI';
       }
 
       if (data.axios_last_sync) {
@@ -1173,7 +1252,7 @@
 
       // E. AVVISO ZAINO
       if (data.backpack) {
-        document.getElementById('backpack-text').textContent = data.backpack;
+        document.getElementById('backpack-text').textContent = cleanBackpackText(data.backpack);
       }
     }
 
@@ -1229,61 +1308,101 @@
       fetchLiveBackendData();
     }
 
-    // 5. ORARIO SCUOLA
+    // 5. HELPER DATE E FORMATTAZIONE
+    function formatTaskDate(dateStr) {
+      if (!dateStr) return '';
+      const m = dateStr.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+      if (m) {
+        const day = parseInt(m[1], 10);
+        const month = parseInt(m[2], 10) - 1;
+        const year = parseInt(m[3], 10);
+        const taskDate = new Date(year, month, day);
+
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const diffTime = taskDate.getTime() - today.getTime();
+        const diffDays = Math.round(diffTime / (1000 * 3600 * 24));
+
+        const dayNames = ["DOM", "LUN", "MAR", "MER", "GIO", "VEN", "SAB"];
+        const dayName = dayNames[taskDate.getDay()];
+
+        if (diffDays === 0) return "OGGI";
+        if (diffDays === 1) return "DOMANI";
+        if (diffDays === -1) return "IERI";
+        return `${dayName} ${String(day).padStart(2, '0')}/${String(month + 1).padStart(2, '0')}`;
+      }
+      return dateStr;
+    }
+
+    function cleanBackpackText(text) {
+      if (!text) return 'Nessun promemoria particolare';
+      return text.replace(/^\d{1,2}\/\d{1,2}\/\d{4}:\s*/, '')
+                 .replace(/^[A-Za-zÀ-ÖØ-öø-ÿ\s]{4,35}:\s*/, '');
+    }
+
+    // 6. ORARIO SCUOLA (Nomi materie puliti, senza professori)
     const schoolWeekData = {
       'LUN': [
-        { time: "08:15 - 09:15", subject: "Italiano", teacher: "Prof. Rossi" },
-        { time: "09:15 - 10:15", subject: "Storia", teacher: "Prof. Neri" },
-        { time: "10:15 - 11:15", subject: "Matematica", teacher: "Prof. Bianchi" },
-        { time: "11:15 - 12:15", subject: "Inglese", teacher: "Prof. Smith" },
-        { time: "12:15 - 13:15", subject: "Arte", teacher: "Prof. Viola" }
+        { time: "08:15", subject: "Italiano" },
+        { time: "09:15", subject: "Storia" },
+        { time: "10:15", subject: "Matematica" },
+        { time: "11:15", subject: "Inglese" },
+        { time: "12:15", subject: "Arte" }
       ],
       'MAR': [
-        { time: "08:15 - 09:15", subject: "Matematica", teacher: "Prof. Bianchi" },
-        { time: "09:15 - 10:15", subject: "Scienze", teacher: "Prof. Verdi" },
-        { time: "10:15 - 11:15", subject: "Ed. Fisica", teacher: "Prof. Ginnico" },
-        { time: "11:15 - 12:15", subject: "Italiano", teacher: "Prof. Rossi" },
-        { time: "12:15 - 13:15", subject: "Musica", teacher: "Prof. Allegri" }
+        { time: "08:15", subject: "Matematica" },
+        { time: "09:15", subject: "Scienze" },
+        { time: "10:15", subject: "Ed. Fisica" },
+        { time: "11:15", subject: "Italiano" },
+        { time: "12:15", subject: "Musica" }
       ],
       'MER': [
-        { time: "08:15 - 09:15", subject: "Geografia", teacher: "Prof. Neri" },
-        { time: "09:15 - 10:15", subject: "Italiano", teacher: "Prof. Rossi" },
-        { time: "10:15 - 11:15", subject: "Matematica", teacher: "Prof. Bianchi" },
-        { time: "11:15 - 12:15", subject: "Inglese", teacher: "Prof. Smith" },
-        { time: "12:15 - 13:15", subject: "Tecnologia", teacher: "Prof. Ingegneri" }
+        { time: "08:15", subject: "Geografia" },
+        { time: "09:15", subject: "Italiano" },
+        { time: "10:15", subject: "Matematica" },
+        { time: "11:15", subject: "Inglese" },
+        { time: "12:15", subject: "Tecnologia" }
       ],
       'GIO': [
-        { time: "08:15 - 09:15", subject: "Italiano", teacher: "Prof. Rossi" },
-        { time: "09:15 - 10:15", subject: "Storia", teacher: "Prof. Neri" },
-        { time: "10:15 - 11:15", subject: "Scienze", teacher: "Prof. Verdi" },
-        { time: "11:15 - 12:15", subject: "Religione / Alt.", teacher: "Prof. Buoni" },
-        { time: "12:15 - 13:15", subject: "Matematica", teacher: "Prof. Bianchi" }
+        { time: "08:15", subject: "Italiano" },
+        { time: "09:15", subject: "Storia" },
+        { time: "10:15", subject: "Scienze" },
+        { time: "11:15", subject: "Religione" },
+        { time: "12:15", subject: "Matematica" }
       ],
       'VEN': [
-        { time: "08:15 - 09:15", subject: "Matematica", teacher: "Prof. Bianchi" },
-        { time: "09:15 - 10:15", subject: "Inglese", teacher: "Prof. Smith" },
-        { time: "10:15 - 11:15", subject: "Italiano", teacher: "Prof. Rossi" },
-        { time: "11:15 - 12:15", subject: "Geografia", teacher: "Prof. Neri" },
-        { time: "12:15 - 13:15", subject: "Ed. Civica", teacher: "Prof. Rossi" }
+        { time: "08:15", subject: "Matematica" },
+        { time: "09:15", subject: "Inglese" },
+        { time: "10:15", subject: "Italiano" },
+        { time: "11:15", subject: "Geografia" },
+        { time: "12:15", subject: "Ed. Civica" }
       ]
+    };
+
+    const fullDayNames = {
+      'LUN': 'LUNEDÌ',
+      'MAR': 'MARTEDÌ',
+      'MER': 'MERCOLEDÌ',
+      'GIO': 'GIOVEDÌ',
+      'VEN': 'VENERDÌ'
     };
 
     function filterSchoolDay(dayKey, btn) {
       document.querySelectorAll('.day-selector-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
+      if (btn) btn.classList.add('active');
+
+      const pill = document.getElementById('school-day-pill');
+      if (pill) pill.textContent = fullDayNames[dayKey] || dayKey;
 
       const hours = schoolWeekData[dayKey] || [];
       const container = document.getElementById('school-hours-list');
       container.innerHTML = '';
-      hours.forEach(row => {
+      hours.forEach((row, idx) => {
         const div = document.createElement('div');
         div.className = 'timetable-row';
         div.innerHTML = `
-          <span class="tt-hour">${row.time}</span>
-          <div class="tt-subject">
-            <span>${row.subject}</span>
-            <span class="tt-teacher">${row.teacher}</span>
-          </div>
+          <div class="tt-hour-badge">${idx + 1}ª ORA <span class="tt-time-sub">${row.time}</span></div>
+          <div class="tt-subject-name">${escapeHtml(row.subject)}</div>
         `;
         container.appendChild(div);
       });
@@ -1291,7 +1410,9 @@
 
     const curDay = new Date().getDay();
     const dayLookup = { 1: 'LUN', 2: 'MAR', 3: 'MER', 4: 'GIO', 5: 'VEN' };
-    filterSchoolDay(dayLookup[curDay] || 'MAR', document.querySelector('.day-selector-btn.active') || document.querySelector('.day-selector-btn'));
+    const todayKey = dayLookup[curDay] || 'LUN';
+    const initBtn = document.getElementById(`day-btn-${todayKey}`) || document.querySelector('.day-selector-btn');
+    filterSchoolDay(todayKey, initBtn);
 
     // 6. MODAL TOKEN TELEGRAM
     function openTokenModal() {

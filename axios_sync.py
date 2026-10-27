@@ -109,7 +109,7 @@ def fetch_axios_data():
                             homework_list.append({
                                 "id": task_id,
                                 "date": clean_date,
-                                "subject": f"{subj} • {clean_date}",
+                                "subject": subj,
                                 "text": text,
                                 "done": False
                             })
@@ -119,15 +119,19 @@ def fetch_axios_data():
                     homework_list.append({
                         "id": task_id,
                         "date": clean_date,
-                        "subject": f"Compiti per {clean_date}",
+                        "subject": "COMPITI",
                         "text": compiti,
                         "done": False
                     })
                     task_id += 1
 
-            # Annotazioni del giorno per zaino
+            # Annotazioni del giorno per zaino (rimuovendo eventuale nome docente)
             if annotazioni:
-                backpack_alerts.append(f"{clean_date}: {annotazioni}")
+                clean_ann = annotazioni.strip()
+                m_doc = re.match(r'^[A-Za-zÀ-ÖØ-öø-ÿ\s]{4,35}:\s*(.*)', clean_ann)
+                if m_doc:
+                    clean_ann = m_doc.group(1).strip()
+                backpack_alerts.append(f"{clean_date}: {clean_ann}")
 
         return {
             "student_name": student_name,

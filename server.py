@@ -78,28 +78,54 @@ def save_config(cfg):
         json.dump(cfg, f, indent=2)
 
 def get_recycle_for_day(dt=None):
-    """Calcola il rifiuto da esporre in base al calendario specificato."""
+    """Calcola il rifiuto da esporre stasera per il passaggio del giorno successivo."""
     if dt is None:
         dt = get_rome_now()
-    weekday = dt.weekday() # 0 = Lunedì, 6 = Domenica
-    day = dt.day
+
+    # Si espone la sera prima del passaggio mattutino del camion
+    target_dt = dt + timedelta(days=1)
+    weekday = target_dt.weekday() # 0 = Lunedì, 6 = Domenica
+    day = target_dt.day
+
+    DAYS_IT = ["Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato", "Domenica"]
+    target_day_name = DAYS_IT[weekday]
 
     # 1° o 3° venerdì del mese: c'è anche il vetro
     is_glass_friday = (1 <= day <= 7) or (15 <= day <= 21)
 
     schedule = {
-        0: {"type": "🌱 ORGANICO (Umido)", "details": "Esporre il mastello dell'organico"},
-        1: {"type": "📦 CARTA E CARTONE", "details": "Esporre il bidoncino della carta"},
-        2: {"type": "🌱 ORGANICO (Umido)", "details": "Esporre il mastello dell'organico"},
-        3: {"type": "🟡 PLASTICA E METALLI", "details": "Esporre sacco giallo plastica/metalli"},
+        0: {
+            "type": "🌱 ORGANICO (Umido)",
+            "details": f"Ritiro domani ({target_day_name}) • Esporre il mastello stasera"
+        },
+        1: {
+            "type": "📦 CARTA E CARTONE",
+            "details": f"Ritiro domani ({target_day_name}) • Esporre il bidoncino stasera"
+        },
+        2: {
+            "type": "🌱 ORGANICO (Umido)",
+            "details": f"Ritiro domani ({target_day_name}) • Esporre il mastello stasera"
+        },
+        3: {
+            "type": "🟡 PLASTICA E METALLI",
+            "details": f"Ritiro domani ({target_day_name}) • Esporre sacco giallo stasera"
+        },
         4: {
             "type": "🌱 ORGANICO + 🍾 VETRO" if is_glass_friday else "🌱 ORGANICO (Umido)",
-            "details": "⚠️ 1°/3° Venerdì: oggi esporre ANCHE il Vetro!" if is_glass_friday else "Esporre il mastello dell'organico"
+            "details": f"⚠️ Ritiro domani ({target_day_name}): esporre ANCHE il Vetro!" if is_glass_friday else f"Ritiro domani ({target_day_name}) • Esporre il mastello stasera"
         },
-        5: {"type": "🗑️ INDIFFERENZIATA", "details": "Esporre il sacco secco residuo"},
-        6: {"type": "⛔ NESSUNA RACCOLTA", "details": "Domenica riposo • Domani: Organico"}
+        5: {
+            "type": "🗑️ INDIFFERENZIATA",
+            "details": f"Ritiro domani ({target_day_name}) • Esporre sacco secco residuo stasera"
+        },
+        6: {
+            "type": "⛔ NESSUNA RACCOLTA",
+            "details": f"Domenica riposo (nessun ritiro) • Domani sera: Organico"
+        }
     }
-    return schedule.get(weekday, schedule[6])
+    res = schedule.get(weekday, schedule[6]).copy()
+    res["target_day"] = target_day_name
+    return res
 
 # --- METEO SALEMI (TP) ---
 WMO_CODES = {
@@ -297,9 +323,10 @@ def handle_telegram_message(token, msg):
     # COMANDO DIFFERENZIATA
     if text_lower in ["/differenziata", "differenziata", "/rifiuti", "rifiuti", "spazzatura", "cosa si butta", "bidoni"]:
         rec = get_recycle_for_day()
+        target_day = rec.get("target_day", "domani")
         reply_diff = (
             f"♻️ <b>Raccolta Differenziata (Salemi):</b>\n\n"
-            f"• <b>Stasera da esporre:</b>\n  {rec['type']}\n\n"
+            f"• <b>Stasera da esporre (per {target_day}):</b>\n  {rec['type']}\n\n"
             f"• <b>Istruzioni per il ritiro:</b>\n  {rec['details']}"
         )
         send_telegram_message(token, chat_id, reply_diff)

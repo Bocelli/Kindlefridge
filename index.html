@@ -1351,10 +1351,16 @@
       const tasksContainer = document.getElementById('axios-tasks-container');
       tasksContainer.innerHTML = '';
       if (data.tasks && data.tasks.length > 0) {
-        // Ordina compiti: prima quelli da fare, poi per data
+        // Ordina compiti: prima quelli da fare, poi cronologicamente per data YYYYMMDD
+        const toKey = (d) => {
+          if (!d) return '99999999';
+          const parts = d.split('/');
+          if (parts.length === 3) return parts[2] + parts[1].padStart(2, '0') + parts[0].padStart(2, '0');
+          return d;
+        };
         const sortedTasks = [...data.tasks].sort((a, b) => {
           if (a.done !== b.done) return a.done ? 1 : -1;
-          return (a.date || '').localeCompare(b.date || '');
+          return toKey(a.date).localeCompare(toKey(b.date));
         });
 
         sortedTasks.forEach(t => {
@@ -1512,25 +1518,11 @@
     // 5. HELPER DATE E FORMATTAZIONE
     function formatTaskDate(dateStr) {
       if (!dateStr) return '';
-      const m = dateStr.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+      const m = dateStr.match(/(\d{1,2})\/(\d{1,2})/);
       if (m) {
-        const day = parseInt(m[1], 10);
-        const month = parseInt(m[2], 10) - 1;
-        const year = parseInt(m[3], 10);
-        const taskDate = new Date(year, month, day);
-
-        const now = getRomeDate();
-        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-        const diffTime = taskDate.getTime() - today.getTime();
-        const diffDays = Math.round(diffTime / (1000 * 3600 * 24));
-
-        const dayNames = ["DOM", "LUN", "MAR", "MER", "GIO", "VEN", "SAB"];
-        const dayName = dayNames[taskDate.getDay()];
-
-        if (diffDays === 0) return "OGGI";
-        if (diffDays === 1) return "DOMANI";
-        if (diffDays === -1) return "IERI";
-        return `${dayName} ${String(day).padStart(2, '0')}/${String(month + 1).padStart(2, '0')}`;
+        const day = String(m[1]).padStart(2, '0');
+        const month = String(m[2]).padStart(2, '0');
+        return `PER IL ${day}/${month}`;
       }
       return dateStr;
     }

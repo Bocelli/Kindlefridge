@@ -414,9 +414,12 @@ def handle_telegram_message(token, msg):
             send_telegram_message(token, chat_id, f"📚 Nessun compito registrato per <b>{html.escape(student)}</b> su Axios.")
         else:
             lines = [f"📚 <b>Compiti per {html.escape(student)} (da Axios RE):</b>"]
-            for t in tasks[:6]:
+            for t in tasks[:8]:
                 status_icon = "✅" if t.get("done") else "▫️"
-                lines.append(f"{status_icon} <b>{html.escape(t['subject'])}</b>\n   {html.escape(t['text'])}")
+                date_val = t.get("date", "")
+                m_d = re.search(r"(\d{1,2}/\d{1,2})", date_val)
+                date_label = f" (per il {m_d.group(1)})" if m_d else ""
+                lines.append(f"{status_icon} <b>{html.escape(t['subject'])}{date_label}:</b>\n   {html.escape(t['text'])}")
             
             if fresh_data.get("backpack"):
                 lines.append(f"\n🎒 <b>Nota Zaino:</b> {html.escape(fresh_data['backpack'])}")

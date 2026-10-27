@@ -127,6 +127,106 @@ def get_recycle_for_day(dt=None):
     res["target_day"] = target_day_name
     return res
 
+def parse_alert_date(date_str, rn):
+    """Converte una stringa data (es. '28/10/2026' o '28/10') in un oggetto date."""
+    try:
+        parts = date_str.strip().split('/')
+        day = int(parts[0])
+        month = int(parts[1])
+        year = int(parts[2]) if len(parts) > 2 else rn.year
+        if year < 100:
+            year += 2000
+        return datetime(year, month, day).date()
+    except Exception:
+        return None
+
+def get_active_backpack_alert(data, rn=None):
+    """
+    Filtra e restituisce l'avviso della maestra/zaino rilevante per la giornata odierna:
+    - Appare il giorno prima dell'avviso (es. il 28 per l'avviso del 29, come promemoria)
+    - Rimane visibile la mattina dell'avviso (fino alle ore 14:00, termine lezioni)
+    - Dalle 14:00 del giorno stesso o nei giorni successivi sparisce.
+    - Se l'avviso è per due o più giorni nel futuro, NON viene ancora mostrato.
+    """
+    if rn is None:
+        rn = get_rome_now()
+    today = rn.date()
+    hour = rn.hour
+
+    raw_alerts = []
+    if "backpack_alerts" in data and isinstance(data["backpack_alerts"], list):
+        for a in data["backpack_alerts"]:
+            if isinstance(a, dict):
+                raw_alerts.append(a)
+            elif isinstance(a, str):
+                m = re.search(r'(\d{1,2}/\d{1,2}(?:/\d{2,4})?):\s*(.*)', a)
+                if m:
+                    raw_alerts.append({"date": m.group(1), "text": m.group(2).strip()})
+                else:
+                    raw_alerts.append({"date": "", "text": a.strip()})
+
+    single_bp = data.get("backpack", "")
+    if single_bp:
+        m = re.search(r'(\d{1,2}/\d{1,2}(?:/\d{2,4})?):\s*(.*)', single_bp)
+        if m:
+            d_str, t_str = m.group(1), m.group(2).strip()
+            if not any(a.get("text") == t_str for a in raw_alerts):
+                raw_alerts.append({"date": d_str, "text": t_str})
+        else:
+            if not any(a.get("text") == single_bp.strip() for a in raw_alerts):
+                raw_alerts.append({"date": "", "text": single_bp.strip()})
+
+    active_alerts = []
+    for item in raw_alerts:
+        d_str = item.get("date", "")
+        text = item.get("text", "")
+        if not text:
+            continue
+
+        target_date = parse_alert_date(d_str, rn) if d_str else None
+
+        if target_date:
+            # 1. Giorno prima dell'avviso (reminder per domani)
+            if today == target_date - timedelta(days=1):
+                active_alerts.append({
+                    "text": text,
+                    "date": d_str,
+                    "pill": f"PER DOMANI ({target_date.strftime('%d/%m')})",
+                    "active": True
+                })
+            # 2. Giorno stesso dell'avviso (la mattina fino alle 14:00)
+            elif today == target_date and hour < 14:
+                active_alerts.append({
+                    "text": text,
+                    "date": d_str,
+                    "pill": f"PER OGGI ({target_date.strftime('%d/%m')})",
+                    "active": True
+                })
+        else:
+            # Se privo di data esplicita, mostra come promemoria
+            active_alerts.append({
+                "text": text,
+                "date": "",
+                "pill": "DIARIO RE",
+                "active": True
+            })
+
+    if active_alerts:
+        chosen = active_alerts[-1]
+        return {
+            "text": chosen["text"],
+            "date": chosen["date"],
+            "pill": chosen["pill"],
+            "active": True
+        }
+
+    return {
+        "text": "Nessun avviso o promemoria per domani.",
+        "date": "",
+        "pill": "NESSUN AVVISO",
+        "active": False
+    }
+
 # --- METEO SALEMI (TP) ---
 WMO_CODES = {
     0: 'SERENO', 1: 'QUASI SERENO', 2: 'POCO NUVOLOSO', 3: 'COPERTO',
@@ -235,7 +335,8 @@ def sync_axios_safe():
             current_data["tasks"] = new_tasks
 
         if result.get("backpack_alerts"):
-            current_data["backpack"] = " • ".join(result["backpack_alerts"][-2:])
+            current_data["backpack_alerts"] = result["backpack_alerts"]
+            current_data["backpack"] = result["backpack_alerts"][-1]
 
         current_data["student_name"] = result.get("student_name", "IRVINE")
         current_data["axios_last_sync"] = get_rome_now().strftime("%H:%M")
@@ -384,8 +485,9 @@ def handle_telegram_message(token, msg):
                 date_label = f" (per il {m_d.group(1)})" if m_d else ""
                 lines.append(f"{status_icon} <b>{html.escape(t['subject'])}{date_label}:</b>\n   {html.escape(t['text'])}")
             
-            if fresh_data.get("backpack"):
-                lines.append(f"\n🎒 <b>Nota Zaino:</b> {html.escape(fresh_data['backpack'])}")
+            active_bp = get_active_backpack_alert(fresh_data, get_rome_now())
+            if active_bp["active"]:
+                lines.append(f"\n🎒 <b>Nota Zaino ({active_bp['pill']}):</b>\n{html.escape(active_bp['text'])}")
 
             send_telegram_message(token, chat_id, "\n\n".join(lines))
         return
@@ -449,9 +551,17 @@ def handle_telegram_message(token, msg):
     # 7. COMANDO ZAINO SCUOLA
     if text_lower.startswith("zaino "):
         note = text[6:].strip()
-        data["backpack"] = note
+        data.setdefault("backpack_alerts", [])
+        m = re.search(r'(\d{1,2}/\d{1,2}(?:/\d{2,4})?)', note)
+        if not m:
+            tomorrow_str = (get_rome_now() + timedelta(days=1)).strftime("%d/%m/%Y")
+            note_formatted = f"{tomorrow_str}: {note}"
+        else:
+            note_formatted = note
+        data["backpack_alerts"].append(note_formatted)
+        data["backpack"] = note_formatted
         save_data(data)
-        send_telegram_message(token, chat_id, f"🎒 <b>Aggiornato avviso zaino:</b>\n\"{html.escape(note)}\"")
+        send_telegram_message(token, chat_id, f"🎒 <b>Aggiornato avviso zaino:</b>\n\"{html.escape(note_formatted)}\"")
         return
 
     # 8. NOTA FRIGO GENERALE
@@ -538,6 +648,14 @@ class FridgeRequestHandler(SimpleHTTPRequestHandler):
             data["bot_active"] = bool(cfg.get("bot_token", "").strip())
             data["recycle"] = get_recycle_for_day(rn)
             data["weather"] = get_salemi_weather()
+            
+            # Calcola l'avviso zaino/maestra attivo per la giornata
+            active_bp = get_active_backpack_alert(data, rn)
+            data["backpack_active"] = active_bp["active"]
+            data["backpack"] = active_bp["text"]
+            data["backpack_pill"] = active_bp["pill"]
+            data["backpack_date"] = active_bp["date"]
+
             data["server_time"] = {
                 "hours": rn.hour,
                 "minutes": rn.minute,

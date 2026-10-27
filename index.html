@@ -1000,7 +1000,7 @@
                 Nessun avviso o promemoria recente dalla maestra.
               </div>
               <div class="teacher-note-hint">
-                💡 Scrivi <code>zaino &lt;nota&gt;</code> su Telegram oppure sincronizza Axios per aggiornare questo avviso
+                Scrivi <code>zaino &lt;nota&gt;</code> su Telegram oppure sincronizza Axios per aggiornare questo promemoria
               </div>
             </div>
           </div>
@@ -1357,21 +1357,16 @@
         if (axBox) axBox.classList.add('inverted');
       }
 
-      // E. AVVISO ZAINO / NOTE MAESTRA
+      // E. AVVISO ZAINO / NOTE MAESTRA (FILTRATO PER DATA)
       const bpEl = document.getElementById('backpack-text');
       const bpPill = document.getElementById('teacher-note-date-pill');
       if (bpEl) {
-        if (data.backpack) {
-          const m = data.backpack.match(/(\d{1,2}\/\d{1,2}(?:\/\d{4})?)/);
-          if (m && bpPill) {
-            bpPill.textContent = `AVVISO DEL ${m[1]}`;
-          } else if (bpPill) {
-            bpPill.textContent = 'DIARIO RE';
-          }
+        if (data.backpack_active) {
+          if (bpPill) bpPill.textContent = data.backpack_pill || 'PROMEMORIA';
           bpEl.textContent = cleanBackpackText(data.backpack);
         } else {
-          bpEl.textContent = 'Nessun avviso o promemoria recente dalla maestra.';
-          if (bpPill) bpPill.textContent = 'DIARIO RE';
+          bpEl.textContent = data.backpack || 'Nessun avviso o promemoria per domani.';
+          if (bpPill) bpPill.textContent = data.backpack_pill || 'NESSUN AVVISO';
         }
       }
     }

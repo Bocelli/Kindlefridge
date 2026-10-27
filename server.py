@@ -223,6 +223,58 @@ def sync_axios_safe():
     return True
 
 # --- TELEGRAM BOT LOGIC ---
+def setup_telegram_commands(token):
+    """Registra la lista comandi ufficiale nell'interfaccia di Telegram (menu [/])."""
+    if not token:
+        return
+    commands = [
+        {"command": "comandi", "description": "📖 Riepilogo completo di tutti i comandi"},
+        {"command": "impegni", "description": "🕒 Mostra gli impegni del pomeriggio"},
+        {"command": "spesa", "description": "🛒 Mostra la lista della spesa"},
+        {"command": "compiti", "description": "📚 Scarica compiti dal Registro Axios RE"},
+        {"command": "meteo", "description": "🌤️ Previsioni meteo in tempo reale Salemi"},
+        {"command": "differenziata", "description": "♻️ Rifiuto da esporre stasera/domani"},
+        {"command": "cancellanote", "description": "🗑️ Cancella tutte le note sul frigo"},
+        {"command": "cancellaimpegni", "description": "🗑️ Cancella tutti gli impegni di oggi"}
+    ]
+    url = f"https://api.telegram.org/bot{token}/setMyCommands"
+    payload = json.dumps({"commands": commands}).encode("utf-8")
+    req = urllib.request.Request(url, data=payload, headers={"Content-Type": "application/json"})
+    try:
+        with urllib.request.urlopen(req, timeout=10):
+            print("[Telegram] Comandi registrati su Telegram con setMyCommands.")
+    except Exception as e:
+        print(f"[Telegram] Errore setMyCommands: {e}")
+
+def get_commands_recap_message():
+    return (
+        "<b>📋 RIEPILOGO COMANDI FRIGO KINDLE</b>\n\n"
+        "Ecco tutto quello che puoi inviarmi direttamente qui in chat:\n\n"
+        "🕒 <b>1. IMPEGNI DI POMERIGGIO</b>\n"
+        "• <code>impegno 17:30 Dentista</code> <i>(con orario)</i>\n"
+        "• <code>impegno Basket Palazzetto</code> <i>(senza orario)</i>\n"
+        "• <code>/impegni</code> <i>(mostra la lista di oggi)</i>\n"
+        "• <code>/fatto basket</code> <i>(spunta come completato)</i>\n"
+        "• <code>/cancellaimpegno dentista</code> <i>(elimina solo questo)</i>\n"
+        "• <code>/cancellaimpegni</code> <i>(elimina tutti gli impegni)</i>\n\n"
+        "🛒 <b>2. SPESA DI FAMIGLIA</b>\n"
+        "• <code>spesa latte, pasta, mele</code> <i>(aggiunge articoli)</i>\n"
+        "• <code>/spesa</code> <i>(mostra cosa c'è da comprare)</i>\n"
+        "• <code>/fatto latte</code> <i>(spunta come comprato)</i>\n\n"
+        "📌 <b>3. NOTE SULLA BACHECA</b>\n"
+        "• <code>nota Ricordati di firmare l'uscita</code>\n"
+        "• <i>(oppure scrivi qualsiasi messaggio normale)</i>\n"
+        "• <code>/cancella firmare</code> <i>(elimina specifica nota)</i>\n"
+        "• <code>/cancellanote</code> <i>(svuota tutte le note)</i>\n\n"
+        "📚 <b>4. SCUOLA & AXIOS RE</b>\n"
+        "• <code>/compiti</code> <i>(scarica compiti aggiornati dal RE)</i>\n"
+        "• <code>zaino Sacca scarpe ginnastica</code> <i>(avviso zaino)</i>\n\n"
+        "🌤️ <b>5. METEO & DIFFERENZIATA</b>\n"
+        "• <code>/meteo</code> <i>(meteo in tempo reale a Salemi TP)</i>\n"
+        "• <code>/differenziata</code> <i>(cosa esporre stasera)</i>\n\n"
+        "<i>💡 Suggerimento: tocca l'icona <b>[/]</b> in basso a sinistra nella tastiera per aprire il menu rapido dei comandi!</i>"
+    )
+
 def send_telegram_message(token, chat_id, text):
     if not token or not chat_id:
         return
@@ -247,31 +299,20 @@ def handle_telegram_message(token, msg):
     text_lower = text.lower()
     now_time = get_rome_now().strftime("%H:%M")
 
-    # Comando /start o /aiuto
-    if text_lower in ["/start", "/help", "aiuto", "/aiuto"]:
-        reply = (
-            "<b>🧊 Benvenuto nel Frigo di Famiglia!</b>\n\n"
-            "Puoi inviarmi comandi o messaggi normali:\n\n"
-            "🕒 <b>IMPEGNI DI POMERIGGIO:</b>\n"
-            "• <code>impegno 17:30 Dentista</code>\n"
-            "• <code>impegno 18:00 Basket Palazzetto</code>\n"
-            "• <code>/impegni</code> <i>(mostra impegni di oggi)</i>\n"
-            "• <code>/fatto basket</code> <i>(spunta come completato)</i>\n"
-            "• <code>/cancellaimpegno dentista</code>\n\n"
-            "🛒 <b>SPESA:</b>\n"
-            "• <code>spesa latte, biscotti, mele</code>\n"
-            "• <code>/spesa</code> <i>(mostra cosa manca)</i>\n"
-            "• <code>/fatto latte</code> <i>(spunta come comprato)</i>\n\n"
-            "📌 <b>NOTE SUL FRIGO:</b>\n"
-            "• <code>nota Ricordati di firmare l'uscita</code>\n"
-            "• <code>/cancella firmare</code> o <code>/cancellanote</code>\n\n"
-            "📚 <b>SCUOLA AXIOS:</b>\n"
-            "• <code>/compiti</code> <i>(scarica compiti dal RE)</i>\n"
-            "• <code>zaino Portare scarpe da ginnastica</code>\n\n"
-            "🌤️ <b>METEO SALEMI (TP):</b>\n"
-            "• <code>/meteo</code> <i>(previsioni meteo in tempo reale)</i>"
+    # 0. RECAP DEI COMANDI
+    if text_lower in ["/comandi", "comandi", "/help", "help", "/start", "start", "/aiuto", "aiuto", "/menu", "menu", "istruzioni", "cosa puoi fare"]:
+        send_telegram_message(token, chat_id, get_commands_recap_message())
+        return
+
+    # COMANDO DIFFERENZIATA
+    if text_lower in ["/differenziata", "differenziata", "/rifiuti", "rifiuti", "spazzatura", "cosa si butta", "bidoni"]:
+        rec = get_recycle_for_day()
+        reply_diff = (
+            f"♻️ <b>Raccolta Differenziata (Salemi):</b>\n\n"
+            f"• <b>Stasera da esporre:</b>\n  {rec['type']}\n\n"
+            f"• <b>Istruzioni per il ritiro:</b>\n  {rec['details']}"
         )
-        send_telegram_message(token, chat_id, reply)
+        send_telegram_message(token, chat_id, reply_diff)
         return
 
     # COMANDO METEO SALEMI (TP)
@@ -480,6 +521,7 @@ def handle_telegram_message(token, msg):
 
 def telegram_poller_thread():
     last_offset = 0
+    commands_registered_token = None
     print("[Telegram] Poller avviato.")
     while True:
         cfg = load_config()
@@ -487,6 +529,10 @@ def telegram_poller_thread():
         if not token:
             time.sleep(3)
             continue
+
+        if token != commands_registered_token:
+            setup_telegram_commands(token)
+            commands_registered_token = token
 
         url = f"https://api.telegram.org/bot{token}/getUpdates?offset={last_offset}&timeout=20"
         try:
@@ -657,6 +703,16 @@ class FridgeRequestHandler(SimpleHTTPRequestHandler):
             data["events"] = [e for e in data.get("events", []) if not e.get("done")]
             save_data(data)
             self._send_json({"ok": True, "data": data})
+            return
+
+        if parsed.path == "/api/set-token":
+            tok = req_data.get("token", "").strip()
+            cfg = load_config()
+            cfg["bot_token"] = tok
+            save_config(cfg)
+            if tok:
+                setup_telegram_commands(tok)
+            self._send_json({"ok": True})
             return
 
         self.send_response(404)

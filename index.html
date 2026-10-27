@@ -94,7 +94,6 @@
     .time-row {
       display: flex;
       align-items: baseline;
-      gap: 8px;
     }
 
     .clock-display {
@@ -103,6 +102,7 @@
       letter-spacing: -1.5px;
       line-height: 0.95;
       font-variant-numeric: tabular-nums;
+      margin-right: 8px;
     }
 
     .seconds-pill {
@@ -119,10 +119,13 @@
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      margin-top: 3px;
+      margin-top: 4px;
       display: flex;
       align-items: center;
-      gap: 6px;
+    }
+
+    .date-row svg {
+      margin-right: 6px;
     }
 
     .header-right {
@@ -136,13 +139,15 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 6px;
     }
 
     .weather-temp-box {
       display: flex;
       align-items: center;
-      gap: 6px;
+    }
+
+    .weather-temp-box svg {
+      margin-right: 6px;
     }
 
     .weather-degrees {
@@ -161,10 +166,9 @@
 
     .system-status-pills {
       display: flex;
-      gap: 5px;
       align-items: center;
-      margin-top: 3px;
-      padding-top: 3px;
+      margin-top: 4px;
+      padding-top: 4px;
       border-top: var(--border-hairline);
     }
 
@@ -173,14 +177,22 @@
       font-weight: 800;
       letter-spacing: 0.3px;
       text-transform: uppercase;
-      padding: 1px 5px;
+      padding: 2px 6px;
       border: var(--border-hairline);
       border-radius: 2px;
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 4px;
       cursor: pointer;
       white-space: nowrap;
+      margin-right: 6px;
+    }
+
+    .pill:last-child {
+      margin-right: 0;
+    }
+
+    .pill svg {
+      margin-right: 4px;
     }
 
     .pill.inverted {
@@ -211,8 +223,11 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 5px;
       min-height: 44px;
+    }
+
+    .nav-tab svg {
+      margin-right: 5px;
     }
 
     .nav-tab:last-child {
@@ -267,10 +282,10 @@
       align-items: center;
     }
 
-    /* STATUS STRIP ROWS (COMPATTE A RIGA - SENZA DIPENDENZA DA FLEX GAP) */
+    /* STATUS STRIP ROWS (COMPATTE A RIGA - SIMMETRIA PERFETTA) */
     .status-strip-row {
       border: var(--border-thin);
-      padding: 6px 12px;
+      padding: 6px 10px;
       background: var(--bg);
       display: flex;
       align-items: center;
@@ -278,28 +293,31 @@
       flex-shrink: 0;
       border-radius: 2px;
       overflow: hidden;
-      margin-top: 7px;
+      margin-top: 8px;
       box-sizing: border-box;
     }
 
     .status-strip-tag {
+      width: 95px; /* LARGHEZZA FISSA IDENTICA PER SIMMETRIA */
       font-size: 0.72rem;
       font-weight: 900;
       letter-spacing: 0.5px;
       text-transform: uppercase;
       background: var(--fg);
       color: var(--bg);
-      padding: 3px 8px;
+      padding: 3px 6px;
       border-radius: 2px;
       display: inline-flex;
       align-items: center;
+      justify-content: center;
       white-space: nowrap;
       flex-shrink: 0;
       margin-right: 12px;
+      box-sizing: border-box;
     }
 
     .status-strip-tag svg {
-      margin-right: 6px;
+      margin-right: 5px;
       flex-shrink: 0;
     }
 
@@ -309,12 +327,12 @@
       white-space: nowrap;
       letter-spacing: 0.3px;
       flex-shrink: 0;
-      margin-right: 10px;
+      margin-right: 8px;
     }
 
     .status-strip-sep {
       font-weight: 900;
-      margin-right: 10px;
+      margin-right: 8px;
       opacity: 0.45;
       flex-shrink: 0;
     }
@@ -333,49 +351,52 @@
       display: flex;
       align-items: center;
       flex: 1;
+      overflow: hidden;
     }
 
     .forecast-inline-item {
       display: inline-flex;
       align-items: center;
       border: 1px solid var(--fg);
-      padding: 2px 10px;
-      margin-right: 14px;
+      padding: 2px 8px;
+      margin-right: 10px;
       background: var(--bg);
       border-radius: 2px;
       white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .forecast-inline-time {
       font-family: var(--font-mono);
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 800;
-      margin-right: 7px;
+      margin-right: 6px;
       background: var(--fg);
       color: var(--bg);
-      padding: 1px 6px;
+      padding: 1px 5px;
       border-radius: 2px;
     }
 
     .forecast-inline-temp {
-      font-size: 1.15rem;
+      font-size: 1.1rem;
       font-weight: 900;
-      margin-right: 7px;
+      margin-right: 6px;
     }
 
     .forecast-inline-desc {
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       font-weight: 700;
     }
 
     .bento-card {
       border: var(--border-thin);
-      padding: 8px 10px;
+      padding: 8px 12px;
       display: flex;
       flex-direction: column;
       background: var(--bg);
       border-radius: 2px;
       overflow: hidden;
+      box-sizing: border-box;
     }
 
     .card-header-row {
@@ -383,7 +404,7 @@
       justify-content: space-between;
       align-items: center;
       border-bottom: var(--border-thin);
-      padding-bottom: 4px;
+      padding-bottom: 5px;
       margin-bottom: 6px;
     }
 
@@ -394,10 +415,14 @@
       letter-spacing: 0.5px;
       display: flex;
       align-items: center;
-      gap: 5px;
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;
+    }
+
+    .card-title-text svg {
+      margin-right: 6px;
+      flex-shrink: 0;
     }
 
     .card-body {
@@ -405,7 +430,14 @@
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+    }
+
+    .card-body > * {
+      margin-bottom: 6px;
+    }
+
+    .card-body > *:last-child {
+      margin-bottom: 0;
     }
 
     /* TELEGRAM FEED */
@@ -446,23 +478,23 @@
       word-break: break-word;
     }
 
-    /* SCUOLA & AXIOS RE (LAYOUT PULITO) */
+    /* SCUOLA & AXIOS RE (LAYOUT PULITO - SIMMETRIA & SPAZIATURA) */
     .school-container {
       display: flex;
       flex-direction: column;
-      gap: 8px;
       height: 100%;
       overflow: hidden;
     }
 
     .teacher-note-card {
       border: var(--border-thin);
-      padding: 10px 12px;
+      border-left: 5px solid var(--fg);
+      padding: 10px 14px;
       background: var(--bg);
       display: flex;
-      align-items: flex-start;
-      gap: 12px;
+      align-items: center;
       border-radius: 2px;
+      box-sizing: border-box;
     }
 
     .teacher-note-icon {
@@ -474,13 +506,14 @@
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
+      margin-right: 12px;
+      border-radius: 2px;
     }
 
     .teacher-note-body {
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 4px;
     }
 
     .teacher-note-text {
@@ -488,26 +521,26 @@
       font-weight: 800;
       line-height: 1.35;
       word-break: break-word;
+      margin-bottom: 4px;
     }
 
     .teacher-note-hint {
       font-size: 0.72rem;
       font-weight: 700;
       opacity: 0.75;
-      margin-top: 2px;
     }
 
     /* TASK COMPITI */
     .task-entry {
       border: var(--border-thin);
-      padding: 8px 12px;
-      margin-bottom: 6px;
+      padding: 9px 12px;
+      margin-bottom: 8px;
       display: flex;
       align-items: flex-start;
-      gap: 12px;
       cursor: pointer;
       background: var(--bg);
       border-radius: 2px;
+      box-sizing: border-box;
     }
 
     .task-entry.done {
@@ -520,34 +553,36 @@
     }
 
     .check-box-graphic {
-      width: 24px;
-      height: 24px;
+      width: 22px;
+      height: 22px;
       border: var(--border-thin);
       display: flex;
       align-items: center;
       justify-content: center;
       margin-top: 2px;
+      margin-right: 12px;
       flex-shrink: 0;
       font-weight: 900;
-      font-size: 1.15rem;
+      font-size: 1.1rem;
+      border-radius: 2px;
+      background: var(--bg);
     }
 
     .task-content-block {
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 4px;
       overflow: hidden;
     }
 
     .task-top-meta {
       display: flex;
       align-items: center;
-      gap: 8px;
+      margin-bottom: 5px;
     }
 
     .task-subject-tag {
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -556,22 +591,24 @@
       padding: 2px 7px;
       border-radius: 2px;
       white-space: nowrap;
+      margin-right: 8px;
     }
 
     .task-date-tag {
-      font-size: 0.76rem;
+      font-size: 0.74rem;
       font-family: var(--font-mono);
       font-weight: 800;
-      border: var(--border-hairline);
-      padding: 2px 6px;
+      border: 1px solid var(--fg);
+      padding: 1px 6px;
       text-transform: uppercase;
       white-space: nowrap;
+      border-radius: 2px;
     }
 
     .task-title {
-      font-size: 1rem;
+      font-size: 0.98rem;
       font-weight: 700;
-      line-height: 1.3;
+      line-height: 1.35;
       word-break: break-word;
     }
 
@@ -612,9 +649,12 @@
       padding: 8px 10px;
       display: flex;
       align-items: center;
-      gap: 8px;
       cursor: pointer;
       min-height: 48px;
+    }
+
+    .shop-item-touch .check-box-graphic {
+      margin-right: 10px;
     }
 
     .shop-item-touch.done {
@@ -631,6 +671,7 @@
       font-weight: 800;
       flex: 1;
       word-break: break-word;
+      margin-right: 8px;
     }
 
     .shop-author {
@@ -789,12 +830,19 @@
       text-transform: uppercase;
       display: flex;
       align-items: center;
-      gap: 6px;
+    }
+
+    .footer-left svg {
+      margin-right: 6px;
     }
 
     .footer-controls {
       display: flex;
-      gap: 6px;
+      align-items: center;
+    }
+
+    .footer-controls .ctrl-btn {
+      margin-left: 6px;
     }
 
     .ctrl-btn {
@@ -811,7 +859,10 @@
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 5px;
+    }
+
+    .ctrl-btn svg {
+      margin-right: 5px;
     }
 
     .ctrl-btn:active {
@@ -931,8 +982,8 @@
               <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
               Note Famiglia
             </div>
-            <div style="display: flex; gap: 6px; align-items: center;">
-              <div class="pill inverted">Bacheca Live</div>
+            <div style="display: flex; align-items: center;">
+              <div class="pill inverted" style="margin-right: 6px;">Bacheca Live</div>
               <button class="pill" onclick="clearNotesBackend()" style="cursor:pointer;" title="Cancella tutte le note">Svuota</button>
             </div>
           </div>
@@ -948,27 +999,27 @@
         <div class="status-strip-row">
           <div class="status-strip-tag">
             <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-            <span>RIFIUTI STASERA</span>
+            <span>RIFIUTI</span>
           </div>
           <div class="status-strip-highlight" id="recycle-type">ORGANICO (Umido)</div>
-          <div class="status-strip-sep">•</div>
-          <div class="status-strip-desc" id="recycle-details">Ritiro domani (Mercoledì) • Esporre il mastello stasera</div>
+          <div class="status-strip-sep">—</div>
+          <div class="status-strip-desc" id="recycle-details">Ritiro domani (Mercoledì) • Esporre stasera</div>
         </div>
 
         <!-- STRISCIA 2 (A RIGA): PREVISIONI METEO SALEMI -->
         <div class="status-strip-row">
           <div class="status-strip-tag">
             <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-            <span>METEO PROSSIME ORE</span>
+            <span>METEO</span>
           </div>
           <div class="status-strip-forecast" id="weather-forecast-container">
             <div class="forecast-inline-item">
-              <span class="forecast-inline-time">03:00</span>
-              <span class="forecast-inline-temp">13°</span>
-              <span class="forecast-inline-desc">Poco Nuv.</span>
+              <span class="forecast-inline-time">04:00</span>
+              <span class="forecast-inline-temp">14°</span>
+              <span class="forecast-inline-desc">Poco nuv.</span>
             </div>
             <div class="forecast-inline-item">
-              <span class="forecast-inline-time">09:00</span>
+              <span class="forecast-inline-time">10:00</span>
               <span class="forecast-inline-temp">18°</span>
               <span class="forecast-inline-desc">Sereno</span>
             </div>
@@ -983,7 +1034,7 @@
       <div class="school-container">
         
         <!-- CARD 1: NOTE & AVVISI DELLA MAESTRA -->
-        <div class="bento-card" style="flex-shrink: 0;">
+        <div class="bento-card" style="flex-shrink: 0; margin-bottom: 8px;">
           <div class="card-header-row">
             <div class="card-title-text">
               <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10M6 10h10M6 14h6"/></svg>
@@ -997,7 +1048,7 @@
             </div>
             <div class="teacher-note-body">
               <div class="teacher-note-text" id="backpack-text">
-                Nessun avviso o promemoria recente dalla maestra.
+                Caricamento promemoria...
               </div>
               <div class="teacher-note-hint">
                 Scrivi <code>zaino &lt;nota&gt;</code> su Telegram oppure sincronizza Axios per aggiornare questo promemoria
@@ -1013,8 +1064,8 @@
               <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
               Compiti da Axios RE
             </div>
-            <div style="display: flex; gap: 6px; align-items: center;">
-              <div class="pill" id="tasks-count-pill">COMPITI</div>
+            <div style="display: flex; align-items: center;">
+              <div class="pill" id="tasks-count-pill" style="margin-right: 6px;">COMPITI</div>
               <button class="ctrl-btn" onclick="triggerAxiosSync()" style="padding: 2px 8px; font-size: 0.75rem;">
                 Sincronizza RE
               </button>
@@ -1260,10 +1311,12 @@
           w.forecast.forEach(slot => {
             const div = document.createElement('div');
             div.className = 'forecast-inline-item';
+            let shortDesc = (slot.desc || '').trim();
+            if (shortDesc.toLowerCase().includes('nuvol')) shortDesc = 'Poco nuv.';
             div.innerHTML = `
               <span class="forecast-inline-time">${escapeHtml(slot.time)}</span>
               <span class="forecast-inline-temp">${escapeHtml(slot.temp)}</span>
-              <span class="forecast-inline-desc">${escapeHtml(slot.desc)}</span>
+              <span class="forecast-inline-desc">${escapeHtml(shortDesc)}</span>
             `;
             fcContainer.appendChild(div);
           });

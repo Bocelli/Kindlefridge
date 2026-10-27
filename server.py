@@ -96,31 +96,31 @@ def get_recycle_for_day(dt=None):
     schedule = {
         0: {
             "type": "ORGANICO (Umido)",
-            "details": f"Ritiro domani ({target_day_name}) • Esporre il mastello stasera"
+            "details": f"Ritiro domani ({target_day_name}) • Esporre stasera"
         },
         1: {
             "type": "CARTA E CARTONE",
-            "details": f"Ritiro domani ({target_day_name}) • Esporre il bidoncino stasera"
+            "details": f"Ritiro domani ({target_day_name}) • Esporre stasera"
         },
         2: {
             "type": "ORGANICO (Umido)",
-            "details": f"Ritiro domani ({target_day_name}) • Esporre il mastello stasera"
+            "details": f"Ritiro domani ({target_day_name}) • Esporre stasera"
         },
         3: {
             "type": "PLASTICA E METALLI",
-            "details": f"Ritiro domani ({target_day_name}) • Esporre sacco giallo stasera"
+            "details": f"Ritiro domani ({target_day_name}) • Esporre stasera"
         },
         4: {
             "type": "ORGANICO + VETRO" if is_glass_friday else "ORGANICO (Umido)",
-            "details": f"Attenzione: domani ({target_day_name}) anche Vetro!" if is_glass_friday else f"Ritiro domani ({target_day_name}) • Esporre il mastello stasera"
+            "details": f"Domani ({target_day_name}) anche Vetro! • Esporre stasera" if is_glass_friday else f"Ritiro domani ({target_day_name}) • Esporre stasera"
         },
         5: {
             "type": "INDIFFERENZIATA",
-            "details": f"Ritiro domani ({target_day_name}) • Esporre sacco secco residuo stasera"
+            "details": f"Ritiro domani ({target_day_name}) • Esporre stasera"
         },
         6: {
             "type": "NESSUNA RACCOLTA",
-            "details": f"Domenica riposo (nessun ritiro) • Domani sera: Organico"
+            "details": f"Domenica riposo • Domani sera: Organico"
         }
     }
     res = schedule.get(weekday, schedule[6]).copy()

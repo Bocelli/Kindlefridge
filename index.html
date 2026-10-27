@@ -247,14 +247,105 @@
       height: 100%;
     }
 
-    /* BENTO 2x2 */
-    .bento-grid-2x2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: 1fr 1fr;
-      gap: 8px;
+    /* HOME & NOTE FAMIGLIA */
+    .home-container {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
       height: 100%;
-      min-height: 420px;
+      overflow: hidden;
+    }
+
+    .home-tip-footer {
+      border-top: var(--border-thin);
+      padding-top: 5px;
+      margin-top: 5px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      opacity: 0.85;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* STATUS STRIP ROWS (COMPATTE A RIGA) */
+    .status-strip-row {
+      border: var(--border-thin);
+      padding: 6px 10px;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 40px;
+      flex-shrink: 0;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .status-strip-tag {
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      background: var(--fg);
+      color: var(--bg);
+      padding: 2px 7px;
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .status-strip-highlight {
+      font-size: 0.95rem;
+      font-weight: 900;
+      white-space: nowrap;
+      letter-spacing: 0.3px;
+      flex-shrink: 0;
+    }
+
+    .status-strip-desc {
+      font-size: 0.82rem;
+      font-weight: 700;
+      opacity: 0.85;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex: 1;
+    }
+
+    .status-strip-forecast {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+      flex: 1;
+      gap: 8px;
+    }
+
+    .forecast-inline-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+    }
+
+    .forecast-inline-time {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 700;
+      opacity: 0.8;
+    }
+
+    .forecast-inline-temp {
+      font-size: 1.05rem;
+      font-weight: 900;
+    }
+
+    .forecast-inline-desc {
+      font-size: 0.75rem;
+      font-weight: 700;
     }
 
     .bento-card {
@@ -299,57 +390,40 @@
 
     /* TELEGRAM FEED */
     .tg-bubble {
-      border-left: 3px solid var(--fg);
-      padding: 4px 8px;
+      border: var(--border-thin);
+      border-left: 4px solid var(--fg);
+      padding: 6px 10px;
       background: var(--bg);
-      margin-bottom: 3px;
+      margin-bottom: 5px;
+      border-radius: 2px;
     }
 
     .tg-bubble-meta {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       font-size: 0.72rem;
       font-weight: 800;
       text-transform: uppercase;
-      margin-bottom: 1px;
+      margin-bottom: 2px;
     }
 
     .tg-author-tag {
-      border: var(--border-hairline);
-      padding: 0 4px;
+      background: var(--fg);
+      color: var(--bg);
+      padding: 1px 6px;
       font-family: var(--font-mono);
-      font-weight: 800;
-      font-size: 0.68rem;
+      font-weight: 900;
+      font-size: 0.7rem;
+      border-radius: 2px;
+      letter-spacing: 0.3px;
     }
 
     .tg-bubble-text {
-      font-size: 0.95rem;
+      font-size: 1rem;
       font-weight: 700;
-      line-height: 1.2;
+      line-height: 1.25;
       word-break: break-word;
-    }
-
-    /* RECYCLE */
-    .recycle-banner {
-      border: var(--border-thick);
-      padding: 6px 8px;
-      text-align: center;
-      background: var(--fg);
-      color: var(--bg);
-      margin-top: 2px;
-    }
-
-    .recycle-type {
-      font-size: 1.1rem;
-      font-weight: 900;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-    }
-
-    .recycle-sub {
-      font-size: 0.75rem;
-      font-weight: 700;
-      margin-top: 1px;
     }
 
     /* SCUOLA & AXIOS RE (LAYOUT PULITO) */
@@ -826,68 +900,61 @@
   <!-- ==================== CONTENUTI ==================== -->
   <main>
 
-    <!-- TAB 1: CASA & TELEGRAM FEED -->
+    <!-- TAB 1: CASA & OGGI -->
     <section id="tab-home" class="tab-pane active">
-      <div class="bento-grid-2x2">
+      <div class="home-container">
         
-        <!-- CARD 1: BACHECA TELEGRAM (LIVE) - SPAN FULL WIDTH -->
-        <div class="bento-card" style="grid-column: span 2;">
+        <!-- CARD GRANDE: BACHECA NOTE FAMIGLIA (LIVE TELEGRAM) -->
+        <div class="bento-card" style="flex: 1; min-height: 0; display: flex; flex-direction: column;">
           <div class="card-header-row">
             <div class="card-title-text">
               <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
               Note Famiglia
             </div>
-            <button class="pill" onclick="clearNotesBackend()" style="cursor:pointer;" title="Cancella tutte le note">Svuota</button>
+            <div style="display: flex; gap: 6px; align-items: center;">
+              <div class="pill inverted">Bacheca Live</div>
+              <button class="pill" onclick="clearNotesBackend()" style="cursor:pointer;" title="Cancella tutte le note">Svuota</button>
+            </div>
           </div>
-          <div class="card-body" id="telegram-feed-list">
+          <div class="card-body" id="telegram-feed-list" style="flex: 1; overflow-y: auto;">
             <!-- Popolato dinamicamente da /api/data -->
           </div>
-        </div>
-
-        <!-- CARD 2: DIFFERENZIATA -->
-        <div class="bento-card">
-          <div class="card-header-row">
-            <div class="card-title-text">
-              <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-              Raccolta Differenziata
-            </div>
-            <div class="pill inverted">Stasera</div>
-          </div>
-          <div class="card-body" style="justify-content: center;">
-            <div class="recycle-banner">
-              <div class="recycle-type" id="recycle-type">📦 CARTA E CARTONE</div>
-              <div class="recycle-sub" id="recycle-details">Esporre il bidoncino bianco entro le 22:00</div>
-            </div>
-            <div style="font-size: 0.85rem; font-weight: 700; text-align: center; margin-top: 6px;">
-              Domani mattina: Svuotamento cassonetto Carta
-            </div>
+          <div class="home-tip-footer">
+            <span>💡 <strong>Tip Telegram:</strong> Invia qualsiasi messaggio in chat per vederlo apparire qui sul frigo!</span>
           </div>
         </div>
 
-        <!-- CARD 4: PREVISIONI METEO -->
-        <div class="bento-card">
-          <div class="card-header-row">
-            <div class="card-title-text">
-              <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-              Meteo Salemi (TP)
-            </div>
-            <div class="pill">Previsioni</div>
+        <!-- STRISCIA 1 (A RIGA): RIFIUTI DIFFERENZIATA -->
+        <div class="status-strip-row">
+          <div class="status-strip-tag">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            <span>RIFIUTI STASERA</span>
           </div>
-          <div class="card-body" id="weather-forecast-container" style="display: grid; grid-template-columns: 1fr 1fr 1fr; text-align: center; align-items: center;">
-            <div style="border-right: var(--border-hairline); padding: 4px;">
-              <div style="font-size: 0.8rem; font-weight: 800; font-family: var(--font-mono);">21:00</div>
-              <div style="font-size: 1.45rem; font-weight: 900; margin: 1px 0;">14°</div>
-              <div style="font-size: 0.75rem; font-weight: 700;">Sereno</div>
+          <div class="status-strip-highlight" id="recycle-type">📦 CARTA E CARTONE</div>
+          <div class="status-strip-desc" id="recycle-details">Esporre il bidoncino bianco entro le 22:00</div>
+        </div>
+
+        <!-- STRISCIA 2 (A RIGA): PREVISIONI METEO SALEMI -->
+        <div class="status-strip-row">
+          <div class="status-strip-tag">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            <span>METEO PROSSIME ORE</span>
+          </div>
+          <div class="status-strip-forecast" id="weather-forecast-container">
+            <div class="forecast-inline-item">
+              <span class="forecast-inline-time">21:00</span>
+              <span class="forecast-inline-temp">14°</span>
+              <span class="forecast-inline-desc">Sereno</span>
             </div>
-            <div style="border-right: var(--border-hairline); padding: 4px;">
-              <div style="font-size: 0.8rem; font-weight: 800; font-family: var(--font-mono);">23:00</div>
-              <div style="font-size: 1.45rem; font-weight: 900; margin: 1px 0;">14°</div>
-              <div style="font-size: 0.75rem; font-weight: 700;">Poco nuv.</div>
+            <div class="forecast-inline-item">
+              <span class="forecast-inline-time">23:00</span>
+              <span class="forecast-inline-temp">14°</span>
+              <span class="forecast-inline-desc">Poco Nuv.</span>
             </div>
-            <div style="padding: 4px;">
-              <div style="font-size: 0.8rem; font-weight: 800; font-family: var(--font-mono);">01:00</div>
-              <div style="font-size: 1.45rem; font-weight: 900; margin: 1px 0;">14°</div>
-              <div style="font-size: 0.75rem; font-weight: 700;">Poco nuv.</div>
+            <div class="forecast-inline-item">
+              <span class="forecast-inline-time">01:00</span>
+              <span class="forecast-inline-temp">14°</span>
+              <span class="forecast-inline-desc">Poco Nuv.</span>
             </div>
           </div>
         </div>
@@ -1174,15 +1241,13 @@
         const fcContainer = document.getElementById('weather-forecast-container');
         if (fcContainer && w.forecast && w.forecast.length > 0) {
           fcContainer.innerHTML = '';
-          w.forecast.forEach((slot, idx) => {
-            const isLast = idx === w.forecast.length - 1;
+          w.forecast.forEach(slot => {
             const div = document.createElement('div');
-            if (!isLast) div.style.borderRight = 'var(--border-hairline)';
-            div.style.padding = '4px';
+            div.className = 'forecast-inline-item';
             div.innerHTML = `
-              <div style="font-size: 0.8rem; font-weight: 800; font-family: var(--font-mono);">${escapeHtml(slot.time)}</div>
-              <div style="font-size: 1.45rem; font-weight: 900; margin: 1px 0;">${escapeHtml(slot.temp)}</div>
-              <div style="font-size: 0.75rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(slot.desc)}</div>
+              <span class="forecast-inline-time">${escapeHtml(slot.time)}</span>
+              <span class="forecast-inline-temp">${escapeHtml(slot.temp)}</span>
+              <span class="forecast-inline-desc">${escapeHtml(slot.desc)}</span>
             `;
             fcContainer.appendChild(div);
           });

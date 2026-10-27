@@ -660,8 +660,8 @@
     /* SETTIMANA TABLE */
     .week-columns-grid {
       display: grid;
-      grid-template-columns: repeat(5, 1fr);
-      gap: 6px;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 4px;
       height: 100%;
     }
 
@@ -674,24 +674,27 @@
     .col-header {
       background: var(--fg);
       color: var(--bg);
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 900;
       text-align: center;
-      padding: 4px 1px;
+      padding: 3px 1px;
       text-transform: uppercase;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .col-body {
       flex: 1;
-      padding: 6px 4px;
+      padding: 4px 3px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 4px;
     }
 
     .col-subject-entry {
       border-bottom: var(--border-hairline);
-      padding-bottom: 4px;
+      padding-bottom: 3px;
     }
 
     .col-subject-entry:last-child {
@@ -699,12 +702,16 @@
     }
 
     .col-sub-name {
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       font-weight: 800;
+      line-height: 1.15;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .col-sub-time {
-      font-size: 0.7rem;
+      font-size: 0.65rem;
       font-family: var(--font-mono);
       font-weight: 700;
     }
@@ -963,6 +970,7 @@
             <button class="day-selector-btn" id="day-btn-MER" onclick="filterSchoolDay('MER', this)">MER</button>
             <button class="day-selector-btn" id="day-btn-GIO" onclick="filterSchoolDay('GIO', this)">GIO</button>
             <button class="day-selector-btn" id="day-btn-VEN" onclick="filterSchoolDay('VEN', this)">VEN</button>
+            <button class="day-selector-btn" id="day-btn-SAB" onclick="filterSchoolDay('SAB', this)">SAB</button>
           </div>
 
           <div class="card-body" id="school-hours-list"></div>
@@ -1036,8 +1044,8 @@
             </div>
           </div>
 
-          <div class="week-day-col" style="border: var(--border-thick);">
-            <div class="col-header">Martedì • Oggi</div>
+          <div class="week-day-col">
+            <div class="col-header">Martedì</div>
             <div class="col-body">
               <div class="col-subject-entry"><div class="col-sub-name">Matematica</div><div class="col-sub-time">08:30</div></div>
               <div class="col-subject-entry"><div class="col-sub-name">Scienze</div><div class="col-sub-time">09:30</div></div>
@@ -1077,6 +1085,16 @@
               <div class="col-subject-entry"><div class="col-sub-name">Italiano</div><div class="col-sub-time">10:30</div></div>
               <div class="col-subject-entry"><div class="col-sub-name">Geografia</div><div class="col-sub-time">11:30</div></div>
               <div class="col-subject-entry"><div class="col-sub-name">Ed. Civica</div><div class="col-sub-time">12:30</div></div>
+            </div>
+          </div>
+
+          <div class="week-day-col">
+            <div class="col-header">Sabato</div>
+            <div class="col-body">
+              <div class="col-subject-entry"><div class="col-sub-name">Italiano</div><div class="col-sub-time">08:30</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Matematica</div><div class="col-sub-time">09:30</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Storia</div><div class="col-sub-time">10:30</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Scienze</div><div class="col-sub-time">11:30</div></div>
             </div>
           </div>
         </div>
@@ -1569,6 +1587,12 @@
         { time: "10:30", subject: "Italiano" },
         { time: "11:30", subject: "Geografia" },
         { time: "12:30", subject: "Ed. Civica" }
+      ],
+      'SAB': [
+        { time: "08:30", subject: "Italiano" },
+        { time: "09:30", subject: "Matematica" },
+        { time: "10:30", subject: "Storia" },
+        { time: "11:30", subject: "Scienze" }
       ]
     };
 
@@ -1577,7 +1601,8 @@
       'MAR': 'MARTEDÌ',
       'MER': 'MERCOLEDÌ',
       'GIO': 'GIOVEDÌ',
-      'VEN': 'VENERDÌ'
+      'VEN': 'VENERDÌ',
+      'SAB': 'SABATO'
     };
 
     function filterSchoolDay(dayKey, btn) {
@@ -1601,11 +1626,53 @@
       });
     }
 
+    function renderWeekSchedule() {
+      const container = document.querySelector('.week-columns-grid');
+      if (!container) return;
+      container.innerHTML = '';
+      const order = ['LUN', 'MAR', 'MER', 'GIO', 'VEN', 'SAB'];
+      const dayTitles = {
+        'LUN': 'Lunedì',
+        'MAR': 'Martedì',
+        'MER': 'Mercoledì',
+        'GIO': 'Giovedì',
+        'VEN': 'Venerdì',
+        'SAB': 'Sabato'
+      };
+      const curDayNum = getRomeDate().getDay();
+      const currentTodayKey = dayLookup[curDayNum];
+      order.forEach(dayKey => {
+        const isToday = (dayKey === currentTodayKey);
+        const col = document.createElement('div');
+        col.className = 'week-day-col';
+        if (isToday) {
+          col.style.border = 'var(--border-thick)';
+        }
+        const headerTitle = isToday ? `${dayTitles[dayKey]} • Oggi` : dayTitles[dayKey];
+        const hours = schoolWeekData[dayKey] || [];
+        const entriesHtml = hours.map(h => `
+          <div class="col-subject-entry">
+            <div class="col-sub-name">${escapeHtml(h.subject)}</div>
+            <div class="col-sub-time">${h.time}</div>
+          </div>
+        `).join('');
+        
+        col.innerHTML = `
+          <div class="col-header">${headerTitle}</div>
+          <div class="col-body">
+            ${entriesHtml}
+          </div>
+        `;
+        container.appendChild(col);
+      });
+    }
+
     const curDay = getRomeDate().getDay();
-    const dayLookup = { 1: 'LUN', 2: 'MAR', 3: 'MER', 4: 'GIO', 5: 'VEN' };
+    const dayLookup = { 1: 'LUN', 2: 'MAR', 3: 'MER', 4: 'GIO', 5: 'VEN', 6: 'SAB' };
     const todayKey = dayLookup[curDay] || 'LUN';
     const initBtn = document.getElementById(`day-btn-${todayKey}`) || document.querySelector('.day-selector-btn');
     filterSchoolDay(todayKey, initBtn);
+    renderWeekSchedule();
 
     // 6. MODAL TOKEN TELEGRAM
     function openTokenModal() {

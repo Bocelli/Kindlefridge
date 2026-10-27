@@ -657,11 +657,22 @@
       padding: 1px 4px;
     }
 
-    /* SETTIMANA TABLE */
+    /* SETTIMANA TABLE (OTTIMIZZATA KINDLE 7" E-INK) */
+    #tab-week .bento-card {
+      padding: 6px 4px 4px 4px;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
     .week-columns-grid {
       display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      gap: 4px;
+      grid-template-columns: repeat(6, minmax(0, 1fr));
+      gap: 3px;
+      width: 100%;
+      flex: 1;
+      min-height: 0;
       height: 100%;
     }
 
@@ -669,51 +680,111 @@
       border: var(--border-thin);
       display: flex;
       flex-direction: column;
+      height: 100%;
+      min-width: 0;
+      background: var(--bg);
+      cursor: pointer;
+      overflow: hidden;
+    }
+
+    .week-day-col.is-today {
+      border: var(--border-thick);
     }
 
     .col-header {
       background: var(--fg);
       color: var(--bg);
-      font-size: 0.8rem;
-      font-weight: 900;
       text-align: center;
       padding: 3px 1px;
       text-transform: uppercase;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 36px;
+      flex-shrink: 0;
+      gap: 2px;
+    }
+
+    .col-header-day {
+      font-size: 0.88rem;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      line-height: 1;
+    }
+
+    .col-today-badge {
+      font-size: 0.6rem;
+      font-family: var(--font-mono);
+      font-weight: 900;
+      background: var(--bg);
+      color: var(--fg);
+      padding: 1px 4px;
+      border-radius: 2px;
+      line-height: 1;
+      display: inline-block;
     }
 
     .col-body {
       flex: 1;
-      padding: 4px 3px;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      height: 100%;
+      min-height: 0;
+      padding: 0;
     }
 
     .col-subject-entry {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
       border-bottom: var(--border-hairline);
-      padding-bottom: 3px;
+      padding: 3px 2px;
+      min-height: 0;
+      overflow: hidden;
     }
 
     .col-subject-entry:last-child {
       border-bottom: none;
     }
 
-    .col-sub-name {
-      font-size: 0.8rem;
+    .col-sub-time {
+      font-size: 0.68rem;
+      font-family: var(--font-mono);
       font-weight: 800;
-      line-height: 1.15;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      line-height: 1;
+      margin-bottom: 3px;
+      border: var(--border-hairline);
+      padding: 1px 3px;
+      border-radius: 2px;
     }
 
-    .col-sub-time {
-      font-size: 0.65rem;
+    .col-sub-name {
+      font-size: 0.82rem;
+      font-weight: 800;
+      line-height: 1.15;
+      word-break: break-word;
+      text-align: center;
+      max-width: 100%;
+    }
+
+    .col-slot-empty {
+      background: rgba(0, 0, 0, 0.03);
+    }
+
+    .col-slot-empty .col-sub-empty-tag {
+      font-size: 0.66rem;
       font-family: var(--font-mono);
-      font-weight: 700;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      border: var(--border-hairline);
+      border-style: dashed;
+      padding: 2px 4px;
+      border-radius: 2px;
+      margin-top: 3px;
     }
 
     /* FOOTER */
@@ -1023,80 +1094,17 @@
 
     <!-- TAB 4: SETTIMANA COMPLETA -->
     <section id="tab-week" class="tab-pane">
-      <div class="bento-card" style="height: 100%;">
-        <div class="card-header-row">
+      <div class="bento-card">
+        <div class="card-header-row" style="margin-bottom: 4px; padding-bottom: 3px;">
           <div class="card-title-text">
             <svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="0"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            Quadro Settimanale Scuola (Orario Completo)
+            Orario Settimanale
           </div>
-          <div class="pill inverted">Anno 2026/2027</div>
+          <div class="pill inverted">6 Giorni • 2026/27</div>
         </div>
 
         <div class="week-columns-grid">
-          <div class="week-day-col">
-            <div class="col-header">Lunedì</div>
-            <div class="col-body">
-              <div class="col-subject-entry"><div class="col-sub-name">Italiano</div><div class="col-sub-time">08:30</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Storia</div><div class="col-sub-time">09:30</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Matematica</div><div class="col-sub-time">10:30</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Inglese</div><div class="col-sub-time">11:30</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Arte</div><div class="col-sub-time">12:30</div></div>
-            </div>
-          </div>
-
-          <div class="week-day-col">
-            <div class="col-header">Martedì</div>
-            <div class="col-body">
-              <div class="col-subject-entry"><div class="col-sub-name">Matematica</div><div class="col-sub-time">08:30</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Scienze</div><div class="col-sub-time">09:30</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Ed. Fisica</div><div class="col-sub-time">10:30</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Italiano</div><div class="col-sub-time">11:30</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Musica</div><div class="col-sub-time">12:30</div></div>
-            </div>
-          </div>
-
-          <div class="week-day-col">
-            <div class="col-header">Mercoledì</div>
-            <div class="col-body">
-              <div class="col-subject-entry"><div class="col-sub-name">Geografia</div><div class="col-sub-time">08:30</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Italiano</div><div class="col-sub-time">09:30</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Matematica</div><div class="col-sub-time">10:30</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Inglese</div><div class="col-sub-time">11:30</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Tecnologia</div><div class="col-sub-time">12:30</div></div>
-            </div>
-          </div>
-
-          <div class="week-day-col">
-            <div class="col-header">Giovedì</div>
-            <div class="col-body">
-              <div class="col-subject-entry"><div class="col-sub-name">Italiano</div><div class="col-sub-time">08:30</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Storia</div><div class="col-sub-time">09:30</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Scienze</div><div class="col-sub-time">10:30</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Religione</div><div class="col-sub-time">11:30</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Matematica</div><div class="col-sub-time">12:30</div></div>
-            </div>
-          </div>
-
-          <div class="week-day-col">
-            <div class="col-header">Venerdì</div>
-            <div class="col-body">
-              <div class="col-subject-entry"><div class="col-sub-name">Matematica</div><div class="col-sub-time">08:30</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Inglese</div><div class="col-sub-time">09:30</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Italiano</div><div class="col-sub-time">10:30</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Geografia</div><div class="col-sub-time">11:30</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Ed. Civica</div><div class="col-sub-time">12:30</div></div>
-            </div>
-          </div>
-
-          <div class="week-day-col">
-            <div class="col-header">Sabato</div>
-            <div class="col-body">
-              <div class="col-subject-entry"><div class="col-sub-name">Italiano</div><div class="col-sub-time">08:30</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Matematica</div><div class="col-sub-time">09:30</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Storia</div><div class="col-sub-time">10:30</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Scienze</div><div class="col-sub-time">11:30</div></div>
-            </div>
-          </div>
+          <!-- Popolato dinamicamente da renderWeekSchedule() -->
         </div>
       </div>
     </section>
@@ -1626,39 +1634,52 @@
       });
     }
 
+    function openSchoolDay(dayKey) {
+      const schoolTabBtn = document.querySelectorAll('.nav-tab')[1];
+      if (schoolTabBtn) activateTab('tab-axios', schoolTabBtn);
+      const btn = document.getElementById(`day-btn-${dayKey}`);
+      filterSchoolDay(dayKey, btn);
+    }
+
     function renderWeekSchedule() {
       const container = document.querySelector('.week-columns-grid');
       if (!container) return;
       container.innerHTML = '';
       const order = ['LUN', 'MAR', 'MER', 'GIO', 'VEN', 'SAB'];
-      const dayTitles = {
-        'LUN': 'Lunedì',
-        'MAR': 'Martedì',
-        'MER': 'Mercoledì',
-        'GIO': 'Giovedì',
-        'VEN': 'Venerdì',
-        'SAB': 'Sabato'
-      };
       const curDayNum = getRomeDate().getDay();
       const currentTodayKey = dayLookup[curDayNum];
       order.forEach(dayKey => {
         const isToday = (dayKey === currentTodayKey);
         const col = document.createElement('div');
-        col.className = 'week-day-col';
-        if (isToday) {
-          col.style.border = 'var(--border-thick)';
-        }
-        const headerTitle = isToday ? `${dayTitles[dayKey]} • Oggi` : dayTitles[dayKey];
+        col.className = isToday ? 'week-day-col is-today' : 'week-day-col';
+        col.onclick = () => openSchoolDay(dayKey);
+
+        const headerHtml = `
+          <div class="col-header">
+            <div class="col-header-day">${dayKey}</div>
+            ${isToday ? '<div class="col-today-badge">OGGI</div>' : ''}
+          </div>
+        `;
+
         const hours = schoolWeekData[dayKey] || [];
-        const entriesHtml = hours.map(h => `
+        let entriesHtml = hours.map(h => `
           <div class="col-subject-entry">
-            <div class="col-sub-name">${escapeHtml(h.subject)}</div>
             <div class="col-sub-time">${h.time}</div>
+            <div class="col-sub-name">${escapeHtml(h.subject)}</div>
           </div>
         `).join('');
-        
+
+        if (hours.length === 4) {
+          entriesHtml += `
+            <div class="col-subject-entry col-slot-empty">
+              <div class="col-sub-time">12:30</div>
+              <div class="col-sub-empty-tag">USCITA</div>
+            </div>
+          `;
+        }
+
         col.innerHTML = `
-          <div class="col-header">${headerTitle}</div>
+          ${headerHtml}
           <div class="col-body">
             ${entriesHtml}
           </div>

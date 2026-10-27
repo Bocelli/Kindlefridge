@@ -1,5 +1,6 @@
 import os
 import sys
+import re
 import json
 import time
 import html
@@ -21,9 +22,14 @@ def load_data():
     with data_lock:
         try:
             with open(DATA_FILE, "r", encoding="utf-8") as f:
-                return json.load(f)
+                d = json.load(f)
+                d.setdefault("events", [])
+                d.setdefault("notes", [])
+                d.setdefault("groceries", [])
+                d.setdefault("tasks", [])
+                return d
         except Exception:
-            return {"notes": [], "groceries": [], "backpack": "", "tasks": []}
+            return {"notes": [], "groceries": [], "backpack": "", "tasks": [], "events": []}
 
 def save_data(data):
     with data_lock:
@@ -141,21 +147,23 @@ def handle_telegram_message(token, msg):
     if text_lower in ["/start", "/help", "aiuto", "/aiuto"]:
         reply = (
             "<b>🧊 Benvenuto nel Frigo di Famiglia!</b>\n\n"
-            "Puoi scrivermi comandi o messaggi normali:\n\n"
+            "Puoi inviarmi comandi o messaggi normali:\n\n"
+            "🕒 <b>IMPEGNI DI POMERIGGIO:</b>\n"
+            "• <code>impegno 17:30 Dentista</code>\n"
+            "• <code>impegno 18:00 Basket Palazzetto</code>\n"
+            "• <code>/impegni</code> <i>(mostra impegni di oggi)</i>\n"
+            "• <code>/fatto basket</code> <i>(spunta come completato)</i>\n"
+            "• <code>/cancellaimpegno dentista</code>\n\n"
+            "🛒 <b>SPESA:</b>\n"
             "• <code>spesa latte, biscotti, mele</code>\n"
-            "  <i>(aggiunge alla spesa sul Kindle)</i>\n\n"
-            "• <code>nota Comprare il pane</code>\n"
-            "  <i>(attacca una nota sul frigo)</i>\n\n"
-            "• <code>/cancella pane</code> o <code>/cancellanote</code>\n"
-            "  <i>(elimina una nota specifica o tutte le note)</i>\n\n"
-            "• <code>zaino Sacca ginnastica</code>\n"
-            "  <i>(aggiorna avviso zaino scuola)</i>\n\n"
-            "• <code>/compiti</code> o <code>/axios</code>\n"
-            "  <i>(scarica e mostra i compiti da Axios RE!)</i>\n\n"
-            "• <code>/spesa</code>\n"
-            "  <i>(mostra cosa manca da comprare)</i>\n\n"
-            "• <code>/fatto latte</code>\n"
-            "  <i>(spunta un articolo dalla spesa)</i>"
+            "• <code>/spesa</code> <i>(mostra cosa manca)</i>\n"
+            "• <code>/fatto latte</code> <i>(spunta come comprato)</i>\n\n"
+            "📌 <b>NOTE SUL FRIGO:</b>\n"
+            "• <code>nota Ricordati di firmare l'uscita</code>\n"
+            "• <code>/cancella firmare</code> o <code>/cancellanote</code>\n\n"
+            "📚 <b>SCUOLA AXIOS:</b>\n"
+            "• <code>/compiti</code> <i>(scarica compiti dal RE)</i>\n"
+            "• <code>zaino Portare scarpe da ginnastica</code>"
         )
         send_telegram_message(token, chat_id, reply)
         return
@@ -179,7 +187,60 @@ def handle_telegram_message(token, msg):
             send_telegram_message(token, chat_id, f"❓ Non ho trovato nessuna nota contenente \"{html.escape(target_str)}\".")
         return
 
-    # 1. COMANDO AXIOS COMPITI
+    # 2. GESTIONE IMPEGNI POMERIGGIO
+    if text_lower in ["/cancellaimpegni", "/pulisciimpegni", "/svuotaimpegni"]:
+        data["events"] = []
+        save_data(data)
+        send_telegram_message(token, chat_id, "🗑️ <b>Tutti gli impegni sul frigo sono stati cancellati!</b>")
+        return
+
+    if text_lower.startswith("/cancellaimpegno ") or text_lower.startswith("/eliminaimpegno "):
+        target_str = text.split(" ", 1)[1].strip().lower()
+        matched = [e for e in data.get("events", []) if target_str in e.get("text", "").lower()]
+        if matched:
+            data["events"] = [e for e in data.get("events", []) if target_str not in e.get("text", "").lower()]
+            save_data(data)
+            send_telegram_message(token, chat_id, f"🗑️ <b>Eliminato impegno dal frigo:</b> \"{html.escape(matched[0]['text'])}\"")
+        else:
+            send_telegram_message(token, chat_id, f"❓ Non ho trovato nessun impegno contenente \"{html.escape(target_str)}\".")
+        return
+
+    if text_lower in ["/impegni", "impegni", "appuntamenti", "cosa c'è oggi"]:
+        events = data.get("events", [])
+        if not events:
+            send_telegram_message(token, chat_id, "🕒 <b>Nessun impegno in programma per oggi sul Kindle!</b>\nPuoi aggiungerne uno con: <code>impegno 17:30 Dentista</code>")
+        else:
+            lines = ["🕒 <b>Impegni di Pomeriggio:</b>"]
+            for ev in events:
+                st = "✅" if ev.get("done") else "▫️"
+                t_str = f"[{ev.get('time')}] " if ev.get('time') and ev.get('time') != "--:--" else ""
+                lines.append(f"{st} {t_str}<b>{html.escape(ev.get('text', ''))}</b>")
+            send_telegram_message(token, chat_id, "\n".join(lines))
+        return
+
+    if text_lower.startswith("impegno ") or text_lower.startswith("appuntamento ") or text_lower.startswith("evento "):
+        raw_content = text.split(" ", 1)[1].strip()
+        m_time = re.match(r'^(\d{1,2}[:.]\d{2}(?:\s*-\s*\d{1,2}[:.]\d{2})?)\s+(.*)', raw_content)
+        if m_time:
+            event_time = m_time.group(1).replace(".", ":")
+            event_text = m_time.group(2).strip()
+        else:
+            event_time = "--:--"
+            event_text = raw_content
+
+        next_id = max([e.get("id", 0) for e in data.get("events", [])] + [0]) + 1
+        data.setdefault("events", []).append({
+            "id": next_id,
+            "time": event_time,
+            "text": event_text,
+            "done": False
+        })
+        save_data(data)
+        time_label = f"[{event_time}] " if event_time != "--:--" else ""
+        send_telegram_message(token, chat_id, f"🕒 <b>Impegno aggiunto sul Kindle:</b>\n{time_label}<b>{html.escape(event_text)}</b>")
+        return
+
+    # 3. COMANDO AXIOS COMPITI
     if text_lower in ["/compiti", "/axios", "compiti", "cosa c'è da studiare"]:
         send_telegram_message(token, chat_id, "🔄 <i>Collegamento ad Axios RE in corso...</i>")
         sync_axios_safe()
@@ -203,7 +264,7 @@ def handle_telegram_message(token, msg):
 
     data = load_data()
 
-    # 2. COMANDO SPESA
+    # 4. COMANDO SPESA
     if text_lower.startswith("spesa ") or text_lower.startswith("comprare "):
         items_raw = text[6:] if text_lower.startswith("spesa ") else text[9:]
         clean_items = [i.strip() for i in items_raw.replace(" e ", ",").replace("\n", ",").split(",") if i.strip()]
@@ -229,7 +290,7 @@ def handle_telegram_message(token, msg):
         send_telegram_message(token, chat_id, f"🛒 <b>Aggiunto alla spesa sul frigo:</b>\n• {safe_list}")
         return
 
-    # 3. COMANDO VEDI SPESA (/spesa)
+    # 5. COMANDO VEDI SPESA (/spesa)
     if text_lower in ["/spesa", "cosa manca", "lista spesa"]:
         pending = [g["text"] for g in data.get("groceries", []) if not g.get("done")]
         if not pending:
@@ -239,10 +300,23 @@ def handle_telegram_message(token, msg):
             send_telegram_message(token, chat_id, f"🛒 <b>Da comprare sul frigo:</b>\n• {safe_list}")
         return
 
-    # 4. COMANDO FATTO / SPUNTA
-    if text_lower.startswith("/fatto ") or text_lower.startswith("preso "):
-        query = text[7:] if text_lower.startswith("/fatto ") else text[6:]
-        query = query.strip().lower()
+    # 6. COMANDO FATTO / SPUNTA (IMPEGNO O SPESA)
+    if text_lower.startswith("/fatto ") or text_lower.startswith("preso ") or text_lower.startswith("/fattoimpegno "):
+        query = text.split(" ", 1)[1].strip().lower()
+
+        # Prima verifica se corrisponde a un impegno
+        matched_event = None
+        for ev in data.get("events", []):
+            if query in ev.get("text", "").lower() and not ev.get("done"):
+                ev["done"] = True
+                matched_event = ev.get("text")
+                break
+        if matched_event:
+            save_data(data)
+            send_telegram_message(token, chat_id, f"✅ Impegno completato: <b>{html.escape(matched_event)}</b>")
+            return
+
+        # Poi verifica se corrisponde alla spesa
         matched_item = None
         for g in data.get("groceries", []):
             if query in g["text"].lower() and not g.get("done"):
@@ -252,11 +326,12 @@ def handle_telegram_message(token, msg):
         if matched_item:
             save_data(data)
             send_telegram_message(token, chat_id, f"✅ Segnato come preso: <b>{html.escape(matched_item)}</b>")
-        else:
-            send_telegram_message(token, chat_id, f"❓ Non ho trovato \"{html.escape(query)}\" tra le cose da comprare.")
+            return
+
+        send_telegram_message(token, chat_id, f"❓ Non ho trovato \"{html.escape(query)}\" né tra gli impegni né nella spesa.")
         return
 
-    # 5. COMANDO ZAINO SCUOLA
+    # 7. COMANDO ZAINO SCUOLA
     if text_lower.startswith("zaino "):
         note = text[6:].strip()
         data["backpack"] = note
@@ -264,7 +339,7 @@ def handle_telegram_message(token, msg):
         send_telegram_message(token, chat_id, f"🎒 <b>Aggiornato avviso zaino:</b>\n\"{html.escape(note)}\"")
         return
 
-    # 6. NOTA FRIGO GENERALE
+    # 8. NOTA FRIGO GENERALE
     note_content = text
     if text_lower.startswith("nota ") or text_lower.startswith("promemoria "):
         note_content = text.split(" ", 1)[1].strip()
@@ -415,6 +490,44 @@ class FridgeRequestHandler(SimpleHTTPRequestHandler):
         if parsed.path == "/api/sync-axios":
             sync_axios_safe()
             self._send_json({"ok": True, "data": load_data()})
+            return
+
+        if parsed.path == "/api/toggle-event":
+            eid = req_data.get("id")
+            for item in data.get("events", []):
+                if item.get("id") == eid:
+                    item["done"] = not item.get("done", False)
+                    break
+            save_data(data)
+            self._send_json({"ok": True, "data": data})
+            return
+
+        if parsed.path == "/api/delete-event":
+            eid = req_data.get("id")
+            data["events"] = [e for e in data.get("events", []) if e.get("id") != eid]
+            save_data(data)
+            self._send_json({"ok": True, "data": data})
+            return
+
+        if parsed.path == "/api/add-event":
+            time_val = (req_data.get("time") or "--:--").strip()
+            text_val = (req_data.get("text") or "").strip()
+            if text_val:
+                next_id = max([e.get("id", 0) for e in data.get("events", [])] + [0]) + 1
+                data.setdefault("events", []).append({
+                    "id": next_id,
+                    "time": time_val,
+                    "text": text_val,
+                    "done": False
+                })
+                save_data(data)
+            self._send_json({"ok": True, "data": data})
+            return
+
+        if parsed.path == "/api/clear-events":
+            data["events"] = [e for e in data.get("events", []) if not e.get("done")]
+            save_data(data)
+            self._send_json({"ok": True, "data": data})
             return
 
         self.send_response(404)

@@ -452,6 +452,55 @@
       margin-left: 4px;
     }
 
+    /* IMPEGNI POMERIGGIO */
+    .event-entry {
+      border: var(--border-thin);
+      padding: 6px 8px;
+      margin-bottom: 5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      background: var(--bg);
+      border-radius: 2px;
+    }
+
+    .event-entry.done {
+      border-style: dashed;
+      opacity: 0.5;
+    }
+
+    .event-entry.done .event-title {
+      text-decoration: line-through;
+    }
+
+    .event-time-badge {
+      font-size: 0.78rem;
+      font-family: var(--font-mono);
+      font-weight: 900;
+      border: var(--border-hairline);
+      padding: 2px 5px;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .event-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      flex: 1;
+      word-break: break-word;
+    }
+
+    .event-delete-btn {
+      cursor: pointer;
+      font-weight: 900;
+      padding: 1px 6px;
+      border: var(--border-hairline);
+      border-radius: 2px;
+      font-size: 0.82rem;
+      flex-shrink: 0;
+    }
+
     /* TASK COMPITI */
     .task-entry {
       border: var(--border-thin);
@@ -831,23 +880,15 @@
           <div class="card-header-row">
             <div class="card-title-text">
               <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-              Impegni di Pomeriggio
+              Impegni Pomeriggio
             </div>
-            <div class="pill">Martedì</div>
+            <div style="display: flex; gap: 4px;">
+              <button class="pill" onclick="openAddEventModal()" style="cursor:pointer;" title="Aggiungi impegno">+ Nuovo</button>
+              <button class="pill" onclick="clearDoneEventsBackend()" style="cursor:pointer;" title="Pulisci completati">Pulisci</button>
+            </div>
           </div>
-          <div class="card-body">
-            <div class="timetable-row">
-              <span class="tt-hour">16:30</span>
-              <div class="tt-subject">Uscita Scuola & Merenda</div>
-            </div>
-            <div class="timetable-row">
-              <span class="tt-hour">17:45</span>
-              <div class="tt-subject">Basket / Allenamento <span class="tt-teacher">Palazzetto</span></div>
-            </div>
-            <div class="timetable-row">
-              <span class="tt-hour">20:00</span>
-              <div class="tt-subject">Cena in Famiglia</div>
-            </div>
+          <div class="card-body" id="afternoon-events-list">
+            <!-- Popolato dinamicamente da /api/data -->
           </div>
         </div>
 
@@ -986,55 +1027,55 @@
           <div class="week-day-col">
             <div class="col-header">Lunedì</div>
             <div class="col-body">
-              <div class="col-subject-entry"><div class="col-sub-name">Italiano</div><div class="col-sub-time">08:15</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Storia</div><div class="col-sub-time">09:15</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Matematica</div><div class="col-sub-time">10:15</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Inglese</div><div class="col-sub-time">11:15</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Arte</div><div class="col-sub-time">12:15</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Italiano</div><div class="col-sub-time">08:30</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Storia</div><div class="col-sub-time">09:30</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Matematica</div><div class="col-sub-time">10:30</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Inglese</div><div class="col-sub-time">11:30</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Arte</div><div class="col-sub-time">12:30</div></div>
             </div>
           </div>
 
           <div class="week-day-col" style="border: var(--border-thick);">
             <div class="col-header">Martedì • Oggi</div>
             <div class="col-body">
-              <div class="col-subject-entry"><div class="col-sub-name">Matematica</div><div class="col-sub-time">08:15</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Scienze</div><div class="col-sub-time">09:15</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Ed. Fisica</div><div class="col-sub-time">10:15</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Italiano</div><div class="col-sub-time">11:15</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Musica</div><div class="col-sub-time">12:15</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Matematica</div><div class="col-sub-time">08:30</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Scienze</div><div class="col-sub-time">09:30</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Ed. Fisica</div><div class="col-sub-time">10:30</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Italiano</div><div class="col-sub-time">11:30</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Musica</div><div class="col-sub-time">12:30</div></div>
             </div>
           </div>
 
           <div class="week-day-col">
             <div class="col-header">Mercoledì</div>
             <div class="col-body">
-              <div class="col-subject-entry"><div class="col-sub-name">Geografia</div><div class="col-sub-time">08:15</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Italiano</div><div class="col-sub-time">09:15</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Matematica</div><div class="col-sub-time">10:15</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Inglese</div><div class="col-sub-time">11:15</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Tecnologia</div><div class="col-sub-time">12:15</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Geografia</div><div class="col-sub-time">08:30</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Italiano</div><div class="col-sub-time">09:30</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Matematica</div><div class="col-sub-time">10:30</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Inglese</div><div class="col-sub-time">11:30</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Tecnologia</div><div class="col-sub-time">12:30</div></div>
             </div>
           </div>
 
           <div class="week-day-col">
             <div class="col-header">Giovedì</div>
             <div class="col-body">
-              <div class="col-subject-entry"><div class="col-sub-name">Italiano</div><div class="col-sub-time">08:15</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Storia</div><div class="col-sub-time">09:15</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Scienze</div><div class="col-sub-time">10:15</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Religione</div><div class="col-sub-time">11:15</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Matematica</div><div class="col-sub-time">12:15</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Italiano</div><div class="col-sub-time">08:30</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Storia</div><div class="col-sub-time">09:30</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Scienze</div><div class="col-sub-time">10:30</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Religione</div><div class="col-sub-time">11:30</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Matematica</div><div class="col-sub-time">12:30</div></div>
             </div>
           </div>
 
           <div class="week-day-col">
             <div class="col-header">Venerdì</div>
             <div class="col-body">
-              <div class="col-subject-entry"><div class="col-sub-name">Matematica</div><div class="col-sub-time">08:15</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Inglese</div><div class="col-sub-time">09:15</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Italiano</div><div class="col-sub-time">10:15</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Geografia</div><div class="col-sub-time">11:15</div></div>
-              <div class="col-subject-entry"><div class="col-sub-name">Ed. Civica</div><div class="col-sub-time">12:15</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Matematica</div><div class="col-sub-time">08:30</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Inglese</div><div class="col-sub-time">09:30</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Italiano</div><div class="col-sub-time">10:30</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Geografia</div><div class="col-sub-time">11:30</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Ed. Civica</div><div class="col-sub-time">12:30</div></div>
             </div>
           </div>
         </div>
@@ -1076,6 +1117,22 @@
       <div style="display: flex; justify-content: flex-end; gap: 8px;">
         <button class="ctrl-btn" onclick="closeTokenModal()">Annulla</button>
         <button class="ctrl-btn" style="background:#000; color:#fff;" onclick="saveTokenBackend()">Salva ed Attiva</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== MODAL NUOVO IMPEGNO ==================== -->
+  <div class="modal-backdrop" id="event-modal">
+    <div class="modal-card">
+      <h2 style="font-size: 1.3rem; font-weight: 900; margin-bottom: 6px;">Nuovo Impegno</h2>
+      <p style="font-size: 0.88rem; line-height: 1.3; margin-bottom: 8px;">
+        Inserisci orario e descrizione dell'impegno:
+      </p>
+      <input type="text" id="event-time-input" class="modal-input" placeholder="Orario (es. 17:30)" style="margin-bottom: 8px;">
+      <input type="text" id="event-text-input" class="modal-input" placeholder="Descrizione (es. Basket al Palazzetto)">
+      <div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 10px;">
+        <button class="ctrl-btn" onclick="closeAddEventModal()">Annulla</button>
+        <button class="ctrl-btn" style="background:#000; color:#fff;" onclick="saveEventBackend()">Salva Impegno</button>
       </div>
     </div>
   </div>
@@ -1161,6 +1218,27 @@
         });
       } else {
         notesContainer.innerHTML = '<div style="font-size:0.9rem; font-weight:700; padding:8px 0;">Nessun messaggio. Scrivi una nota su Telegram!</div>';
+      }
+
+      // B2. IMPEGNI DI POMERIGGIO
+      const eventsContainer = document.getElementById('afternoon-events-list');
+      if (eventsContainer) {
+        eventsContainer.innerHTML = '';
+        if (data.events && data.events.length > 0) {
+          data.events.forEach(ev => {
+            const div = document.createElement('div');
+            div.className = `event-entry ${ev.done ? 'done' : ''}`;
+            div.innerHTML = `
+              <div class="check-box-graphic" onclick="event.stopPropagation(); toggleEventBackend(${ev.id})">${ev.done ? '✓' : ''}</div>
+              <span class="event-time-badge" onclick="toggleEventBackend(${ev.id})">${escapeHtml(ev.time || '--:--')}</span>
+              <span class="event-title" onclick="toggleEventBackend(${ev.id})">${escapeHtml(ev.text)}</span>
+              <span class="event-delete-btn" onclick="event.stopPropagation(); deleteEventBackend(${ev.id})" title="Elimina impegno">✕</span>
+            `;
+            eventsContainer.appendChild(div);
+          });
+        } else {
+          eventsContainer.innerHTML = '<div style="font-size:0.88rem; font-weight:700; padding:12px; text-align:center;">Nessun impegno in programma oggi.<br><span style="font-size:0.78rem; font-weight:600; opacity:0.8;">Tocca "+ Nuovo" o scrivi su Telegram <code>impegno 17:30 Dentista</code></span></div>';
+        }
       }
 
       // RECYCLE BANNER (CALCOLATO AUTOMATICAMENTE)
@@ -1308,6 +1386,53 @@
       fetchLiveBackendData();
     }
 
+    // AZIONI IMPEGNI POMERIGGIO
+    async function toggleEventBackend(id) {
+      await fetch('/api/toggle-event', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+      fetchLiveBackendData();
+    }
+
+    async function deleteEventBackend(id) {
+      await fetch('/api/delete-event', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+      fetchLiveBackendData();
+    }
+
+    async function clearDoneEventsBackend() {
+      await fetch('/api/clear-events', { method: 'POST' });
+      fetchLiveBackendData();
+    }
+
+    function openAddEventModal() {
+      document.getElementById('event-time-input').value = '';
+      document.getElementById('event-text-input').value = '';
+      document.getElementById('event-modal').classList.add('show');
+    }
+
+    function closeAddEventModal() {
+      document.getElementById('event-modal').classList.remove('show');
+    }
+
+    async function saveEventBackend() {
+      const timeVal = document.getElementById('event-time-input').value.trim();
+      const textVal = document.getElementById('event-text-input').value.trim();
+      if (!textVal) return;
+      await fetch('/api/add-event', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ time: timeVal || '--:--', text: textVal })
+      });
+      closeAddEventModal();
+      fetchLiveBackendData();
+    }
+
     // 5. HELPER DATE E FORMATTAZIONE
     function formatTaskDate(dateStr) {
       if (!dateStr) return '';
@@ -1340,42 +1465,42 @@
                  .replace(/^[A-Za-zÀ-ÖØ-öø-ÿ\s]{4,35}:\s*/, '');
     }
 
-    // 6. ORARIO SCUOLA (Nomi materie puliti, senza professori)
+    // 6. ORARIO SCUOLA (Inizio ore 08:30 - shift di 15 min, senza professori)
     const schoolWeekData = {
       'LUN': [
-        { time: "08:15", subject: "Italiano" },
-        { time: "09:15", subject: "Storia" },
-        { time: "10:15", subject: "Matematica" },
-        { time: "11:15", subject: "Inglese" },
-        { time: "12:15", subject: "Arte" }
+        { time: "08:30", subject: "Italiano" },
+        { time: "09:30", subject: "Storia" },
+        { time: "10:30", subject: "Matematica" },
+        { time: "11:30", subject: "Inglese" },
+        { time: "12:30", subject: "Arte" }
       ],
       'MAR': [
-        { time: "08:15", subject: "Matematica" },
-        { time: "09:15", subject: "Scienze" },
-        { time: "10:15", subject: "Ed. Fisica" },
-        { time: "11:15", subject: "Italiano" },
-        { time: "12:15", subject: "Musica" }
+        { time: "08:30", subject: "Matematica" },
+        { time: "09:30", subject: "Scienze" },
+        { time: "10:30", subject: "Ed. Fisica" },
+        { time: "11:30", subject: "Italiano" },
+        { time: "12:30", subject: "Musica" }
       ],
       'MER': [
-        { time: "08:15", subject: "Geografia" },
-        { time: "09:15", subject: "Italiano" },
-        { time: "10:15", subject: "Matematica" },
-        { time: "11:15", subject: "Inglese" },
-        { time: "12:15", subject: "Tecnologia" }
+        { time: "08:30", subject: "Geografia" },
+        { time: "09:30", subject: "Italiano" },
+        { time: "10:30", subject: "Matematica" },
+        { time: "11:30", subject: "Inglese" },
+        { time: "12:30", subject: "Tecnologia" }
       ],
       'GIO': [
-        { time: "08:15", subject: "Italiano" },
-        { time: "09:15", subject: "Storia" },
-        { time: "10:15", subject: "Scienze" },
-        { time: "11:15", subject: "Religione" },
-        { time: "12:15", subject: "Matematica" }
+        { time: "08:30", subject: "Italiano" },
+        { time: "09:30", subject: "Storia" },
+        { time: "10:30", subject: "Scienze" },
+        { time: "11:30", subject: "Religione" },
+        { time: "12:30", subject: "Matematica" }
       ],
       'VEN': [
-        { time: "08:15", subject: "Matematica" },
-        { time: "09:15", subject: "Inglese" },
-        { time: "10:15", subject: "Italiano" },
-        { time: "11:15", subject: "Geografia" },
-        { time: "12:15", subject: "Ed. Civica" }
+        { time: "08:30", subject: "Matematica" },
+        { time: "09:30", subject: "Inglese" },
+        { time: "10:30", subject: "Italiano" },
+        { time: "11:30", subject: "Geografia" },
+        { time: "12:30", subject: "Ed. Civica" }
       ]
     };
 

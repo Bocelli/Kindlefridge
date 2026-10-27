@@ -1139,9 +1139,47 @@
 
   <!-- ==================== JAVASCRIPT ==================== -->
   <script>
+    // GESTIONE PRECISA DEL FUSO ORARIO ITALIANO (Europe/Rome - CET/CEST)
+    let serverTimeDeltaMs = null;
+
+    function getRomeDate() {
+      // 1. Se sincronizzato con il server Python, usa la differenza esatta calcolata
+      if (serverTimeDeltaMs !== null) {
+        return new Date(Date.now() + serverTimeDeltaMs);
+      }
+
+      // 2. Se il browser supporta Intl con Europe/Rome
+      try {
+        const s = new Intl.DateTimeFormat('en-US', {
+          timeZone: 'Europe/Rome',
+          year: 'numeric', month: 'numeric', day: 'numeric',
+          hour: 'numeric', minute: 'numeric', second: 'numeric',
+          hour12: false
+        }).format(new Date());
+        const d = new Date(s);
+        if (!isNaN(d.getTime())) return d;
+      } catch (e) {}
+
+      // 3. Fallback per browser datati (Kindle experimental WebKit):
+      // Calcola matematicamente l'ora solare (CET UTC+1) / legale (CEST UTC+2)
+      const now = new Date();
+      const year = now.getUTCFullYear();
+      const marchLast = new Date(Date.UTC(year, 2, 31, 1, 0, 0));
+      marchLast.setUTCDate(31 - marchLast.getUTCDay());
+      const octLast = new Date(Date.UTC(year, 9, 31, 1, 0, 0));
+      octLast.setUTCDate(31 - octLast.getUTCDay());
+
+      const isDst = (now >= marchLast && now < octLast);
+      const romeOffsetHours = isDst ? 2 : 1;
+
+      // Millisecondi UTC del client + offset Roma
+      const utcMs = now.getTime() + (now.getTimezoneOffset() * 60000);
+      return new Date(utcMs + (romeOffsetHours * 3600000));
+    }
+
     // 1. OROLOGIO
     function updateClock() {
-      const now = new Date();
+      const now = getRomeDate();
       const hours = String(now.getHours()).padStart(2, '0');
       const minutes = String(now.getMinutes()).padStart(2, '0');
       const seconds = String(now.getSeconds()).padStart(2, '0');
@@ -1178,9 +1216,15 @@
         if (!res.ok) return;
         const data = await res.json();
         lastDataSnapshot = data;
+
+        if (data.server_time && data.server_time.timestamp_ms) {
+          serverTimeDeltaMs = data.server_time.timestamp_ms - Date.now();
+          updateClock();
+        }
+
         renderBackendData(data);
         
-        const now = new Date();
+        const now = getRomeDate();
         document.getElementById('last-sync-time').textContent = 
           `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
       } catch (err) {
@@ -1443,7 +1487,7 @@
         const year = parseInt(m[3], 10);
         const taskDate = new Date(year, month, day);
 
-        const now = new Date();
+        const now = getRomeDate();
         const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         const diffTime = taskDate.getTime() - today.getTime();
         const diffDays = Math.round(diffTime / (1000 * 3600 * 24));
@@ -1533,7 +1577,7 @@
       });
     }
 
-    const curDay = new Date().getDay();
+    const curDay = getRomeDate().getDay();
     const dayLookup = { 1: 'LUN', 2: 'MAR', 3: 'MER', 4: 'GIO', 5: 'VEN' };
     const todayKey = dayLookup[curDay] || 'LUN';
     const initBtn = document.getElementById(`day-btn-${todayKey}`) || document.querySelector('.day-selector-btn');

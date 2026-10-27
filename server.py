@@ -7,7 +7,7 @@ import html
 import threading
 import urllib.request
 import urllib.parse
-from datetime import datetime
+from datetime import datetime, timezone, timedelta
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 from axios_sync import fetch_axios_data
 
@@ -17,6 +17,25 @@ CONFIG_FILE = os.path.join(BASE_DIR, "config.json")
 INDEX_FILE = os.path.join(BASE_DIR, "index.html")
 
 data_lock = threading.Lock()
+
+def get_rome_now():
+    """Restituisce data e ora attuali nel fuso orario di Roma (CET UTC+1 / CEST UTC+2)."""
+    try:
+        import zoneinfo
+        return datetime.now(zoneinfo.ZoneInfo("Europe/Rome"))
+    except Exception:
+        pass
+
+    # Calcolo matematico deterministico per fuso orario italiano
+    now_utc = datetime.now(timezone.utc)
+    year = now_utc.year
+    march_last = datetime(year, 3, 31, 1, 0, tzinfo=timezone.utc)
+    dst_start = march_last - timedelta(days=(march_last.weekday() + 1) % 7)
+    oct_last = datetime(year, 10, 31, 1, 0, tzinfo=timezone.utc)
+    dst_end = oct_last - timedelta(days=(oct_last.weekday() + 1) % 7)
+
+    tz = timezone(timedelta(hours=2)) if dst_start <= now_utc < dst_end else timezone(timedelta(hours=1))
+    return now_utc.astimezone(tz)
 
 def load_data():
     with data_lock:
@@ -62,7 +81,7 @@ def save_config(cfg):
 def get_recycle_for_day(dt=None):
     """Calcola il rifiuto da esporre in base al calendario specificato."""
     if dt is None:
-        dt = datetime.now()
+        dt = get_rome_now()
     weekday = dt.weekday() # 0 = Lunedì, 6 = Domenica
     day = dt.day
 
@@ -110,7 +129,7 @@ def sync_axios_safe():
             current_data["backpack"] = " • ".join(result["backpack_alerts"][-2:])
 
         current_data["student_name"] = result.get("student_name", "IRVINE")
-        current_data["axios_last_sync"] = datetime.now().strftime("%H:%M")
+        current_data["axios_last_sync"] = get_rome_now().strftime("%H:%M")
 
         with open(DATA_FILE, "w", encoding="utf-8") as f:
             json.dump(current_data, f, indent=2, ensure_ascii=False)
@@ -141,7 +160,7 @@ def handle_telegram_message(token, msg):
         return
 
     text_lower = text.lower()
-    now_time = time.strftime("%H:%M")
+    now_time = get_rome_now().strftime("%H:%M")
 
     # Comando /start o /aiuto
     if text_lower in ["/start", "/help", "aiuto", "/aiuto"]:
@@ -414,8 +433,15 @@ class FridgeRequestHandler(SimpleHTTPRequestHandler):
             self.end_headers()
             data = load_data()
             cfg = load_config()
+            rn = get_rome_now()
             data["bot_active"] = bool(cfg.get("bot_token", "").strip())
-            data["recycle"] = get_recycle_for_day()
+            data["recycle"] = get_recycle_for_day(rn)
+            data["server_time"] = {
+                "hours": rn.hour,
+                "minutes": rn.minute,
+                "seconds": rn.second,
+                "timestamp_ms": int(rn.timestamp() * 1000)
+            }
             self.wfile.write(json.dumps(data, ensure_ascii=False).encode("utf-8"))
             return
 

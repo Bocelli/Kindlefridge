@@ -40,9 +40,11 @@
     }
 
     html, body {
-      width: 100vw;
-      height: 100vh;
-      overflow: hidden;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      overflow-x: hidden;
       background-color: var(--bg);
       color: var(--fg);
       font-family: var(--font-main);
@@ -52,13 +54,15 @@
     body {
       display: flex;
       flex-direction: column;
-      border: 4px solid var(--fg);
+      border: 2px solid var(--fg);
+      min-height: 100%;
+      box-sizing: border-box;
     }
 
     /* ICONS */
     .icon {
-      width: 22px;
-      height: 22px;
+      width: 18px;
+      height: 18px;
       stroke: currentColor;
       fill: none;
       stroke-width: 2.2;
@@ -67,19 +71,20 @@
       vertical-align: middle;
       flex-shrink: 0;
     }
-    .icon-sm { width: 17px; height: 17px; stroke-width: 2; }
-    .icon-lg { width: 32px; height: 32px; stroke-width: 2.5; }
+    .icon-sm { width: 15px; height: 15px; stroke-width: 2; }
+    .icon-lg { width: 26px; height: 26px; stroke-width: 2.2; }
 
-    /* HEADER */
+    /* HEADER COMPATTO PER KINDLE */
     header {
       display: grid;
-      grid-template-columns: 1.3fr 1fr;
+      grid-template-columns: 1.15fr 0.85fr;
       border-bottom: var(--border-thick);
       background: var(--bg);
+      padding: 0;
     }
 
     .header-left {
-      padding: 10px 18px;
+      padding: 6px 12px;
       border-right: var(--border-thin);
       display: flex;
       flex-direction: column;
@@ -89,39 +94,39 @@
     .time-row {
       display: flex;
       align-items: baseline;
-      gap: 12px;
+      gap: 8px;
     }
 
     .clock-display {
-      font-size: 3.6rem;
+      font-size: 2.7rem;
       font-weight: 900;
-      letter-spacing: -2px;
+      letter-spacing: -1.5px;
       line-height: 0.95;
       font-variant-numeric: tabular-nums;
     }
 
     .seconds-pill {
-      font-size: 0.95rem;
+      font-size: 0.8rem;
       font-family: var(--font-mono);
       font-weight: 800;
       border: var(--border-thin);
-      padding: 2px 6px;
+      padding: 1px 5px;
       border-radius: 2px;
     }
 
     .date-row {
-      font-size: 1.15rem;
+      font-size: 0.95rem;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.5px;
-      margin-top: 5px;
+      margin-top: 3px;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
     .header-right {
-      padding: 8px 16px;
+      padding: 6px 10px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
@@ -131,49 +136,51 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 6px;
     }
 
     .weather-temp-box {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 6px;
     }
 
     .weather-degrees {
-      font-size: 2.6rem;
+      font-size: 2rem;
       font-weight: 900;
       line-height: 1;
       font-variant-numeric: tabular-nums;
     }
 
     .weather-detail-lines {
-      font-size: 0.9rem;
+      font-size: 0.78rem;
       font-weight: 800;
-      line-height: 1.25;
+      line-height: 1.2;
       text-align: right;
     }
 
     .system-status-pills {
       display: flex;
-      gap: 8px;
+      gap: 5px;
       align-items: center;
-      margin-top: 4px;
-      padding-top: 4px;
+      margin-top: 3px;
+      padding-top: 3px;
       border-top: var(--border-hairline);
     }
 
     .pill {
-      font-size: 0.72rem;
+      font-size: 0.65rem;
       font-weight: 800;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
       text-transform: uppercase;
-      padding: 2px 7px;
+      padding: 1px 5px;
       border: var(--border-hairline);
       border-radius: 2px;
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
       cursor: pointer;
+      white-space: nowrap;
     }
 
     .pill.inverted {
@@ -190,22 +197,22 @@
     }
 
     .nav-tab {
-      padding: 14px 4px;
+      padding: 10px 2px;
       border: none;
       border-right: var(--border-thin);
       background: var(--bg);
       color: var(--fg);
       font-family: var(--font-main);
-      font-size: 1.05rem;
+      font-size: 0.88rem;
       font-weight: 900;
-      letter-spacing: 0.6px;
+      letter-spacing: 0.4px;
       text-transform: uppercase;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
-      gap: 8px;
-      min-height: 54px;
+      gap: 5px;
+      min-height: 44px;
     }
 
     .nav-tab:last-child {
@@ -220,8 +227,8 @@
     /* MAIN PANE */
     main {
       flex: 1;
-      padding: 12px;
-      overflow: hidden;
+      padding: 8px;
+      overflow-y: auto;
       display: flex;
       flex-direction: column;
       background: var(--bg);
@@ -236,26 +243,28 @@
     .tab-pane.active {
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 8px;
       height: 100%;
     }
 
     /* BENTO 2x2 */
     .bento-grid-2x2 {
       display: grid;
-      grid-template-columns: 1.15fr 0.85fr;
+      grid-template-columns: 1fr 1fr;
       grid-template-rows: 1fr 1fr;
-      gap: 12px;
+      gap: 8px;
       height: 100%;
+      min-height: 420px;
     }
 
     .bento-card {
       border: var(--border-thin);
-      padding: 12px 14px;
+      padding: 8px 10px;
       display: flex;
       flex-direction: column;
       background: var(--bg);
       border-radius: 2px;
+      overflow: hidden;
     }
 
     .card-header-row {
@@ -263,18 +272,21 @@
       justify-content: space-between;
       align-items: center;
       border-bottom: var(--border-thin);
-      padding-bottom: 7px;
-      margin-bottom: 8px;
+      padding-bottom: 4px;
+      margin-bottom: 6px;
     }
 
     .card-title-text {
-      font-size: 1.05rem;
+      font-size: 0.88rem;
       font-weight: 900;
       text-transform: uppercase;
-      letter-spacing: 0.8px;
+      letter-spacing: 0.5px;
       display: flex;
       align-items: center;
-      gap: 7px;
+      gap: 5px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .card-body {
@@ -282,84 +294,85 @@
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
     }
 
     /* TELEGRAM FEED */
     .tg-bubble {
-      border-left: 4px solid var(--fg);
-      padding: 6px 10px;
+      border-left: 3px solid var(--fg);
+      padding: 4px 8px;
       background: var(--bg);
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
 
     .tg-bubble-meta {
       display: flex;
       justify-content: space-between;
-      font-size: 0.78rem;
+      font-size: 0.72rem;
       font-weight: 800;
       text-transform: uppercase;
-      margin-bottom: 2px;
+      margin-bottom: 1px;
     }
 
     .tg-author-tag {
       border: var(--border-hairline);
-      padding: 1px 5px;
+      padding: 0 4px;
       font-family: var(--font-mono);
       font-weight: 800;
+      font-size: 0.68rem;
     }
 
     .tg-bubble-text {
-      font-size: 1.05rem;
+      font-size: 0.95rem;
       font-weight: 700;
-      line-height: 1.25;
+      line-height: 1.2;
+      word-break: break-word;
     }
 
     /* RECYCLE */
     .recycle-banner {
       border: var(--border-thick);
-      padding: 10px;
+      padding: 6px 8px;
       text-align: center;
       background: var(--fg);
       color: var(--bg);
-      margin-top: 4px;
+      margin-top: 2px;
     }
 
     .recycle-type {
-      font-size: 1.4rem;
+      font-size: 1.1rem;
       font-weight: 900;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
       text-transform: uppercase;
     }
 
     .recycle-sub {
-      font-size: 0.85rem;
+      font-size: 0.75rem;
       font-weight: 700;
-      margin-top: 2px;
-      letter-spacing: 0.5px;
+      margin-top: 1px;
     }
 
     /* SCUOLA & AXIOS */
     .school-split-container {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 12px;
+      gap: 8px;
       height: 100%;
     }
 
     .days-pill-bar {
       display: flex;
-      gap: 6px;
-      margin-bottom: 8px;
+      gap: 4px;
+      margin-bottom: 6px;
     }
 
     .day-selector-btn {
       flex: 1;
-      min-height: 44px;
+      min-height: 38px;
       border: var(--border-thin);
       background: var(--bg);
       color: var(--fg);
-      font-size: 1rem;
+      font-size: 0.9rem;
       font-weight: 900;
       cursor: pointer;
       text-align: center;
@@ -373,43 +386,47 @@
 
     .timetable-row {
       display: grid;
-      grid-template-columns: 95px 1fr;
-      padding: 8px 4px;
+      grid-template-columns: 48px 1fr;
+      padding: 5px 2px;
       border-bottom: var(--border-hairline);
       align-items: center;
+      gap: 6px;
     }
 
     .tt-hour {
-      font-size: 0.95rem;
+      font-size: 0.85rem;
       font-weight: 900;
       font-variant-numeric: tabular-nums;
       font-family: var(--font-mono);
     }
 
     .tt-subject {
-      font-size: 1.15rem;
+      font-size: 0.95rem;
       font-weight: 800;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
     .tt-teacher {
-      font-size: 0.8rem;
+      font-size: 0.75rem;
       font-weight: 600;
       border: var(--border-hairline);
-      padding: 1px 6px;
-      margin-left: 6px;
+      padding: 0 4px;
+      margin-left: 4px;
     }
 
     /* TASK COMPITI */
     .task-entry {
       border: var(--border-thin);
-      padding: 9px 12px;
-      margin-bottom: 6px;
+      padding: 6px 10px;
+      margin-bottom: 5px;
       display: flex;
       align-items: flex-start;
-      gap: 10px;
+      gap: 8px;
       cursor: pointer;
     }
 
@@ -423,16 +440,16 @@
     }
 
     .check-box-graphic {
-      width: 24px;
-      height: 24px;
+      width: 22px;
+      height: 22px;
       border: var(--border-thin);
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-top: 2px;
+      margin-top: 1px;
       flex-shrink: 0;
       font-weight: 900;
-      font-size: 1.2rem;
+      font-size: 1.1rem;
     }
 
     .task-content-block {
@@ -440,7 +457,7 @@
     }
 
     .task-subject-tag {
-      font-size: 0.82rem;
+      font-size: 0.75rem;
       font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 0.5px;
@@ -450,19 +467,20 @@
     }
 
     .task-title {
-      font-size: 1.05rem;
+      font-size: 0.95rem;
       font-weight: 700;
-      line-height: 1.25;
+      line-height: 1.2;
     }
 
     .backpack-alert-card {
       border: var(--border-thick);
-      padding: 8px 12px;
+      padding: 6px 10px;
       background: var(--bg);
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       margin-top: auto;
+      font-size: 0.85rem;
     }
 
     /* SPESA GRID */
@@ -476,13 +494,13 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding-bottom: 8px;
+      padding-bottom: 6px;
       border-bottom: var(--border-thin);
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .shopping-count-badge {
-      font-size: 0.95rem;
+      font-size: 0.88rem;
       font-weight: 900;
       letter-spacing: 0.5px;
       text-transform: uppercase;
@@ -491,7 +509,7 @@
     .shopping-grid {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      gap: 8px;
       flex: 1;
       align-content: start;
       overflow-y: auto;
@@ -499,12 +517,12 @@
 
     .shop-item-touch {
       border: var(--border-thin);
-      padding: 12px 14px;
+      padding: 8px 10px;
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 8px;
       cursor: pointer;
-      min-height: 56px;
+      min-height: 48px;
     }
 
     .shop-item-touch.done {
@@ -517,24 +535,25 @@
     }
 
     .shop-item-name {
-      font-size: 1.15rem;
+      font-size: 1rem;
       font-weight: 800;
       flex: 1;
+      word-break: break-word;
     }
 
     .shop-author {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       font-family: var(--font-mono);
       font-weight: 800;
       border: var(--border-hairline);
-      padding: 2px 5px;
+      padding: 1px 4px;
     }
 
     /* SETTIMANA TABLE */
     .week-columns-grid {
       display: grid;
       grid-template-columns: repeat(5, 1fr);
-      gap: 8px;
+      gap: 6px;
       height: 100%;
     }
 
@@ -547,24 +566,24 @@
     .col-header {
       background: var(--fg);
       color: var(--bg);
-      font-size: 1rem;
+      font-size: 0.85rem;
       font-weight: 900;
       text-align: center;
-      padding: 6px 2px;
+      padding: 4px 1px;
       text-transform: uppercase;
     }
 
     .col-body {
       flex: 1;
-      padding: 8px 6px;
+      padding: 6px 4px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
     }
 
     .col-subject-entry {
       border-bottom: var(--border-hairline);
-      padding-bottom: 6px;
+      padding-bottom: 4px;
     }
 
     .col-subject-entry:last-child {
@@ -572,12 +591,12 @@
     }
 
     .col-sub-name {
-      font-size: 0.95rem;
+      font-size: 0.85rem;
       font-weight: 800;
     }
 
     .col-sub-time {
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       font-family: var(--font-mono);
       font-weight: 700;
     }
@@ -585,44 +604,44 @@
     /* FOOTER */
     footer {
       border-top: var(--border-thick);
-      padding: 8px 14px;
+      padding: 4px 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       background: var(--bg);
-      min-height: 48px;
+      min-height: 40px;
     }
 
     .footer-left {
-      font-size: 0.85rem;
+      font-size: 0.75rem;
       font-weight: 800;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.4px;
       text-transform: uppercase;
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
     }
 
     .footer-controls {
       display: flex;
-      gap: 8px;
+      gap: 6px;
     }
 
     .ctrl-btn {
-      min-height: 40px;
-      padding: 6px 14px;
+      min-height: 34px;
+      padding: 4px 10px;
       border: var(--border-thin);
       background: var(--bg);
       color: var(--fg);
       font-family: var(--font-main);
-      font-size: 0.85rem;
+      font-size: 0.78rem;
       font-weight: 900;
-      letter-spacing: 0.6px;
+      letter-spacing: 0.4px;
       text-transform: uppercase;
       cursor: pointer;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
     }
 
     .ctrl-btn:active {

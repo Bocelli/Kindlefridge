@@ -352,121 +352,73 @@
       margin-top: 1px;
     }
 
-    /* SCUOLA & AXIOS */
-    .school-split-container {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
+    /* SCUOLA & AXIOS RE (LAYOUT PULITO) */
+    .school-container {
+      display: flex;
+      flex-direction: column;
       gap: 8px;
       height: 100%;
+      overflow: hidden;
     }
 
-    .days-pill-bar {
-      display: flex;
-      gap: 4px;
-      margin-bottom: 6px;
-    }
-
-    .day-selector-btn {
-      flex: 1;
-      min-height: 38px;
+    .teacher-note-card {
       border: var(--border-thin);
+      padding: 10px 12px;
       background: var(--bg);
-      color: var(--fg);
-      font-size: 0.9rem;
-      font-weight: 900;
-      cursor: pointer;
-      text-align: center;
-      text-transform: uppercase;
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      border-radius: 2px;
     }
 
-    .day-selector-btn.active {
+    .teacher-note-icon {
+      padding: 6px;
+      border: var(--border-thin);
       background: var(--fg);
       color: var(--bg);
-    }
-
-    .timetable-row {
       display: flex;
       align-items: center;
-      padding: 6px 4px;
-      border-bottom: var(--border-hairline);
-      gap: 10px;
-    }
-
-    .tt-hour {
-      font-size: 0.85rem;
-      font-weight: 900;
-      font-variant-numeric: tabular-nums;
-      font-family: var(--font-mono);
-      min-width: 50px;
+      justify-content: center;
       flex-shrink: 0;
     }
 
-    .tt-hour-badge {
-      font-size: 0.78rem;
-      font-weight: 900;
-      font-family: var(--font-mono);
-      border: var(--border-thin);
-      padding: 2px 6px;
-      white-space: nowrap;
-      letter-spacing: 0.3px;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-      flex-shrink: 0;
-    }
-
-    .tt-time-sub {
-      font-weight: 700;
-      font-size: 0.72rem;
-      opacity: 0.8;
-    }
-
-    .tt-subject {
-      font-size: 0.95rem;
-      font-weight: 800;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+    .teacher-note-body {
       flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
     }
 
-    .tt-subject-name {
+    .teacher-note-text {
       font-size: 1.05rem;
-      font-weight: 900;
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-      flex: 1;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
+      font-weight: 800;
+      line-height: 1.35;
+      word-break: break-word;
     }
 
-    .tt-teacher {
-      font-size: 0.75rem;
-      font-weight: 600;
-      border: var(--border-hairline);
-      padding: 0 4px;
-      margin-left: 4px;
+    .teacher-note-hint {
+      font-size: 0.72rem;
+      font-weight: 700;
+      opacity: 0.75;
+      margin-top: 2px;
     }
 
     /* TASK COMPITI */
     .task-entry {
       border: var(--border-thin);
-      padding: 7px 10px;
+      padding: 8px 12px;
       margin-bottom: 6px;
       display: flex;
       align-items: flex-start;
-      gap: 10px;
+      gap: 12px;
       cursor: pointer;
       background: var(--bg);
+      border-radius: 2px;
     }
 
     .task-entry.done {
       border-style: dashed;
-      opacity: 0.5;
+      opacity: 0.55;
     }
 
     .task-entry.done .task-title {
@@ -474,8 +426,8 @@
     }
 
     .check-box-graphic {
-      width: 22px;
-      height: 22px;
+      width: 24px;
+      height: 24px;
       border: var(--border-thin);
       display: flex;
       align-items: center;
@@ -483,63 +435,50 @@
       margin-top: 2px;
       flex-shrink: 0;
       font-weight: 900;
-      font-size: 1.1rem;
+      font-size: 1.15rem;
     }
 
     .task-content-block {
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      gap: 4px;
       overflow: hidden;
     }
 
     .task-top-meta {
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      margin-bottom: 2px;
-      gap: 6px;
+      gap: 8px;
     }
 
     .task-subject-tag {
-      font-size: 0.78rem;
+      font-size: 0.82rem;
       font-weight: 900;
       text-transform: uppercase;
       letter-spacing: 0.5px;
       background: var(--fg);
       color: var(--bg);
-      padding: 1px 6px;
+      padding: 2px 7px;
       border-radius: 2px;
       white-space: nowrap;
     }
 
     .task-date-tag {
-      font-size: 0.72rem;
+      font-size: 0.76rem;
       font-family: var(--font-mono);
       font-weight: 800;
       border: var(--border-hairline);
-      padding: 1px 5px;
+      padding: 2px 6px;
       text-transform: uppercase;
       white-space: nowrap;
     }
 
     .task-title {
-      font-size: 0.95rem;
+      font-size: 1rem;
       font-weight: 700;
-      line-height: 1.25;
+      line-height: 1.3;
       word-break: break-word;
-    }
-
-    .backpack-alert-card {
-      border: var(--border-thick);
-      padding: 6px 10px;
-      background: var(--bg);
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-top: auto;
-      font-size: 0.85rem;
     }
 
     /* SPESA GRID */
@@ -956,48 +895,50 @@
       </div>
     </section>
 
-    <!-- TAB 2: SCUOLA & AXIOS -->
+    <!-- TAB 2: SCUOLA & AXIOS RE -->
     <section id="tab-axios" class="tab-pane">
-      <div class="school-split-container">
+      <div class="school-container">
         
-        <div class="bento-card">
+        <!-- CARD 1: NOTE & AVVISI DELLA MAESTRA -->
+        <div class="bento-card" style="flex-shrink: 0;">
           <div class="card-header-row">
             <div class="card-title-text">
-              <svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="0"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-              Orario Lezioni
+              <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10M6 10h10M6 14h6"/></svg>
+              Note & Avvisi della Maestra
             </div>
-            <div class="pill inverted" id="school-day-pill">OGGI</div>
+            <div class="pill inverted" id="teacher-note-date-pill">DIARIO RE</div>
           </div>
-
-          <div class="days-pill-bar">
-            <button class="day-selector-btn" id="day-btn-LUN" onclick="filterSchoolDay('LUN', this)">LUN</button>
-            <button class="day-selector-btn" id="day-btn-MAR" onclick="filterSchoolDay('MAR', this)">MAR</button>
-            <button class="day-selector-btn" id="day-btn-MER" onclick="filterSchoolDay('MER', this)">MER</button>
-            <button class="day-selector-btn" id="day-btn-GIO" onclick="filterSchoolDay('GIO', this)">GIO</button>
-            <button class="day-selector-btn" id="day-btn-VEN" onclick="filterSchoolDay('VEN', this)">VEN</button>
-            <button class="day-selector-btn" id="day-btn-SAB" onclick="filterSchoolDay('SAB', this)">SAB</button>
-          </div>
-
-          <div class="card-body" id="school-hours-list"></div>
-
-          <div class="backpack-alert-card">
-            <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-            <div style="font-size: 0.9rem; font-weight: 800;">
-              <strong>AVVISO ZAINO:</strong> <span id="backpack-text">Nessun promemoria particolare</span>
+          <div class="teacher-note-card">
+            <div class="teacher-note-icon">
+              <svg class="icon" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            </div>
+            <div class="teacher-note-body">
+              <div class="teacher-note-text" id="backpack-text">
+                Nessun avviso o promemoria recente dalla maestra.
+              </div>
+              <div class="teacher-note-hint">
+                💡 Scrivi <code>zaino &lt;nota&gt;</code> su Telegram oppure sincronizza Axios per aggiornare questo avviso
+              </div>
             </div>
           </div>
         </div>
 
-        <div class="bento-card">
+        <!-- CARD 2: COMPITI DA AXIOS RE -->
+        <div class="bento-card" style="flex: 1; min-height: 0; display: flex; flex-direction: column;">
           <div class="card-header-row">
             <div class="card-title-text">
               <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
               Compiti da Axios RE
             </div>
-            <div class="pill" id="tasks-count-pill">COMPITI</div>
+            <div style="display: flex; gap: 6px; align-items: center;">
+              <div class="pill" id="tasks-count-pill">COMPITI</div>
+              <button class="ctrl-btn" onclick="triggerAxiosSync()" style="padding: 2px 8px; font-size: 0.75rem;">
+                Sincronizza RE
+              </button>
+            </div>
           </div>
 
-          <div class="card-body" id="axios-tasks-container">
+          <div class="card-body" id="axios-tasks-container" style="flex: 1; overflow-y: auto;">
             <!-- Popolato dinamicamente da /api/data -->
           </div>
         </div>
@@ -1335,9 +1276,22 @@
         if (axBox) axBox.classList.add('inverted');
       }
 
-      // E. AVVISO ZAINO
-      if (data.backpack) {
-        document.getElementById('backpack-text').textContent = cleanBackpackText(data.backpack);
+      // E. AVVISO ZAINO / NOTE MAESTRA
+      const bpEl = document.getElementById('backpack-text');
+      const bpPill = document.getElementById('teacher-note-date-pill');
+      if (bpEl) {
+        if (data.backpack) {
+          const m = data.backpack.match(/(\d{1,2}\/\d{1,2}(?:\/\d{4})?)/);
+          if (m && bpPill) {
+            bpPill.textContent = `AVVISO DEL ${m[1]}`;
+          } else if (bpPill) {
+            bpPill.textContent = 'DIARIO RE';
+          }
+          bpEl.textContent = cleanBackpackText(data.backpack);
+        } else {
+          bpEl.textContent = 'Nessun avviso o promemoria recente dalla maestra.';
+          if (bpPill) bpPill.textContent = 'DIARIO RE';
+        }
       }
     }
 
@@ -1457,43 +1411,6 @@
       ]
     };
 
-    const fullDayNames = {
-      'LUN': 'LUNEDÌ',
-      'MAR': 'MARTEDÌ',
-      'MER': 'MERCOLEDÌ',
-      'GIO': 'GIOVEDÌ',
-      'VEN': 'VENERDÌ',
-      'SAB': 'SABATO'
-    };
-
-    function filterSchoolDay(dayKey, btn) {
-      document.querySelectorAll('.day-selector-btn').forEach(b => b.classList.remove('active'));
-      if (btn) btn.classList.add('active');
-
-      const pill = document.getElementById('school-day-pill');
-      if (pill) pill.textContent = fullDayNames[dayKey] || dayKey;
-
-      const hours = schoolWeekData[dayKey] || [];
-      const container = document.getElementById('school-hours-list');
-      container.innerHTML = '';
-      hours.forEach((row, idx) => {
-        const div = document.createElement('div');
-        div.className = 'timetable-row';
-        div.innerHTML = `
-          <div class="tt-hour-badge">${idx + 1}ª ORA <span class="tt-time-sub">${row.time}</span></div>
-          <div class="tt-subject-name">${escapeHtml(row.subject)}</div>
-        `;
-        container.appendChild(div);
-      });
-    }
-
-    function openSchoolDay(dayKey) {
-      const schoolTabBtn = document.querySelectorAll('.nav-tab')[1];
-      if (schoolTabBtn) activateTab('tab-axios', schoolTabBtn);
-      const btn = document.getElementById(`day-btn-${dayKey}`);
-      filterSchoolDay(dayKey, btn);
-    }
-
     function renderWeekSchedule() {
       const container = document.querySelector('.week-columns-grid');
       if (!container) return;
@@ -1505,7 +1422,6 @@
         const isToday = (dayKey === currentTodayKey);
         const col = document.createElement('div');
         col.className = isToday ? 'week-day-col is-today' : 'week-day-col';
-        col.onclick = () => openSchoolDay(dayKey);
 
         const headerHtml = `
           <div class="col-header">
@@ -1543,9 +1459,6 @@
 
     const curDay = getRomeDate().getDay();
     const dayLookup = { 1: 'LUN', 2: 'MAR', 3: 'MER', 4: 'GIO', 5: 'VEN', 6: 'SAB' };
-    const todayKey = dayLookup[curDay] || 'LUN';
-    const initBtn = document.getElementById(`day-btn-${todayKey}`) || document.querySelector('.day-selector-btn');
-    filterSchoolDay(todayKey, initBtn);
     renderWeekSchedule();
 
     // 6. MODAL TOKEN TELEGRAM

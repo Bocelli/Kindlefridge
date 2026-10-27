@@ -102,6 +102,91 @@ def get_recycle_for_day(dt=None):
     }
     return schedule.get(weekday, schedule[6])
 
+# --- METEO SALEMI (TP) ---
+WMO_CODES = {
+    0: 'SERENO', 1: 'QUASI SERENO', 2: 'POCO NUVOLOSO', 3: 'COPERTO',
+    45: 'NEBBIA', 48: 'NEBBIA',
+    51: 'PIOVIGGINE', 53: 'PIOVIGGINE', 55: 'PIOVIGGINE',
+    61: 'PIOGGIA DEBOLE', 63: 'PIOGGIA', 65: 'FORTE PIOGGIA',
+    71: 'NEVE', 73: 'NEVE', 75: 'FORTE NEVE',
+    80: 'ROVESCI', 81: 'ROVESCI', 82: 'FORTI ROVESCI',
+    95: 'TEMPORALE', 96: 'TEMPORALE', 99: 'TEMPORALE'
+}
+
+cached_weather = None
+last_weather_time = 0
+
+def get_salemi_weather():
+    global cached_weather, last_weather_time
+    now_ts = time.time()
+    # Cache per 20 minuti
+    if cached_weather and (now_ts - last_weather_time < 1200):
+        return cached_weather
+
+    try:
+        url = "https://api.open-meteo.com/v1/forecast?latitude=37.818&longitude=12.801&current=temperature_2m,relative_humidity_2m,apparent_temperature,precipitation,weather_code&hourly=temperature_2m,precipitation_probability,weather_code&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Europe%2FRome"
+        req = urllib.request.Request(url, headers={"User-Agent": "KindleFridge/1.0"})
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            res = json.loads(resp.read().decode("utf-8"))
+
+        curr = res.get("current", {})
+        daily = res.get("daily", {})
+        hourly = res.get("hourly", {})
+
+        curr_temp = round(curr.get("temperature_2m", 0))
+        curr_code = curr.get("weather_code", 0)
+        curr_desc = WMO_CODES.get(curr_code, "VARIABILE")
+        min_temp = round(daily.get("temperature_2m_min", [0])[0])
+        max_temp = round(daily.get("temperature_2m_max", [0])[0])
+        rain_prob = daily.get("precipitation_probability_max", [0])[0]
+
+        curr_iso_prefix = curr.get("time", "")[:13]
+        h_times = hourly.get("time", [])
+        curr_idx = 0
+        for idx, ht in enumerate(h_times):
+            if ht.startswith(curr_iso_prefix):
+                curr_idx = idx
+                break
+
+        forecast_slots = []
+        for step in [2, 4, 6]:
+            target_idx = curr_idx + step
+            if target_idx < len(h_times):
+                t_str = h_times[target_idx].split("T")[1]
+                temp_val = round(hourly["temperature_2m"][target_idx])
+                c_val = hourly["weather_code"][target_idx]
+                desc_val = WMO_CODES.get(c_val, "Variabile").capitalize()
+                forecast_slots.append({"time": t_str, "temp": f"{temp_val}°", "desc": desc_val, "code": c_val})
+
+        cached_weather = {
+            "city": "Salemi (TP)",
+            "temp": f"{curr_temp}°C",
+            "condition": curr_desc,
+            "min_max": f"MIN {min_temp}° • MAX {max_temp}°",
+            "rain": f"PIOGGIA {rain_prob}%",
+            "code": curr_code,
+            "forecast": forecast_slots
+        }
+        last_weather_time = now_ts
+        return cached_weather
+    except Exception as e:
+        print("[Meteo] Errore fetch Open-Meteo:", e)
+        if cached_weather:
+            return cached_weather
+        return {
+            "city": "Salemi (TP)",
+            "temp": "15°C",
+            "condition": "POCO NUVOLOSO",
+            "min_max": "MIN 12° • MAX 21°",
+            "rain": "PIOGGIA 0%",
+            "code": 2,
+            "forecast": [
+                {"time": "21:00", "temp": "14°", "desc": "Sereno", "code": 0},
+                {"time": "23:00", "temp": "13°", "desc": "Poco nuvoloso", "code": 2},
+                {"time": "01:00", "temp": "14°", "desc": "Poco nuvoloso", "code": 2}
+            ]
+        }
+
 def sync_axios_safe():
     """Scarica da Axios e aggiorna data.json in modo thread-safe."""
     result = fetch_axios_data()
@@ -182,9 +267,26 @@ def handle_telegram_message(token, msg):
             "• <code>/cancella firmare</code> o <code>/cancellanote</code>\n\n"
             "📚 <b>SCUOLA AXIOS:</b>\n"
             "• <code>/compiti</code> <i>(scarica compiti dal RE)</i>\n"
-            "• <code>zaino Portare scarpe da ginnastica</code>"
+            "• <code>zaino Portare scarpe da ginnastica</code>\n\n"
+            "🌤️ <b>METEO SALEMI (TP):</b>\n"
+            "• <code>/meteo</code> <i>(previsioni meteo in tempo reale)</i>"
         )
         send_telegram_message(token, chat_id, reply)
+        return
+
+    # COMANDO METEO SALEMI (TP)
+    if text_lower in ["/meteo", "meteo", "che tempo fa", "previsioni"]:
+        w = get_salemi_weather()
+        msg_meteo = (
+            f"🌤️ <b>Meteo a Salemi (TP):</b>\n\n"
+            f"• <b>Temperatura:</b> {w['temp']} ({w['condition'].capitalize()})\n"
+            f"• <b>Escursione:</b> {w['min_max']}\n"
+            f"• <b>Probabilità pioggia:</b> {w['rain'].replace('PIOGGIA ', '')}\n\n"
+            f"<b>Prossime ore:</b>\n"
+        )
+        for s in w.get("forecast", []):
+            msg_meteo += f"• ore {s['time']}: {s['temp']} ({s['desc']})\n"
+        send_telegram_message(token, chat_id, msg_meteo)
         return
 
     # 1. COMANDO CANCELLA NOTE DA TELEGRAM
@@ -436,6 +538,7 @@ class FridgeRequestHandler(SimpleHTTPRequestHandler):
             rn = get_rome_now()
             data["bot_active"] = bool(cfg.get("bot_token", "").strip())
             data["recycle"] = get_recycle_for_day(rn)
+            data["weather"] = get_salemi_weather()
             data["server_time"] = {
                 "hours": rn.hour,
                 "minutes": rn.minute,

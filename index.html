@@ -804,16 +804,17 @@
     <div class="header-right">
       <div class="weather-top">
         <div class="weather-temp-box">
-          <svg class="icon icon-lg" viewBox="0 0 24 24">
+          <svg class="icon icon-lg" viewBox="0 0 24 24" id="weather-icon">
             <circle cx="12" cy="12" r="4"/>
             <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
           </svg>
-          <div class="weather-degrees" id="temp-val">19°C</div>
+          <div class="weather-degrees" id="temp-val">15°C</div>
         </div>
         <div class="weather-detail-lines">
-          <div style="font-size: 1.05rem;">POCO NUVOLOSO</div>
-          <div>MIN 11° • MAX 22°</div>
-          <div>PIOGGIA 0%</div>
+          <div style="font-size: 0.72rem; font-weight: 900; letter-spacing: 0.5px;">📍 SALEMI (TP)</div>
+          <div style="font-size: 1.05rem;" id="weather-condition">POCO NUVOLOSO</div>
+          <div id="weather-minmax">MIN 12° • MAX 21°</div>
+          <div id="weather-rain">PIOGGIA 0%</div>
         </div>
       </div>
 
@@ -917,25 +918,25 @@
           <div class="card-header-row">
             <div class="card-title-text">
               <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-              Meteo Prossime Ore
+              Meteo Salemi (TP)
             </div>
             <div class="pill">Previsioni</div>
           </div>
-          <div class="card-body" style="display: grid; grid-template-columns: 1fr 1fr 1fr; text-align: center; align-items: center;">
+          <div class="card-body" id="weather-forecast-container" style="display: grid; grid-template-columns: 1fr 1fr 1fr; text-align: center; align-items: center;">
             <div style="border-right: var(--border-hairline); padding: 4px;">
-              <div style="font-size: 0.8rem; font-weight: 800;">16:00</div>
-              <div style="font-size: 1.5rem; font-weight: 900;">21°</div>
-              <div style="font-size: 0.75rem; font-weight: 700;">Soleggiato</div>
-            </div>
-            <div style="border-right: var(--border-hairline); padding: 4px;">
-              <div style="font-size: 0.8rem; font-weight: 800;">19:00</div>
-              <div style="font-size: 1.5rem; font-weight: 900;">17°</div>
+              <div style="font-size: 0.8rem; font-weight: 800; font-family: var(--font-mono);">21:00</div>
+              <div style="font-size: 1.45rem; font-weight: 900; margin: 1px 0;">14°</div>
               <div style="font-size: 0.75rem; font-weight: 700;">Sereno</div>
             </div>
+            <div style="border-right: var(--border-hairline); padding: 4px;">
+              <div style="font-size: 0.8rem; font-weight: 800; font-family: var(--font-mono);">23:00</div>
+              <div style="font-size: 1.45rem; font-weight: 900; margin: 1px 0;">14°</div>
+              <div style="font-size: 0.75rem; font-weight: 700;">Poco nuv.</div>
+            </div>
             <div style="padding: 4px;">
-              <div style="font-size: 0.8rem; font-weight: 800;">22:00</div>
-              <div style="font-size: 1.5rem; font-weight: 900;">13°</div>
-              <div style="font-size: 0.75rem; font-weight: 700;">Fresco</div>
+              <div style="font-size: 0.8rem; font-weight: 800; font-family: var(--font-mono);">01:00</div>
+              <div style="font-size: 1.45rem; font-weight: 900; margin: 1px 0;">14°</div>
+              <div style="font-size: 0.75rem; font-weight: 700;">Poco nuv.</div>
             </div>
           </div>
         </div>
@@ -1291,6 +1292,37 @@
         document.getElementById('recycle-details').textContent = data.recycle.details;
       }
 
+      // METEO SALEMI (TP)
+      if (data.weather) {
+        const w = data.weather;
+        if (document.getElementById('temp-val')) document.getElementById('temp-val').textContent = w.temp;
+        if (document.getElementById('weather-condition')) document.getElementById('weather-condition').textContent = w.condition;
+        if (document.getElementById('weather-minmax')) document.getElementById('weather-minmax').textContent = w.min_max;
+        if (document.getElementById('weather-rain')) document.getElementById('weather-rain').textContent = w.rain;
+
+        const wIcon = document.getElementById('weather-icon');
+        if (wIcon && w.code !== undefined) {
+          wIcon.innerHTML = getWeatherSvg(w.code);
+        }
+
+        const fcContainer = document.getElementById('weather-forecast-container');
+        if (fcContainer && w.forecast && w.forecast.length > 0) {
+          fcContainer.innerHTML = '';
+          w.forecast.forEach((slot, idx) => {
+            const isLast = idx === w.forecast.length - 1;
+            const div = document.createElement('div');
+            if (!isLast) div.style.borderRight = 'var(--border-hairline)';
+            div.style.padding = '4px';
+            div.innerHTML = `
+              <div style="font-size: 0.8rem; font-weight: 800; font-family: var(--font-mono);">${escapeHtml(slot.time)}</div>
+              <div style="font-size: 1.45rem; font-weight: 900; margin: 1px 0;">${escapeHtml(slot.temp)}</div>
+              <div style="font-size: 0.75rem; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${escapeHtml(slot.desc)}</div>
+            `;
+            fcContainer.appendChild(div);
+          });
+        }
+      }
+
       // C. SPESA TELEGRAM
       const shopContainer = document.getElementById('shopping-items-list');
       shopContainer.innerHTML = '';
@@ -1603,6 +1635,27 @@
     }
 
     // UTILITIES
+    function getWeatherSvg(code) {
+      if (code === 0 || code === 1) {
+        // Sereno
+        return '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>';
+      }
+      if (code === 3 || code === 45 || code === 48) {
+        // Coperto / Nebbia
+        return '<path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/>';
+      }
+      if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) {
+        // Pioggia / Rovesci
+        return '<path d="M4 14.899A7 7 0 1 1 15.71 8h1.79a4.5 4.5 0 0 1 2.5 8.242"/><path d="m9 17-2 4M13 17l-2 4M17 17l-2 4"/>';
+      }
+      if (code >= 95) {
+        // Temporale
+        return '<path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"/><polygon points="13 12 11 17 14 17 12 22"/>';
+      }
+      // Poco nuvoloso (codice 2 o altro)
+      return '<path d="M12 2v2M4.93 4.93l1.41 1.41M20 12h2M19.07 4.93l-1.41 1.41"/><path d="M15.5 11a4.5 4.5 0 0 0-4.4-3.5 4.5 4.5 0 0 0-4.3 3.5A3.5 3.5 0 0 0 7 18h9a3 3 0 0 0-.5-7Z"/>';
+    }
+
     function toggleInvertMode() { document.body.classList.toggle('dark-mode'); }
     function toggleFullScreen() {
       if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{});

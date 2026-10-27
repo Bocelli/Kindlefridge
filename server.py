@@ -95,31 +95,31 @@ def get_recycle_for_day(dt=None):
 
     schedule = {
         0: {
-            "type": "🌱 ORGANICO (Umido)",
+            "type": "ORGANICO (Umido)",
             "details": f"Ritiro domani ({target_day_name}) • Esporre il mastello stasera"
         },
         1: {
-            "type": "📦 CARTA E CARTONE",
+            "type": "CARTA E CARTONE",
             "details": f"Ritiro domani ({target_day_name}) • Esporre il bidoncino stasera"
         },
         2: {
-            "type": "🌱 ORGANICO (Umido)",
+            "type": "ORGANICO (Umido)",
             "details": f"Ritiro domani ({target_day_name}) • Esporre il mastello stasera"
         },
         3: {
-            "type": "🟡 PLASTICA E METALLI",
+            "type": "PLASTICA E METALLI",
             "details": f"Ritiro domani ({target_day_name}) • Esporre sacco giallo stasera"
         },
         4: {
-            "type": "🌱 ORGANICO + 🍾 VETRO" if is_glass_friday else "🌱 ORGANICO (Umido)",
-            "details": f"⚠️ Ritiro domani ({target_day_name}): esporre ANCHE il Vetro!" if is_glass_friday else f"Ritiro domani ({target_day_name}) • Esporre il mastello stasera"
+            "type": "ORGANICO + VETRO" if is_glass_friday else "ORGANICO (Umido)",
+            "details": f"Attenzione: domani ({target_day_name}) anche Vetro!" if is_glass_friday else f"Ritiro domani ({target_day_name}) • Esporre il mastello stasera"
         },
         5: {
-            "type": "🗑️ INDIFFERENZIATA",
+            "type": "INDIFFERENZIATA",
             "details": f"Ritiro domani ({target_day_name}) • Esporre sacco secco residuo stasera"
         },
         6: {
-            "type": "⛔ NESSUNA RACCOLTA",
+            "type": "NESSUNA RACCOLTA",
             "details": f"Domenica riposo (nessun ritiro) • Domani sera: Organico"
         }
     }
@@ -174,7 +174,7 @@ def get_salemi_weather():
                 break
 
         forecast_slots = []
-        for step in [2, 4, 6]:
+        for step in [6, 12]:
             target_idx = curr_idx + step
             if target_idx < len(h_times):
                 t_str = h_times[target_idx].split("T")[1]
@@ -206,9 +206,8 @@ def get_salemi_weather():
             "rain": "PIOGGIA 0%",
             "code": 2,
             "forecast": [
-                {"time": "21:00", "temp": "14°", "desc": "Sereno", "code": 0},
-                {"time": "23:00", "temp": "13°", "desc": "Poco nuvoloso", "code": 2},
-                {"time": "01:00", "temp": "14°", "desc": "Poco nuvoloso", "code": 2}
+                {"time": "03:00", "temp": "13°", "desc": "Poco nuv.", "code": 2},
+                {"time": "09:00", "temp": "18°", "desc": "Sereno", "code": 0}
             ]
         }
 

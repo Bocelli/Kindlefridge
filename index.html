@@ -251,7 +251,6 @@
     .home-container {
       display: flex;
       flex-direction: column;
-      gap: 7px;
       height: 100%;
       overflow: hidden;
     }
@@ -268,18 +267,19 @@
       align-items: center;
     }
 
-    /* STATUS STRIP ROWS (COMPATTE A RIGA) */
+    /* STATUS STRIP ROWS (COMPATTE A RIGA - SENZA DIPENDENZA DA FLEX GAP) */
     .status-strip-row {
       border: var(--border-thin);
-      padding: 6px 10px;
+      padding: 6px 12px;
       background: var(--bg);
       display: flex;
       align-items: center;
-      gap: 10px;
-      min-height: 40px;
+      min-height: 42px;
       flex-shrink: 0;
       border-radius: 2px;
       overflow: hidden;
+      margin-top: 7px;
+      box-sizing: border-box;
     }
 
     .status-strip-tag {
@@ -289,25 +289,38 @@
       text-transform: uppercase;
       background: var(--fg);
       color: var(--bg);
-      padding: 2px 7px;
+      padding: 3px 8px;
       border-radius: 2px;
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 5px;
       white-space: nowrap;
+      flex-shrink: 0;
+      margin-right: 12px;
+    }
+
+    .status-strip-tag svg {
+      margin-right: 6px;
       flex-shrink: 0;
     }
 
     .status-strip-highlight {
-      font-size: 0.95rem;
+      font-size: 1rem;
       font-weight: 900;
       white-space: nowrap;
       letter-spacing: 0.3px;
       flex-shrink: 0;
+      margin-right: 10px;
+    }
+
+    .status-strip-sep {
+      font-weight: 900;
+      margin-right: 10px;
+      opacity: 0.45;
+      flex-shrink: 0;
     }
 
     .status-strip-desc {
-      font-size: 0.82rem;
+      font-size: 0.85rem;
       font-weight: 700;
       opacity: 0.85;
       overflow: hidden;
@@ -319,32 +332,39 @@
     .status-strip-forecast {
       display: flex;
       align-items: center;
-      justify-content: space-around;
       flex: 1;
-      gap: 8px;
     }
 
     .forecast-inline-item {
-      display: flex;
+      display: inline-flex;
       align-items: center;
-      gap: 5px;
+      border: 1px solid var(--fg);
+      padding: 2px 10px;
+      margin-right: 14px;
+      background: var(--bg);
+      border-radius: 2px;
       white-space: nowrap;
     }
 
     .forecast-inline-time {
       font-family: var(--font-mono);
-      font-size: 0.75rem;
-      font-weight: 700;
-      opacity: 0.8;
+      font-size: 0.8rem;
+      font-weight: 800;
+      margin-right: 7px;
+      background: var(--fg);
+      color: var(--bg);
+      padding: 1px 6px;
+      border-radius: 2px;
     }
 
     .forecast-inline-temp {
-      font-size: 1.05rem;
+      font-size: 1.15rem;
       font-weight: 900;
+      margin-right: 7px;
     }
 
     .forecast-inline-desc {
-      font-size: 0.75rem;
+      font-size: 0.8rem;
       font-weight: 700;
     }
 
@@ -853,7 +873,7 @@
           <div class="weather-degrees" id="temp-val">15°C</div>
         </div>
         <div class="weather-detail-lines">
-          <div style="font-size: 0.72rem; font-weight: 900; letter-spacing: 0.5px;">📍 SALEMI (TP)</div>
+          <div style="font-size: 0.72rem; font-weight: 900; letter-spacing: 0.5px;">SALEMI (TP)</div>
           <div style="font-size: 1.05rem;" id="weather-condition">POCO NUVOLOSO</div>
           <div id="weather-minmax">MIN 12° • MAX 21°</div>
           <div id="weather-rain">PIOGGIA 0%</div>
@@ -920,7 +940,7 @@
             <!-- Popolato dinamicamente da /api/data -->
           </div>
           <div class="home-tip-footer">
-            <span>💡 <strong>Tip Telegram:</strong> Invia qualsiasi messaggio in chat per vederlo apparire qui sul frigo!</span>
+            <span><strong>Tip Telegram:</strong> Invia qualsiasi messaggio in chat per vederlo apparire sul frigo!</span>
           </div>
         </div>
 
@@ -930,7 +950,8 @@
             <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
             <span>RIFIUTI STASERA</span>
           </div>
-          <div class="status-strip-highlight" id="recycle-type">🌱 ORGANICO (Umido)</div>
+          <div class="status-strip-highlight" id="recycle-type">ORGANICO (Umido)</div>
+          <div class="status-strip-sep">•</div>
           <div class="status-strip-desc" id="recycle-details">Ritiro domani (Mercoledì) • Esporre il mastello stasera</div>
         </div>
 
@@ -942,19 +963,14 @@
           </div>
           <div class="status-strip-forecast" id="weather-forecast-container">
             <div class="forecast-inline-item">
-              <span class="forecast-inline-time">21:00</span>
-              <span class="forecast-inline-temp">14°</span>
+              <span class="forecast-inline-time">03:00</span>
+              <span class="forecast-inline-temp">13°</span>
+              <span class="forecast-inline-desc">Poco Nuv.</span>
+            </div>
+            <div class="forecast-inline-item">
+              <span class="forecast-inline-time">09:00</span>
+              <span class="forecast-inline-temp">18°</span>
               <span class="forecast-inline-desc">Sereno</span>
-            </div>
-            <div class="forecast-inline-item">
-              <span class="forecast-inline-time">23:00</span>
-              <span class="forecast-inline-temp">14°</span>
-              <span class="forecast-inline-desc">Poco Nuv.</span>
-            </div>
-            <div class="forecast-inline-item">
-              <span class="forecast-inline-time">01:00</span>
-              <span class="forecast-inline-temp">14°</span>
-              <span class="forecast-inline-desc">Poco Nuv.</span>
             </div>
           </div>
         </div>

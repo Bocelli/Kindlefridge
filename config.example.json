@@ -1,0 +1,8 @@
+{
+  "bot_token": "INSERISCI_QUI_IL_TOKEN_TELEGRAM",
+  "axios": {
+    "customer_id": "CODICE_FISCALE_SCUOLA",
+    "username": "CODICE_UTENTE",
+    "password": "PASSWORD"
+  }
+}

@@ -1,0 +1,1290 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Kindle Fridge Dashboard 7" - Telegram & Axios</title>
+  <style>
+    /* -------------------------------------------------------------
+       DESIGN SYSTEM: SWISS MONOCHROME E-INK (UI/UX PRO MAX)
+       - High-Contrast Monochrome (#000000 / #ffffff)
+       - Swiss Typographic Hierarchy
+       - Bento Grid Layout tailored for 7" E-Ink Displays
+       - 100% Vector SVG Icons (No Emojis)
+       - Min 48px touch targets
+       ------------------------------------------------------------- */
+    :root {
+      --bg: #ffffff;
+      --fg: #000000;
+      --border-thick: 3px solid #000000;
+      --border-thin: 2px solid #000000;
+      --border-hairline: 1px solid #000000;
+      --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", "Segoe UI Mono", monospace;
+    }
+
+    body.dark-mode {
+      --bg: #000000;
+      --fg: #ffffff;
+      --border-thick: 3px solid #ffffff;
+      --border-thin: 2px solid #ffffff;
+      --border-hairline: 1px solid #ffffff;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    html, body {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background-color: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-main);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body {
+      display: flex;
+      flex-direction: column;
+      border: 4px solid var(--fg);
+    }
+
+    /* ICONS */
+    .icon {
+      width: 22px;
+      height: 22px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.2;
+      stroke-linecap: square;
+      stroke-linejoin: miter;
+      vertical-align: middle;
+      flex-shrink: 0;
+    }
+    .icon-sm { width: 17px; height: 17px; stroke-width: 2; }
+    .icon-lg { width: 32px; height: 32px; stroke-width: 2.5; }
+
+    /* HEADER */
+    header {
+      display: grid;
+      grid-template-columns: 1.3fr 1fr;
+      border-bottom: var(--border-thick);
+      background: var(--bg);
+    }
+
+    .header-left {
+      padding: 10px 18px;
+      border-right: var(--border-thin);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+
+    .time-row {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+
+    .clock-display {
+      font-size: 3.6rem;
+      font-weight: 900;
+      letter-spacing: -2px;
+      line-height: 0.95;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .seconds-pill {
+      font-size: 0.95rem;
+      font-family: var(--font-mono);
+      font-weight: 800;
+      border: var(--border-thin);
+      padding: 2px 6px;
+      border-radius: 2px;
+    }
+
+    .date-row {
+      font-size: 1.15rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-top: 5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .header-right {
+      padding: 8px 16px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    .weather-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .weather-temp-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .weather-degrees {
+      font-size: 2.6rem;
+      font-weight: 900;
+      line-height: 1;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .weather-detail-lines {
+      font-size: 0.9rem;
+      font-weight: 800;
+      line-height: 1.25;
+      text-align: right;
+    }
+
+    .system-status-pills {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-top: 4px;
+      padding-top: 4px;
+      border-top: var(--border-hairline);
+    }
+
+    .pill {
+      font-size: 0.72rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 2px 7px;
+      border: var(--border-hairline);
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      cursor: pointer;
+    }
+
+    .pill.inverted {
+      background: var(--fg);
+      color: var(--bg);
+    }
+
+    /* NAV TABS */
+    nav {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      border-bottom: var(--border-thick);
+      background: var(--bg);
+    }
+
+    .nav-tab {
+      padding: 14px 4px;
+      border: none;
+      border-right: var(--border-thin);
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-main);
+      font-size: 1.05rem;
+      font-weight: 900;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 54px;
+    }
+
+    .nav-tab:last-child {
+      border-right: none;
+    }
+
+    .nav-tab.active {
+      background: var(--fg);
+      color: var(--bg);
+    }
+
+    /* MAIN PANE */
+    main {
+      flex: 1;
+      padding: 12px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg);
+    }
+
+    .tab-pane {
+      display: none;
+      width: 100%;
+      height: 100%;
+    }
+
+    .tab-pane.active {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      height: 100%;
+    }
+
+    /* BENTO 2x2 */
+    .bento-grid-2x2 {
+      display: grid;
+      grid-template-columns: 1.15fr 0.85fr;
+      grid-template-rows: 1fr 1fr;
+      gap: 12px;
+      height: 100%;
+    }
+
+    .bento-card {
+      border: var(--border-thin);
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      background: var(--bg);
+      border-radius: 2px;
+    }
+
+    .card-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: var(--border-thin);
+      padding-bottom: 7px;
+      margin-bottom: 8px;
+    }
+
+    .card-title-text {
+      font-size: 1.05rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .card-body {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* TELEGRAM FEED */
+    .tg-bubble {
+      border-left: 4px solid var(--fg);
+      padding: 6px 10px;
+      background: var(--bg);
+      margin-bottom: 4px;
+    }
+
+    .tg-bubble-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      margin-bottom: 2px;
+    }
+
+    .tg-author-tag {
+      border: var(--border-hairline);
+      padding: 1px 5px;
+      font-family: var(--font-mono);
+      font-weight: 800;
+    }
+
+    .tg-bubble-text {
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    /* RECYCLE */
+    .recycle-banner {
+      border: var(--border-thick);
+      padding: 10px;
+      text-align: center;
+      background: var(--fg);
+      color: var(--bg);
+      margin-top: 4px;
+    }
+
+    .recycle-type {
+      font-size: 1.4rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    .recycle-sub {
+      font-size: 0.85rem;
+      font-weight: 700;
+      margin-top: 2px;
+      letter-spacing: 0.5px;
+    }
+
+    /* SCUOLA & AXIOS */
+    .school-split-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      height: 100%;
+    }
+
+    .days-pill-bar {
+      display: flex;
+      gap: 6px;
+      margin-bottom: 8px;
+    }
+
+    .day-selector-btn {
+      flex: 1;
+      min-height: 44px;
+      border: var(--border-thin);
+      background: var(--bg);
+      color: var(--fg);
+      font-size: 1rem;
+      font-weight: 900;
+      cursor: pointer;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .day-selector-btn.active {
+      background: var(--fg);
+      color: var(--bg);
+    }
+
+    .timetable-row {
+      display: grid;
+      grid-template-columns: 95px 1fr;
+      padding: 8px 4px;
+      border-bottom: var(--border-hairline);
+      align-items: center;
+    }
+
+    .tt-hour {
+      font-size: 0.95rem;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+      font-family: var(--font-mono);
+    }
+
+    .tt-subject {
+      font-size: 1.15rem;
+      font-weight: 800;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .tt-teacher {
+      font-size: 0.8rem;
+      font-weight: 600;
+      border: var(--border-hairline);
+      padding: 1px 6px;
+      margin-left: 6px;
+    }
+
+    /* TASK COMPITI */
+    .task-entry {
+      border: var(--border-thin);
+      padding: 9px 12px;
+      margin-bottom: 6px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      cursor: pointer;
+    }
+
+    .task-entry.done {
+      border-style: dashed;
+      opacity: 0.6;
+    }
+
+    .task-entry.done .task-title {
+      text-decoration: line-through;
+    }
+
+    .check-box-graphic {
+      width: 24px;
+      height: 24px;
+      border: var(--border-thin);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-top: 2px;
+      flex-shrink: 0;
+      font-weight: 900;
+      font-size: 1.2rem;
+    }
+
+    .task-content-block {
+      flex: 1;
+    }
+
+    .task-subject-tag {
+      font-size: 0.82rem;
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      border-bottom: var(--border-hairline);
+      display: inline-block;
+      margin-bottom: 2px;
+    }
+
+    .task-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      line-height: 1.25;
+    }
+
+    .backpack-alert-card {
+      border: var(--border-thick);
+      padding: 8px 12px;
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: auto;
+    }
+
+    /* SPESA GRID */
+    .shopping-container {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .shopping-actions-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 8px;
+      border-bottom: var(--border-thin);
+      margin-bottom: 10px;
+    }
+
+    .shopping-count-badge {
+      font-size: 0.95rem;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .shopping-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      flex: 1;
+      align-content: start;
+      overflow-y: auto;
+    }
+
+    .shop-item-touch {
+      border: var(--border-thin);
+      padding: 12px 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      cursor: pointer;
+      min-height: 56px;
+    }
+
+    .shop-item-touch.done {
+      border-style: dashed;
+      opacity: 0.55;
+    }
+
+    .shop-item-touch.done .shop-item-name {
+      text-decoration: line-through;
+    }
+
+    .shop-item-name {
+      font-size: 1.15rem;
+      font-weight: 800;
+      flex: 1;
+    }
+
+    .shop-author {
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      font-weight: 800;
+      border: var(--border-hairline);
+      padding: 2px 5px;
+    }
+
+    /* SETTIMANA TABLE */
+    .week-columns-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      height: 100%;
+    }
+
+    .week-day-col {
+      border: var(--border-thin);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .col-header {
+      background: var(--fg);
+      color: var(--bg);
+      font-size: 1rem;
+      font-weight: 900;
+      text-align: center;
+      padding: 6px 2px;
+      text-transform: uppercase;
+    }
+
+    .col-body {
+      flex: 1;
+      padding: 8px 6px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .col-subject-entry {
+      border-bottom: var(--border-hairline);
+      padding-bottom: 6px;
+    }
+
+    .col-subject-entry:last-child {
+      border-bottom: none;
+    }
+
+    .col-sub-name {
+      font-size: 0.95rem;
+      font-weight: 800;
+    }
+
+    .col-sub-time {
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      font-weight: 700;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: var(--border-thick);
+      padding: 8px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--bg);
+      min-height: 48px;
+    }
+
+    .footer-left {
+      font-size: 0.85rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .footer-controls {
+      display: flex;
+      gap: 8px;
+    }
+
+    .ctrl-btn {
+      min-height: 40px;
+      padding: 6px 14px;
+      border: var(--border-thin);
+      background: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-main);
+      font-size: 0.85rem;
+      font-weight: 900;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .ctrl-btn:active {
+      background: var(--fg);
+      color: var(--bg);
+    }
+
+    /* MODAL PER CONFIGURAZIONE TOKEN */
+    .modal-backdrop {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(0,0,0,0.6);
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+    .modal-backdrop.show { display: flex; }
+    .modal-card {
+      background: #fff;
+      color: #000;
+      border: 4px solid #000;
+      padding: 24px;
+      max-width: 520px;
+      width: 90%;
+    }
+    .modal-input {
+      width: 100%;
+      padding: 10px;
+      font-size: 1rem;
+      border: 2px solid #000;
+      margin: 14px 0;
+      font-family: var(--font-mono);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ==================== HEADER ==================== -->
+  <header>
+    <div class="header-left">
+      <div class="time-row">
+        <div class="clock-display" id="clock">12:30</div>
+        <div class="seconds-pill" id="seconds">00s</div>
+      </div>
+      <div class="date-row">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="0"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <span id="date-label">MARTEDÌ 27 OTTOBRE</span>
+      </div>
+    </div>
+
+    <div class="header-right">
+      <div class="weather-top">
+        <div class="weather-temp-box">
+          <svg class="icon icon-lg" viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="4"/>
+            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
+          </svg>
+          <div class="weather-degrees" id="temp-val">19°C</div>
+        </div>
+        <div class="weather-detail-lines">
+          <div style="font-size: 1.05rem;">POCO NUVOLOSO</div>
+          <div>MIN 11° • MAX 22°</div>
+          <div>PIOGGIA 0%</div>
+        </div>
+      </div>
+
+      <div class="system-status-pills">
+        <div class="pill inverted">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M5 12.55a11 11 0 0 1 14.08 0M1.42 9a16 16 0 0 1 21.16 0M8.53 16.11a6 6 0 0 1 6.95 0M12 20h.01"/></svg>
+          WI-FI OK
+        </div>
+        <div class="pill" id="tg-status-pill" onclick="openTokenModal()">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+          <span id="tg-status-text">TELEGRAM: ATTESA TOKEN</span>
+        </div>
+        <div class="pill" id="axios-status-pill" onclick="triggerAxiosSync()">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/></svg>
+          <span id="axios-status-text">AXIOS RE: SYNC</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ==================== TABS ==================== -->
+  <nav>
+    <button class="nav-tab active" onclick="activateTab('tab-home', this)">
+      <svg class="icon" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      CASA & OGGI
+    </button>
+    <button class="nav-tab" onclick="activateTab('tab-axios', this)">
+      <svg class="icon" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><polyline points="10 2 10 10 13 7 16 10 16 2"/></svg>
+      SCUOLA & AXIOS
+    </button>
+    <button class="nav-tab" onclick="activateTab('tab-groceries', this)">
+      <svg class="icon" viewBox="0 0 24 24"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+      SPESA & LISTE
+    </button>
+    <button class="nav-tab" onclick="activateTab('tab-week', this)">
+      <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="0"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="9" y1="21" x2="9" y2="10"/><line x1="15" y1="21" x2="15" y2="10"/></svg>
+      SETTIMANA
+    </button>
+  </nav>
+
+  <!-- ==================== CONTENUTI ==================== -->
+  <main>
+
+    <!-- TAB 1: CASA & TELEGRAM FEED -->
+    <section id="tab-home" class="tab-pane active">
+      <div class="bento-grid-2x2">
+        
+        <!-- CARD 1: BACHECA TELEGRAM (LIVE) -->
+        <div class="bento-card">
+          <div class="card-header-row">
+            <div class="card-title-text">
+              <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+              Note Telegram Famiglia
+            </div>
+            <div class="pill inverted" id="notes-badge">Live Sync</div>
+          </div>
+          <div class="card-body" id="telegram-feed-list">
+            <!-- Popolato dinamicamente da /api/data -->
+          </div>
+        </div>
+
+        <!-- CARD 2: IMPEGNI DI OGGI -->
+        <div class="bento-card">
+          <div class="card-header-row">
+            <div class="card-title-text">
+              <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+              Impegni di Pomeriggio
+            </div>
+            <div class="pill">Martedì</div>
+          </div>
+          <div class="card-body">
+            <div class="timetable-row">
+              <span class="tt-hour">16:30</span>
+              <div class="tt-subject">Uscita Scuola & Merenda</div>
+            </div>
+            <div class="timetable-row">
+              <span class="tt-hour">17:45</span>
+              <div class="tt-subject">Basket / Allenamento <span class="tt-teacher">Palazzetto</span></div>
+            </div>
+            <div class="timetable-row">
+              <span class="tt-hour">20:00</span>
+              <div class="tt-subject">Cena in Famiglia</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 3: DIFFERENZIATA -->
+        <div class="bento-card">
+          <div class="card-header-row">
+            <div class="card-title-text">
+              <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+              Raccolta Differenziata
+            </div>
+            <div class="pill inverted">Stasera</div>
+          </div>
+          <div class="card-body" style="justify-content: center;">
+            <div class="recycle-banner">
+              <div class="recycle-type" id="recycle-type">📦 CARTA E CARTONE</div>
+              <div class="recycle-sub" id="recycle-details">Esporre il bidoncino bianco entro le 22:00</div>
+            </div>
+            <div style="font-size: 0.85rem; font-weight: 700; text-align: center; margin-top: 6px;">
+              Domani mattina: Svuotamento cassonetto Carta
+            </div>
+          </div>
+        </div>
+
+        <!-- CARD 4: PREVISIONI METEO -->
+        <div class="bento-card">
+          <div class="card-header-row">
+            <div class="card-title-text">
+              <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+              Meteo Prossime Ore
+            </div>
+            <div class="pill">Previsioni</div>
+          </div>
+          <div class="card-body" style="display: grid; grid-template-columns: 1fr 1fr 1fr; text-align: center; align-items: center;">
+            <div style="border-right: var(--border-hairline); padding: 4px;">
+              <div style="font-size: 0.8rem; font-weight: 800;">16:00</div>
+              <div style="font-size: 1.5rem; font-weight: 900;">21°</div>
+              <div style="font-size: 0.75rem; font-weight: 700;">Soleggiato</div>
+            </div>
+            <div style="border-right: var(--border-hairline); padding: 4px;">
+              <div style="font-size: 0.8rem; font-weight: 800;">19:00</div>
+              <div style="font-size: 1.5rem; font-weight: 900;">17°</div>
+              <div style="font-size: 0.75rem; font-weight: 700;">Sereno</div>
+            </div>
+            <div style="padding: 4px;">
+              <div style="font-size: 0.8rem; font-weight: 800;">22:00</div>
+              <div style="font-size: 1.5rem; font-weight: 900;">13°</div>
+              <div style="font-size: 0.75rem; font-weight: 700;">Fresco</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TAB 2: SCUOLA & AXIOS -->
+    <section id="tab-axios" class="tab-pane">
+      <div class="school-split-container">
+        
+        <div class="bento-card">
+          <div class="card-header-row">
+            <div class="card-title-text">
+              <svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="0"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              Orario Lezioni
+            </div>
+            <div class="pill inverted" id="student-name-pill">ALUNNO: IRVINE</div>
+          </div>
+
+          <div class="days-pill-bar">
+            <button class="day-selector-btn" onclick="filterSchoolDay('LUN', this)">LUN</button>
+            <button class="day-selector-btn active" onclick="filterSchoolDay('MAR', this)">MAR</button>
+            <button class="day-selector-btn" onclick="filterSchoolDay('MER', this)">MER</button>
+            <button class="day-selector-btn" onclick="filterSchoolDay('GIO', this)">GIO</button>
+            <button class="day-selector-btn" onclick="filterSchoolDay('VEN', this)">VEN</button>
+          </div>
+
+          <div class="card-body" id="school-hours-list"></div>
+
+          <div class="backpack-alert-card">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+            <div style="font-size: 0.95rem; font-weight: 800;">
+              <strong>NELLO ZAINO OGGI:</strong> <span id="backpack-text">Sacca scarpe per palestra + Quaderno ad anelli</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="bento-card">
+          <div class="card-header-row">
+            <div class="card-title-text">
+              <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+              Compiti da Axios RE
+            </div>
+            <div class="pill">Sincronizzato 15:02</div>
+          </div>
+
+          <div class="card-body" id="axios-tasks-container">
+            <!-- Popolato dinamicamente da /api/data -->
+          </div>
+
+          <div style="border: var(--border-thin); padding: 8px 10px; margin-top: auto; font-size: 0.88rem; font-weight: 700;">
+            📌 <strong>Circolare n. 42:</strong> Giovedì assemblea sindacale prime 2 ore (ingresso posticipato alle 10:15).
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- TAB 3: SPESA TELEGRAM -->
+    <section id="tab-groceries" class="tab-pane">
+      <div class="bento-card" style="height: 100%;">
+        <div class="shopping-actions-bar">
+          <div class="shopping-count-badge" id="groceries-status">CARICAMENTO...</div>
+          <div style="display: flex; gap: 8px;">
+            <button class="ctrl-btn" onclick="resetGroceriesBackend()">Ripristina</button>
+            <button class="ctrl-btn" onclick="clearDoneGroceriesBackend()">Pulisci Completati</button>
+          </div>
+        </div>
+
+        <div class="shopping-grid" id="shopping-items-list">
+          <!-- Popolato dinamicamente da /api/data -->
+        </div>
+
+        <div style="border-top: var(--border-thin); padding-top: 8px; margin-top: 8px; font-size: 0.9rem; font-weight: 800; display: flex; justify-content: space-between;">
+          <span>💡 <strong>Tip Telegram:</strong> Scrivi <code>spesa latte, uova</code> in chat per aggiungerli qui in tempo reale!</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: SETTIMANA COMPLETA -->
+    <section id="tab-week" class="tab-pane">
+      <div class="bento-card" style="height: 100%;">
+        <div class="card-header-row">
+          <div class="card-title-text">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="0"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Quadro Settimanale Scuola (Orario Completo)
+          </div>
+          <div class="pill inverted">Anno 2026/2027</div>
+        </div>
+
+        <div class="week-columns-grid">
+          <div class="week-day-col">
+            <div class="col-header">Lunedì</div>
+            <div class="col-body">
+              <div class="col-subject-entry"><div class="col-sub-name">Italiano</div><div class="col-sub-time">08:15</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Storia</div><div class="col-sub-time">09:15</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Matematica</div><div class="col-sub-time">10:15</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Inglese</div><div class="col-sub-time">11:15</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Arte</div><div class="col-sub-time">12:15</div></div>
+            </div>
+          </div>
+
+          <div class="week-day-col" style="border: var(--border-thick);">
+            <div class="col-header">Martedì • Oggi</div>
+            <div class="col-body">
+              <div class="col-subject-entry"><div class="col-sub-name">Matematica</div><div class="col-sub-time">08:15</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Scienze</div><div class="col-sub-time">09:15</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Ed. Fisica</div><div class="col-sub-time">10:15</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Italiano</div><div class="col-sub-time">11:15</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Musica</div><div class="col-sub-time">12:15</div></div>
+            </div>
+          </div>
+
+          <div class="week-day-col">
+            <div class="col-header">Mercoledì</div>
+            <div class="col-body">
+              <div class="col-subject-entry"><div class="col-sub-name">Geografia</div><div class="col-sub-time">08:15</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Italiano</div><div class="col-sub-time">09:15</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Matematica</div><div class="col-sub-time">10:15</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Inglese</div><div class="col-sub-time">11:15</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Tecnologia</div><div class="col-sub-time">12:15</div></div>
+            </div>
+          </div>
+
+          <div class="week-day-col">
+            <div class="col-header">Giovedì</div>
+            <div class="col-body">
+              <div class="col-subject-entry"><div class="col-sub-name">Italiano</div><div class="col-sub-time">08:15</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Storia</div><div class="col-sub-time">09:15</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Scienze</div><div class="col-sub-time">10:15</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Religione</div><div class="col-sub-time">11:15</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Matematica</div><div class="col-sub-time">12:15</div></div>
+            </div>
+          </div>
+
+          <div class="week-day-col">
+            <div class="col-header">Venerdì</div>
+            <div class="col-body">
+              <div class="col-subject-entry"><div class="col-sub-name">Matematica</div><div class="col-sub-time">08:15</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Inglese</div><div class="col-sub-time">09:15</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Italiano</div><div class="col-sub-time">10:15</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Geografia</div><div class="col-sub-time">11:15</div></div>
+              <div class="col-subject-entry"><div class="col-sub-name">Ed. Civica</div><div class="col-sub-time">12:15</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ==================== FOOTER ==================== -->
+  <footer>
+    <div class="footer-left">
+      <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+      <span>AGGIORNATO ALLE <span id="last-sync-time">--:--</span> • KINDLE 7" PRO</span>
+    </div>
+    <div class="footer-controls">
+      <button class="ctrl-btn" onclick="toggleInvertMode()">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        Inverti Colori
+      </button>
+      <button class="ctrl-btn" onclick="fetchLiveBackendData()">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+        Aggiorna
+      </button>
+      <button class="ctrl-btn" onclick="toggleFullScreen()">
+        <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+        Schermo Intero
+      </button>
+    </div>
+  </footer>
+
+  <!-- ==================== MODAL TOKEN TELEGRAM ==================== -->
+  <div class="modal-backdrop" id="token-modal">
+    <div class="modal-card">
+      <h2 style="font-size: 1.4rem; font-weight: 900; margin-bottom: 8px;">Configura Bot Telegram</h2>
+      <p style="font-size: 0.95rem; line-height: 1.4;">
+        Incolla qui il <strong>Token</strong> ricevuto da <code>@BotFather</code> per attivare la ricezione dei messaggi:
+      </p>
+      <input type="text" id="token-input" class="modal-input" placeholder="123456789:ABCdefGhIJKlmNoPQRsTUVwxyZ">
+      <div style="display: flex; justify-content: flex-end; gap: 8px;">
+        <button class="ctrl-btn" onclick="closeTokenModal()">Annulla</button>
+        <button class="ctrl-btn" style="background:#000; color:#fff;" onclick="saveTokenBackend()">Salva ed Attiva</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== JAVASCRIPT ==================== -->
+  <script>
+    // 1. OROLOGIO
+    function updateClock() {
+      const now = new Date();
+      const hours = String(now.getHours()).padStart(2, '0');
+      const minutes = String(now.getMinutes()).padStart(2, '0');
+      const seconds = String(now.getSeconds()).padStart(2, '0');
+      
+      document.getElementById('clock').textContent = `${hours}:${minutes}`;
+      document.getElementById('seconds').textContent = `${seconds}s`;
+
+      const days = ["DOMENICA", "LUNEDÌ", "MARTEDÌ", "MERCOLEDÌ", "GIOVEDÌ", "VENERDÌ", "SABATO"];
+      const months = ["GENNAIO", "FEBBRAIO", "MARZO", "APRILE", "MAGGIO", "GIUGNO", "LUGLIO", "AGOSTO", "SETTEMBRE", "OTTOBRE", "NOVEMBRE", "DICEMBRE"];
+      
+      const dayName = days[now.getDay()];
+      const dayNum = now.getDate();
+      const monthName = months[now.getMonth()];
+      
+      document.getElementById('date-label').textContent = `${dayName} ${dayNum} ${monthName}`;
+    }
+    setInterval(updateClock, 1000);
+    updateClock();
+
+    // 2. TABS
+    function activateTab(tabId, btn) {
+      document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-tab').forEach(b => b.classList.remove('active'));
+      document.getElementById(tabId).classList.add('active');
+      btn.classList.add('active');
+    }
+
+    // 3. FETCH DATI LIVE DAL BACKEND PYTHON
+    let lastDataSnapshot = null;
+
+    async function fetchLiveBackendData() {
+      try {
+        const res = await fetch('/api/data', { cache: 'no-store' });
+        if (!res.ok) return;
+        const data = await res.json();
+        lastDataSnapshot = data;
+        renderBackendData(data);
+        
+        const now = new Date();
+        document.getElementById('last-sync-time').textContent = 
+          `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+      } catch (err) {
+        console.warn('Errore sync backend:', err);
+      }
+    }
+
+    function renderBackendData(data) {
+      // A. STATO BOT TELEGRAM
+      const tgPill = document.getElementById('tg-status-pill');
+      const tgText = document.getElementById('tg-status-text');
+      if (data.bot_active) {
+        tgPill.classList.add('inverted');
+        tgText.textContent = "TELEGRAM: ATTIVO";
+      } else {
+        tgPill.classList.remove('inverted');
+        tgText.textContent = "COLLEGA BOT TELEGRAM";
+      }
+
+      // B. NOTE TELEGRAM FEED
+      const notesContainer = document.getElementById('telegram-feed-list');
+      notesContainer.innerHTML = '';
+      if (data.notes && data.notes.length > 0) {
+        data.notes.forEach(note => {
+          const div = document.createElement('div');
+          div.className = 'tg-bubble';
+          div.innerHTML = `
+            <div class="tg-bubble-meta">
+              <span class="tg-author-tag">${escapeHtml(note.author)} • ${escapeHtml(note.time)}</span>
+              <span>Telegram</span>
+            </div>
+            <div class="tg-bubble-text">${escapeHtml(note.text)}</div>
+          `;
+          notesContainer.appendChild(div);
+        });
+      } else {
+        notesContainer.innerHTML = '<div style="font-size:0.95rem; font-weight:700; padding:12px 0;">Nessun messaggio recente. Invia una nota dal bot Telegram!</div>';
+      }
+
+      // C. SPESA TELEGRAM
+      const shopContainer = document.getElementById('shopping-items-list');
+      shopContainer.innerHTML = '';
+      let doneCount = 0;
+      if (data.groceries && data.groceries.length > 0) {
+        data.groceries.forEach(item => {
+          if (item.done) doneCount++;
+          const div = document.createElement('div');
+          div.className = `shop-item-touch ${item.done ? 'done' : ''}`;
+          div.onclick = () => toggleGroceryBackend(item.id);
+          div.innerHTML = `
+            <div class="check-box-graphic">${item.done ? '✓' : ''}</div>
+            <span class="shop-item-name">${escapeHtml(item.text)}</span>
+            <span class="shop-author">${escapeHtml(item.author || 'CASA')}</span>
+          `;
+          shopContainer.appendChild(div);
+        });
+        const pending = data.groceries.length - doneCount;
+        document.getElementById('groceries-status').textContent = `${pending} DA COMPRARE • ${doneCount} PRESI`;
+      } else {
+        shopContainer.innerHTML = '<div style="font-size:1.1rem; font-weight:800; padding:16px;">La lista della spesa è vuota.</div>';
+        document.getElementById('groceries-status').textContent = '0 ARTICOLI';
+      }
+
+      // D. COMPITI AXIOS
+      const tasksContainer = document.getElementById('axios-tasks-container');
+      tasksContainer.innerHTML = '';
+      if (data.tasks && data.tasks.length > 0) {
+        data.tasks.forEach(t => {
+          const div = document.createElement('div');
+          div.className = `task-entry ${t.done ? 'done' : ''}`;
+          div.onclick = () => toggleTaskBackend(t.id);
+          div.innerHTML = `
+            <div class="check-box-graphic">${t.done ? '✓' : ''}</div>
+            <div class="task-content-block">
+              <span class="task-subject-tag">${escapeHtml(t.subject)}</span>
+              <div class="task-title">${escapeHtml(t.text)}</div>
+            </div>
+          `;
+          tasksContainer.appendChild(div);
+        });
+      } else {
+        tasksContainer.innerHTML = '<div style="font-size:1rem; font-weight:700; padding:12px;">Nessun compito registrato su Axios.</div>';
+      }
+
+      if (data.student_name) {
+        const studentPill = document.getElementById('student-name-pill');
+        if (studentPill) studentPill.textContent = 'ALUNNO: ' + data.student_name.toUpperCase();
+      }
+
+      if (data.axios_last_sync) {
+        const axPill = document.getElementById('axios-status-text');
+        if (axPill) axPill.textContent = 'AXIOS: ' + data.axios_last_sync;
+        const axBox = document.getElementById('axios-status-pill');
+        if (axBox) axBox.classList.add('inverted');
+      }
+
+      // E. AVVISO ZAINO
+      if (data.backpack) {
+        document.getElementById('backpack-text').textContent = data.backpack;
+      }
+    }
+
+    async function triggerAxiosSync() {
+      const axPill = document.getElementById('axios-status-text');
+      if (axPill) axPill.textContent = 'SYNC AXIOS...';
+      await fetch('/api/sync-axios', { method: 'POST' });
+      fetchLiveBackendData();
+    }
+
+    // 4. AZIONI TOUCH CON SYNC BACKEND
+    async function toggleGroceryBackend(id) {
+      await fetch('/api/toggle-grocery', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+      fetchLiveBackendData();
+    }
+
+    async function toggleTaskBackend(id) {
+      await fetch('/api/toggle-task', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id })
+      });
+      fetchLiveBackendData();
+    }
+
+    async function resetGroceriesBackend() {
+      await fetch('/api/reset-groceries', { method: 'POST' });
+      fetchLiveBackendData();
+    }
+
+    async function clearDoneGroceriesBackend() {
+      await fetch('/api/clear-groceries', { method: 'POST' });
+      fetchLiveBackendData();
+    }
+
+    // 5. ORARIO SCUOLA
+    const schoolWeekData = {
+      'LUN': [
+        { time: "08:15 - 09:15", subject: "Italiano", teacher: "Prof. Rossi" },
+        { time: "09:15 - 10:15", subject: "Storia", teacher: "Prof. Neri" },
+        { time: "10:15 - 11:15", subject: "Matematica", teacher: "Prof. Bianchi" },
+        { time: "11:15 - 12:15", subject: "Inglese", teacher: "Prof. Smith" },
+        { time: "12:15 - 13:15", subject: "Arte", teacher: "Prof. Viola" }
+      ],
+      'MAR': [
+        { time: "08:15 - 09:15", subject: "Matematica", teacher: "Prof. Bianchi" },
+        { time: "09:15 - 10:15", subject: "Scienze", teacher: "Prof. Verdi" },
+        { time: "10:15 - 11:15", subject: "Ed. Fisica", teacher: "Prof. Ginnico" },
+        { time: "11:15 - 12:15", subject: "Italiano", teacher: "Prof. Rossi" },
+        { time: "12:15 - 13:15", subject: "Musica", teacher: "Prof. Allegri" }
+      ],
+      'MER': [
+        { time: "08:15 - 09:15", subject: "Geografia", teacher: "Prof. Neri" },
+        { time: "09:15 - 10:15", subject: "Italiano", teacher: "Prof. Rossi" },
+        { time: "10:15 - 11:15", subject: "Matematica", teacher: "Prof. Bianchi" },
+        { time: "11:15 - 12:15", subject: "Inglese", teacher: "Prof. Smith" },
+        { time: "12:15 - 13:15", subject: "Tecnologia", teacher: "Prof. Ingegneri" }
+      ],
+      'GIO': [
+        { time: "08:15 - 09:15", subject: "Italiano", teacher: "Prof. Rossi" },
+        { time: "09:15 - 10:15", subject: "Storia", teacher: "Prof. Neri" },
+        { time: "10:15 - 11:15", subject: "Scienze", teacher: "Prof. Verdi" },
+        { time: "11:15 - 12:15", subject: "Religione / Alt.", teacher: "Prof. Buoni" },
+        { time: "12:15 - 13:15", subject: "Matematica", teacher: "Prof. Bianchi" }
+      ],
+      'VEN': [
+        { time: "08:15 - 09:15", subject: "Matematica", teacher: "Prof. Bianchi" },
+        { time: "09:15 - 10:15", subject: "Inglese", teacher: "Prof. Smith" },
+        { time: "10:15 - 11:15", subject: "Italiano", teacher: "Prof. Rossi" },
+        { time: "11:15 - 12:15", subject: "Geografia", teacher: "Prof. Neri" },
+        { time: "12:15 - 13:15", subject: "Ed. Civica", teacher: "Prof. Rossi" }
+      ]
+    };
+
+    function filterSchoolDay(dayKey, btn) {
+      document.querySelectorAll('.day-selector-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      const hours = schoolWeekData[dayKey] || [];
+      const container = document.getElementById('school-hours-list');
+      container.innerHTML = '';
+      hours.forEach(row => {
+        const div = document.createElement('div');
+        div.className = 'timetable-row';
+        div.innerHTML = `
+          <span class="tt-hour">${row.time}</span>
+          <div class="tt-subject">
+            <span>${row.subject}</span>
+            <span class="tt-teacher">${row.teacher}</span>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    const curDay = new Date().getDay();
+    const dayLookup = { 1: 'LUN', 2: 'MAR', 3: 'MER', 4: 'GIO', 5: 'VEN' };
+    filterSchoolDay(dayLookup[curDay] || 'MAR', document.querySelector('.day-selector-btn.active') || document.querySelector('.day-selector-btn'));
+
+    // 6. MODAL TOKEN TELEGRAM
+    function openTokenModal() {
+      document.getElementById('token-modal').classList.add('show');
+    }
+    function closeTokenModal() {
+      document.getElementById('token-modal').classList.remove('show');
+    }
+    async function saveTokenBackend() {
+      const tok = document.getElementById('token-input').value.trim();
+      if (!tok) return;
+      await fetch('/api/set-token', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ token: tok })
+      });
+      closeTokenModal();
+      fetchLiveBackendData();
+    }
+
+    // UTILITIES
+    function toggleInvertMode() { document.body.classList.toggle('dark-mode'); }
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) document.documentElement.requestFullscreen().catch(()=>{});
+      else if (document.exitFullscreen) document.exitFullscreen();
+    }
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+    }
+
+    // Polling automatico ogni 4 secondi per aggiornamenti in tempo reale dal bot Telegram
+    setInterval(fetchLiveBackendData, 4000);
+    fetchLiveBackendData();
+  </script>
+</body>
+</html>

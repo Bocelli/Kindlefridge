@@ -1,0 +1,7 @@
+# Segreti e configurazioni personali
+config.json
+data.json
+
+# Cache python
+__pycache__/
+*.pyc

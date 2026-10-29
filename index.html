@@ -348,23 +348,28 @@
       align-items: center;
       justify-content: space-between;
       height: 100%;
-      padding: 2px 2px;
-      gap: 8px;
+      padding: 2px 0;
+      gap: 6px;
     }
 
     .meteo-left {
-      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 3px;
       min-width: 0;
+      flex: 1;
     }
 
     .meteo-primary-row {
       display: flex;
-      align-items: center;
-      gap: 10px;
+      align-items: baseline;
+      gap: 8px;
+      min-width: 0;
     }
 
     .temp-big {
-      font-size: 2.2rem;
+      font-size: 2.05rem;
       font-weight: 900;
       letter-spacing: -1px;
       line-height: 1;
@@ -380,18 +385,15 @@
     }
 
     .cond-text {
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 800;
-      text-transform: uppercase;
       color: #0369A1;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      line-height: 1.2;
+      line-height: 1.15;
+      white-space: normal;
     }
 
     .meteo-minmax-text {
-      font-size: 0.72rem;
+      font-size: 0.70rem;
       font-weight: 800;
       color: #475569;
       font-family: var(--font-mono);
@@ -401,17 +403,17 @@
     .forecast-duo {
       display: flex;
       flex-direction: column;
-      gap: 5px;
-      border-left: 2px solid #BAE6FD;
-      padding-left: 10px;
+      gap: 4px;
+      border-left: 1.5px solid #BAE6FD;
+      padding-left: 8px;
       flex-shrink: 0;
     }
 
     .forecast-slot {
       display: flex;
       align-items: center;
-      gap: 6px;
-      font-size: 0.75rem;
+      gap: 5px;
+      font-size: 0.72rem;
       font-weight: 800;
       white-space: nowrap;
     }
@@ -1134,13 +1136,13 @@
       <!-- CARD 3: SCUOLA DOMANI (CON ORARI COMPLETI E AMPIO SPAZIO) -->
       <div class="bento-card card-school-prep">
         <div class="card-top-tag">
-          <div class="card-label" style="color: #B45309;">
+          <div class="card-label" style="color: #B45309; white-space: nowrap;">
             <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10M6 10h10M6 14h6"/></svg>
-            <span id="school-prep-title">Scuola Domani</span>
-            <span class="card-sub-pill" id="school-prep-hours" style="background:#FEF3C7; color:#92400E; font-weight:900; margin-left:4px;">08:30 - 13:30</span>
+            <span>Scuola • <b id="school-prep-day" style="font-weight:900;">Domani</b></span>
+            <span class="card-sub-pill" id="school-prep-hours" style="background:#FEF3C7; color:#92400E; font-weight:900; margin-left:3px;">08:30-13:30</span>
           </div>
-          <button class="btn-action-sm" onclick="openWeekModal()" style="padding: 2px 7px; font-size: 0.68rem; background:#FFFFFF;">
-            Settimana 👁️
+          <button class="btn-action-sm" onclick="openWeekModal()" style="padding: 2px 6px; font-size: 0.65rem; background:#FFFFFF;">
+            Settimana 🗓️
           </button>
         </div>
 
@@ -1414,7 +1416,8 @@
     function renderWeather(w) {
       if (!w) return;
       document.getElementById('weather-temp').textContent = w.temp || '--°C';
-      document.getElementById('weather-cond').textContent = (w.condition || 'VARIABILE').toUpperCase();
+      const cond = w.condition || 'Variabile';
+      document.getElementById('weather-cond').textContent = cond.charAt(0).toUpperCase() + cond.slice(1).toLowerCase();
       document.getElementById('weather-minmax').textContent = w.min_max || 'MIN --° • MAX --°';
       document.getElementById('weather-rain-pill').textContent = w.rain || 'PIOGGIA 0%';
 
@@ -1458,6 +1461,32 @@
       return 'subj-default';
     }
 
+    function groupConsecutiveSubjects(subjects) {
+      if (!subjects || subjects.length === 0) return [];
+      const groups = [];
+      let curr = {
+        subject: subjects[0].subject,
+        startHour: 1,
+        endHour: 1,
+        startTime: subjects[0].time
+      };
+      for (let i = 1; i < subjects.length; i++) {
+        if (subjects[i].subject.toLowerCase() === curr.subject.toLowerCase()) {
+          curr.endHour = i + 1;
+        } else {
+          groups.push(curr);
+          curr = {
+            subject: subjects[i].subject,
+            startHour: i + 1,
+            endHour: i + 1,
+            startTime: subjects[i].time
+          };
+        }
+      }
+      groups.push(curr);
+      return groups;
+    }
+
     function renderSchoolPrep(d) {
       const now = new Date(Date.now() + serverTimeDelta);
       const tomorrow = new Date(now);
@@ -1465,7 +1494,9 @@
 
       const tDayKey = DAYS_MAP[tomorrow.getDay()];
       const tDayName = DAYS_FULL[tomorrow.getDay()];
-      document.getElementById('school-prep-title').textContent = `Scuola (${tDayName})`;
+
+      const dayEl = document.getElementById('school-prep-day');
+      if (dayEl) dayEl.textContent = tDayName;
 
       const subjects = schoolWeekData[tDayKey];
       const hoursBadge = document.getElementById('school-prep-hours');
@@ -1493,14 +1524,15 @@
       if (!subjects || subjects.length === 0) {
         subContainer.innerHTML = '<span style="font-size:0.75rem; font-weight:700; color:#B45309;">🛋️ Domani riposo! Nessuna lezione prevista.</span>';
       } else {
-        // Pillole con numero d'ora, orario e materia a colori
-        subContainer.innerHTML = subjects.map((s, idx) => {
-          const colClass = getSubjectColorClass(s.subject);
+        const groups = groupConsecutiveSubjects(subjects);
+        subContainer.innerHTML = groups.map(g => {
+          const colClass = getSubjectColorClass(g.subject);
+          const hoursLabel = g.startHour === g.endHour ? `${g.startHour}ª` : `${g.startHour}ª-${g.endHour}ª`;
           return `
             <div class="sub-pill-compact ${colClass}">
-              <span class="sub-num">${idx + 1}ª</span>
-              <span class="sub-name">${escapeHtml(s.subject)}</span>
-              <span class="sub-time">${s.time}</span>
+              <span class="sub-num">${hoursLabel}</span>
+              <span class="sub-name">${escapeHtml(g.subject)}</span>
+              <span class="sub-time">${g.startTime}</span>
             </div>
           `;
         }).join('');

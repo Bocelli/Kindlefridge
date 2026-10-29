@@ -290,7 +290,7 @@
        ========================================================================== */
     .row-trio {
       display: grid;
-      grid-template-columns: 1fr 1fr 1fr;
+      grid-template-columns: 1fr 0.75fr 1.25fr;
       gap: 10px;
       flex-shrink: 0;
       height: 138px;
@@ -349,14 +349,14 @@
       justify-content: space-between;
       height: 100%;
       padding: 2px 0;
-      gap: 6px;
+      gap: 10px;
     }
 
     .meteo-left {
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: 3px;
+      gap: 4px;
       min-width: 0;
       flex: 1;
     }
@@ -369,7 +369,7 @@
     }
 
     .temp-big {
-      font-size: 2.05rem;
+      font-size: 2.1rem;
       font-weight: 900;
       letter-spacing: -1px;
       line-height: 1;
@@ -377,23 +377,16 @@
       flex-shrink: 0;
     }
 
-    .meteo-cond-col {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-      min-width: 0;
-    }
-
     .cond-text {
-      font-size: 0.82rem;
+      font-size: 0.85rem;
       font-weight: 800;
       color: #0369A1;
       line-height: 1.15;
-      white-space: normal;
+      white-space: nowrap;
     }
 
     .meteo-minmax-text {
-      font-size: 0.70rem;
+      font-size: 0.72rem;
       font-weight: 800;
       color: #475569;
       font-family: var(--font-mono);
@@ -403,17 +396,17 @@
     .forecast-duo {
       display: flex;
       flex-direction: column;
-      gap: 4px;
-      border-left: 1.5px solid #BAE6FD;
-      padding-left: 8px;
+      gap: 5px;
+      border-left: 2px solid #BAE6FD;
+      padding-left: 10px;
       flex-shrink: 0;
     }
 
     .forecast-slot {
       display: flex;
       align-items: center;
-      gap: 5px;
-      font-size: 0.72rem;
+      gap: 6px;
+      font-size: 0.74rem;
       font-weight: 800;
       white-space: nowrap;
     }
@@ -578,34 +571,34 @@
       border-bottom: 2px solid #E2E8F0;
       margin-bottom: 6px;
       flex-shrink: 0;
-      gap: 6px;
+      gap: 4px;
     }
 
     .card-title-group {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 4px;
       min-width: 0;
       overflow: hidden;
     }
 
     .card-title {
-      font-size: 0.88rem;
+      font-size: 0.84rem;
       font-weight: 900;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.2px;
       text-transform: uppercase;
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 4px;
       white-space: nowrap;
     }
 
     .counter-badge {
       background: #0F172A;
       color: #FFFFFF;
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       font-weight: 900;
-      padding: 2px 6px;
+      padding: 1.5px 5px;
       border-radius: var(--radius-pill);
       white-space: nowrap;
     }
@@ -615,9 +608,9 @@
       background: #FFFFFF;
       color: var(--fg);
       border: var(--border-thick);
-      padding: 3px 8px;
+      padding: 2.5px 7px;
       border-radius: var(--radius-pill);
-      font-size: 0.70rem;
+      font-size: 0.68rem;
       font-weight: 900;
       cursor: pointer;
       box-shadow: var(--shadow-sm);
@@ -1106,11 +1099,9 @@
           <div class="meteo-left">
             <div class="meteo-primary-row">
               <span class="temp-big" id="weather-temp">--°C</span>
-              <div class="meteo-cond-col">
-                <span class="cond-text" id="weather-cond">CARICAMENTO</span>
-                <span class="meteo-minmax-text" id="weather-minmax">MIN --° • MAX --°</span>
-              </div>
+              <span class="cond-text" id="weather-cond">CARICAMENTO</span>
             </div>
+            <div class="meteo-minmax-text" id="weather-minmax">MIN --° • MAX --°</div>
           </div>
           <div class="forecast-duo" id="weather-forecast-duo">
             <!-- Popolato dinamicamente con previsioni orarie e icone -->
@@ -1121,15 +1112,15 @@
       <!-- CARD 2: DIFFERENZIATA STASERA -->
       <div class="bento-card card-recycle">
         <div class="card-top-tag">
-          <div class="card-label" style="color: #047857;">
+          <div class="card-label" style="color: #047857; white-space: nowrap;">
             <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-            <span>Differenziata Stasera</span>
+            <span>Differenziata</span>
           </div>
           <span class="card-sub-pill" id="recycle-target-day" style="background:#D1FAE5; color:#065F46; font-weight:900;">DOMANI</span>
         </div>
         <div class="recycle-content">
           <div class="recycle-highlight" id="recycle-type">ORGANICO (Umido)</div>
-          <div class="recycle-instructions" id="recycle-details">Ritiro domani mattina • Esporre stasera</div>
+          <div class="recycle-instructions" id="recycle-details">Ritiro domani • Esporre stasera</div>
         </div>
       </div>
 
@@ -1141,7 +1132,7 @@
             <span>Scuola • <b id="school-prep-day" style="font-weight:900;">Domani</b></span>
             <span class="card-sub-pill" id="school-prep-hours" style="background:#FEF3C7; color:#92400E; font-weight:900; margin-left:3px;">08:30-13:30</span>
           </div>
-          <button class="btn-action-sm" onclick="openWeekModal()" style="padding: 2px 6px; font-size: 0.65rem; background:#FFFFFF;">
+          <button class="btn-action-sm" onclick="openWeekModal()" style="padding: 2px 8px; font-size: 0.68rem; background:#FFFFFF; white-space: nowrap;">
             Settimana 🗓️
           </button>
         </div>

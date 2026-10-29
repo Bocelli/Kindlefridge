@@ -5,3 +5,8 @@ data.json
 # Cache python
 __pycache__/
 *.pyc
+*.backup.html
+.ignore
+
+# graft's local graph cache — regenerable, not committed (run `graft build`).
+/graft/

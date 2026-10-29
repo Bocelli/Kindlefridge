@@ -2,11 +2,62 @@ import os
 import re
 import json
 import requests
+from datetime import datetime, timezone, timedelta
 from lxml import html
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 CONFIG_FILE = os.path.join(BASE_DIR, "config.json")
 DATA_FILE = os.path.join(BASE_DIR, "data.json")
+
+def get_rome_now():
+    """Restituisce data e ora attuali nel fuso orario di Roma (CET UTC+1 / CEST UTC+2)."""
+    try:
+        import zoneinfo
+        return datetime.now(zoneinfo.ZoneInfo("Europe/Rome"))
+    except Exception:
+        pass
+    now_utc = datetime.now(timezone.utc)
+    year = now_utc.year
+    march_last = datetime(year, 3, 31, 1, 0, tzinfo=timezone.utc)
+    dst_start = march_last - timedelta(days=(march_last.weekday() + 1) % 7)
+    oct_last = datetime(year, 10, 31, 1, 0, tzinfo=timezone.utc)
+    dst_end = oct_last - timedelta(days=(oct_last.weekday() + 1) % 7)
+    tz = timezone(timedelta(hours=2)) if dst_start <= now_utc < dst_end else timezone(timedelta(hours=1))
+    return now_utc.astimezone(tz)
+
+def parse_alert_date(date_str, rn=None):
+    """Converte una stringa data (es. '28/10/2026' o '28/10') in un oggetto date."""
+    if rn is None:
+        rn = get_rome_now()
+    try:
+        m = re.search(r'(\d{1,2})[/-](\d{1,2})(?:[/-](\d{2,4}))?', str(date_str).strip())
+        if not m:
+            return None
+        day = int(m.group(1))
+        month = int(m.group(2))
+        y_str = m.group(3)
+        year = int(y_str) if y_str else rn.year
+        if year < 100:
+            year += 2000
+        return datetime(year, month, day).date()
+    except Exception:
+        return None
+
+def is_task_in_sync_window(date_str, rn=None):
+    """
+    Verifica se il compito rientra nella finestra richiesta:
+    - Dal giorno dopo (domani: today + 1)
+    - Fino al lunedì della settimana successiva (incluso).
+    """
+    if rn is None:
+        rn = get_rome_now()
+    today = rn.date()
+    start_date = today + timedelta(days=1)
+    next_monday = today + timedelta(days=(7 - today.weekday()))
+    t_date = parse_alert_date(date_str, rn)
+    if not t_date:
+        return True
+    return start_date <= t_date <= next_monday
 
 def load_config():
     cfg = {}
@@ -97,8 +148,8 @@ def fetch_axios_data():
             m_date = re.search(r'(\d{2}/\d{2}/\d{4})', date_raw)
             clean_date = m_date.group(1) if m_date else date_raw
 
-            # Se ci sono compiti
-            if compiti:
+            # Se ci sono compiti e rientrano nella finestra richiesta [domani, lunedì prossimo]
+            if compiti and is_task_in_sync_window(clean_date):
                 parts = re.split(r'([A-ZÀ-Ú\s]{3,20}:)', compiti)
                 if len(parts) > 1:
                     i = 1

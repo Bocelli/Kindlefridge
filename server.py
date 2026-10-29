@@ -9,7 +9,7 @@ import urllib.request
 import urllib.parse
 from datetime import datetime, timezone, timedelta
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
-from axios_sync import fetch_axios_data
+from axios_sync import fetch_axios_data, is_task_in_sync_window, parse_alert_date
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATA_FILE = os.path.join(BASE_DIR, "data.json")
@@ -127,25 +127,12 @@ def get_recycle_for_day(dt=None):
     res["target_day"] = target_day_name
     return res
 
-def parse_alert_date(date_str, rn):
-    """Converte una stringa data (es. '28/10/2026' o '28/10') in un oggetto date."""
-    try:
-        parts = date_str.strip().split('/')
-        day = int(parts[0])
-        month = int(parts[1])
-        year = int(parts[2]) if len(parts) > 2 else rn.year
-        if year < 100:
-            year += 2000
-        return datetime(year, month, day).date()
-    except Exception:
-        return None
-
 def get_active_backpack_alert(data, rn=None):
     """
     Filtra e restituisce l'avviso della maestra/zaino rilevante per la giornata odierna:
     - Appare il giorno prima dell'avviso (es. il 28 per l'avviso del 29, come promemoria)
-    - Rimane visibile la mattina dell'avviso (fino alle ore 14:00, termine lezioni)
-    - Dalle 14:00 del giorno stesso o nei giorni successivi sparisce.
+    - Rimane visibile la mattina dell'avviso (fino alle ore 09:00)
+    - Dalle 09:00 del giorno stesso o nei giorni successivi sparisce.
     - Se l'avviso è per due o più giorni nel futuro, NON viene ancora mostrato.
     """
     if rn is None:
@@ -194,8 +181,8 @@ def get_active_backpack_alert(data, rn=None):
                     "pill": f"PER DOMANI ({target_date.strftime('%d/%m')})",
                     "active": True
                 })
-            # 2. Giorno stesso dell'avviso (la mattina fino alle 14:00)
-            elif today == target_date and hour < 14:
+            # 2. Giorno stesso dell'avviso (la mattina fino alle 09:00)
+            elif today == target_date and hour < 9:
                 active_alerts.append({
                     "text": text,
                     "date": d_str,
@@ -324,15 +311,16 @@ def sync_axios_safe():
         except Exception:
             current_data = {}
 
+        # Filtra compiti nella finestra richiesta [da domani fino a lunedì della settimana dopo]
+        new_tasks = [t for t in result.get("tasks", []) if is_task_in_sync_window(t.get("date"))]
+
         # Preserva lo stato 'fatto' dei compiti già spuntati
         old_done_map = {t.get("text"): t.get("done", False) for t in current_data.get("tasks", [])}
-        new_tasks = result.get("tasks", [])
         for t in new_tasks:
             if t.get("text") in old_done_map:
                 t["done"] = old_done_map[t.get("text")]
 
-        if new_tasks:
-            current_data["tasks"] = new_tasks
+        current_data["tasks"] = new_tasks
 
         if result.get("backpack_alerts"):
             current_data["backpack_alerts"] = result["backpack_alerts"]
@@ -472,7 +460,7 @@ def handle_telegram_message(token, msg):
         sync_axios_safe()
         fresh_data = load_data()
         student = fresh_data.get("student_name", "Irvine")
-        tasks = fresh_data.get("tasks", [])
+        tasks = [t for t in fresh_data.get("tasks", []) if is_task_in_sync_window(t.get("date"))]
         
         if not tasks:
             send_telegram_message(token, chat_id, f"📚 Nessun compito registrato per <b>{html.escape(student)}</b> su Axios.")
@@ -649,6 +637,9 @@ class FridgeRequestHandler(SimpleHTTPRequestHandler):
             data["recycle"] = get_recycle_for_day(rn)
             data["weather"] = get_salemi_weather()
             
+            # Filtro compiti attivi [domani -> lunedì della settimana dopo]
+            data["tasks"] = [t for t in data.get("tasks", []) if is_task_in_sync_window(t.get("date"), rn)]
+
             # Calcola l'avviso zaino/maestra attivo per la giornata
             active_bp = get_active_backpack_alert(data, rn)
             data["backpack_active"] = active_bp["active"]

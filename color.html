@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>KindleFridge 10" - Edizione a Colori (Family Pastel Bento)</title>
+  <style>
+    /* ==========================================================================
+       DESIGN SYSTEM: FAMILY PASTEL BENTO (UI/UX PRO MAX - COLOR EDITION)
+       - Soft Neubrutalism with warm family pastels & 2.5px solid black borders
+       - 4px hard drop shadows for tactile fridge magnets
+       - Color-coded subjects (Italiano, Matematica, Scienze, ecc.)
+       - Color-coded authors (Mamma, Papà, Figli)
+       - 10" Fullscreen Landscape Optimized
+       ========================================================================== */
+    :root {
+      --bg: #F4F6F9;
+      --card-bg: #FFFFFF;
+      --fg: #1E293B;
+      --border-color: #0F172A;
+      --border-thick: 2.5px solid var(--border-color);
+      --border-thin: 1.5px solid var(--border-color);
+      --border-hairline: 1px solid var(--border-color);
+      --shadow-solid: 4px 4px 0px var(--border-color);
+      --shadow-sm: 2px 2px 0px var(--border-color);
+      --radius-card: 18px;
+      --radius-item: 12px;
+      --radius-pill: 8px;
+      --font-main: -apple-system, BlinkMacSystemFont, "Plus Jakarta Sans", "Outfit", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", monospace;
+
+      /* PALETTE COLORATA FAMILY */
+      --c-brand: #6366F1;
+      --c-brand-bg: #EEF2FF;
+      --c-weather: #0EA5E9;
+      --c-weather-bg: #E0F2FE;
+      --c-recycle: #10B981;
+      --c-recycle-bg: #D1FAE5;
+      --c-school: #F59E0B;
+      --c-school-bg: #FEF3C7;
+      --c-notes: #8B5CF6;
+      --c-notes-bg: #EDE9FE;
+      --c-groceries: #059669;
+      --c-groceries-bg: #ECFDF5;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: var(--bg);
+      color: var(--fg);
+      font-family: var(--font-main);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* APP WRAPPER 10" FULLSCREEN */
+    .app-container {
+      display: flex;
+      flex-direction: column;
+      width: 100vw;
+      height: 100vh;
+      padding: 12px 16px;
+      gap: 12px;
+      box-sizing: border-box;
+    }
+
+    /* ICONS */
+    .icon {
+      width: 20px;
+      height: 20px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2.3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      vertical-align: middle;
+      flex-shrink: 0;
+    }
+    .icon-sm { width: 16px; height: 16px; stroke-width: 2.2; }
+    .icon-lg { width: 28px; height: 28px; stroke-width: 2.4; }
+
+    /* ==========================================================================
+       1. HEADER BAR: FAMILY BRANDING, DATE & LIVE CLOCK
+       ========================================================================== */
+    header.bento-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card-bg);
+      border: var(--border-thick);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-solid);
+      padding: 8px 18px;
+      min-height: 56px;
+      flex-shrink: 0;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .family-badge {
+      background: #4F46E5;
+      color: #FFFFFF;
+      font-size: 0.95rem;
+      font-weight: 900;
+      letter-spacing: 0.8px;
+      padding: 6px 14px;
+      border-radius: var(--radius-pill);
+      border: 2px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-transform: uppercase;
+    }
+
+    .date-display {
+      font-size: 1.05rem;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+      text-transform: capitalize;
+      color: #334155;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .bot-status-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      border: var(--border-thin);
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      background: #ECFDF5;
+      color: #065F46;
+      letter-spacing: 0.4px;
+    }
+
+    .status-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #10B981;
+      box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
+      display: inline-block;
+    }
+
+    .clock-box {
+      display: flex;
+      align-items: baseline;
+      gap: 4px;
+      background: #0F172A;
+      color: #FFFFFF;
+      padding: 4px 12px;
+      border-radius: var(--radius-pill);
+      box-shadow: var(--shadow-sm);
+    }
+
+    .clock-time {
+      font-size: 1.55rem;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      font-variant-numeric: tabular-nums;
+      line-height: 1;
+    }
+
+    .clock-seconds {
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      font-weight: 800;
+      opacity: 0.85;
+      color: #38BDF8;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-icon {
+      width: 38px;
+      height: 38px;
+      border: var(--border-thick);
+      border-radius: var(--radius-pill);
+      background: var(--card-bg);
+      color: var(--fg);
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.08s ease, box-shadow 0.08s ease;
+    }
+
+    .btn-icon:active {
+      transform: translate(2px, 2px);
+      box-shadow: none;
+    }
+
+    /* ==========================================================================
+       2. TOP STATUS ROW: 3 SYMMETRICAL CARDS (METEO, DIFFERENZIATA, SCUOLA DOMANI)
+       ========================================================================== */
+    .row-trio {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 12px;
+      flex-shrink: 0;
+      height: 125px;
+    }
+
+    .bento-card {
+      background: var(--card-bg);
+      border: var(--border-thick);
+      border-radius: var(--radius-card);
+      box-shadow: var(--shadow-solid);
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-top-tag {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+      flex-shrink: 0;
+    }
+
+    .card-label {
+      font-size: 0.75rem;
+      font-weight: 900;
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .card-sub-pill {
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: var(--radius-pill);
+      border: 1px solid var(--border-color);
+      letter-spacing: 0.3px;
+    }
+
+    /* CARD 1: METEO CONTENT (SKY BLUE TINT) */
+    .bento-card.card-weather {
+      background: linear-gradient(135deg, #FFFFFF 65%, #F0F9FF 100%);
+    }
+
+    .meteo-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 100%;
+    }
+
+    .meteo-primary {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+    }
+
+    .temp-big {
+      font-size: 2.2rem;
+      font-weight: 900;
+      letter-spacing: -1px;
+      line-height: 1;
+      color: #0284C7;
+    }
+
+    .cond-text {
+      font-size: 0.85rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      color: #0369A1;
+    }
+
+    .meteo-meta-lines {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: #475569;
+      margin-top: 3px;
+    }
+
+    .forecast-duo {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      border-left: 2px solid #BAE6FD;
+      padding-left: 10px;
+    }
+
+    .forecast-slot {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.75rem;
+      font-weight: 800;
+    }
+
+    .forecast-time-badge {
+      background: #0284C7;
+      color: #FFFFFF;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 0.68rem;
+      font-family: var(--font-mono);
+    }
+
+    /* CARD 2: DIFFERENZIATA CONTENT (DYNAMIC ACCENTS) */
+    .bento-card.card-recycle {
+      background: linear-gradient(135deg, #FFFFFF 65%, #F0FDF4 100%);
+    }
+
+    .recycle-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      height: 100%;
+      gap: 4px;
+    }
+
+    .recycle-highlight {
+      font-size: 1.15rem;
+      font-weight: 900;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+      line-height: 1.2;
+      color: #0F172A;
+    }
+
+    .recycle-instructions {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #475569;
+      line-height: 1.25;
+    }
+
+    /* CARD 3: SCUOLA DOMANI (WARM AMBER / CORAL POST-IT) */
+    .bento-card.card-school-prep {
+      background: linear-gradient(135deg, #FFFFFF 65%, #FFFBEB 100%);
+    }
+
+    .school-prep-content {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .alert-banner-box {
+      border: var(--border-thin);
+      border-radius: var(--radius-item);
+      padding: 4px 8px;
+      background: #FEF3C7;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78rem;
+      font-weight: 700;
+      color: #92400E;
+      line-height: 1.2;
+    }
+
+    .alert-tag-mini {
+      background: #F59E0B;
+      color: #FFFFFF;
+      font-size: 0.65rem;
+      font-weight: 900;
+      padding: 1px 5px;
+      border-radius: 4px;
+      flex-shrink: 0;
+      letter-spacing: 0.3px;
+    }
+
+    .alert-text-mini {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      flex: 1;
+    }
+
+    .subjects-mini-row {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      overflow-x: auto;
+      padding: 2px 0;
+    }
+
+    .sub-pill-compact {
+      background: #FFFFFF;
+      border: var(--border-thin);
+      border-radius: 6px;
+      padding: 3px 7px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      box-shadow: 1px 1px 0px var(--border-color);
+    }
+
+    .sub-num {
+      background: #4F46E5;
+      color: #FFFFFF;
+      font-size: 0.62rem;
+      font-family: var(--font-mono);
+      font-weight: 900;
+      padding: 1px 4px;
+      border-radius: 3px;
+    }
+
+    /* ==========================================================================
+       3. MAIN SECTION: 3 TALL PILLARS (NOTE | COMPITI RE | SPESA)
+       ========================================================================== */
+    .row-pillars {
+      display: grid;
+      grid-template-columns: 1fr 1.15fr 1fr;
+      gap: 12px;
+      flex: 1;
+      min-height: 0;
+    }
+
+    .card-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #E2E8F0;
+      margin-bottom: 8px;
+      flex-shrink: 0;
+    }
+
+    .card-title-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .card-title {
+      font-size: 0.95rem;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .counter-badge {
+      background: #0F172A;
+      color: #FFFFFF;
+      font-size: 0.72rem;
+      font-weight: 900;
+      padding: 2px 8px;
+      border-radius: var(--radius-pill);
+    }
+
+    .btn-action-sm {
+      background: #FFFFFF;
+      color: var(--fg);
+      border: var(--border-thick);
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      font-size: 0.72rem;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: var(--shadow-sm);
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      transition: transform 0.08s ease, box-shadow 0.08s ease;
+    }
+
+    .btn-action-sm:active {
+      transform: translate(2px, 2px);
+      box-shadow: none;
+    }
+
+    .scroll-body {
+      flex: 1;
+      overflow-y: auto;
+      padding-right: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    /* PILLAR 1: NOTE TELEGRAM (COLOR CODED BY AUTHOR) */
+    .note-item {
+      background: #FFFFFF;
+      border: var(--border-thin);
+      border-radius: var(--radius-item);
+      padding: 10px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      box-shadow: 2px 2px 0px var(--border-color);
+      transition: transform 0.08s ease;
+    }
+
+    .note-header-line {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Autori colorati */
+    .author-pill {
+      font-size: 0.72rem;
+      font-weight: 900;
+      letter-spacing: 0.5px;
+      padding: 2px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border-color);
+      text-transform: uppercase;
+    }
+
+    .author-mamma { background: #FFE4E6; color: #BE123C; }
+    .author-papa  { background: #DBEAFE; color: #1D4ED8; }
+    .author-figli { background: #D1FAE5; color: #047857; }
+    .author-other { background: #FEF3C7; color: #B45309; }
+
+    .note-time-label {
+      font-size: 0.72rem;
+      font-family: var(--font-mono);
+      font-weight: 800;
+      color: #64748B;
+    }
+
+    .note-body-text {
+      font-size: 0.95rem;
+      font-weight: 700;
+      line-height: 1.35;
+      color: #1E293B;
+      word-break: break-word;
+    }
+
+    /* PILLAR 2: COMPITI RE (COLOR CODED BY SUBJECT) */
+    .task-card-full {
+      background: #FFFFFF;
+      border: var(--border-thin);
+      border-radius: var(--radius-item);
+      padding: 10px 12px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      box-shadow: 2px 2px 0px var(--border-color);
+      cursor: pointer;
+      transition: transform 0.08s ease, background 0.15s ease;
+    }
+
+    .task-card-full.done {
+      background: #F1F5F9;
+      border-style: dashed;
+      opacity: 0.65;
+    }
+
+    .task-checkbox-box {
+      width: 22px;
+      height: 22px;
+      border: var(--border-thick);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      margin-top: 2px;
+      background: #FFFFFF;
+    }
+
+    .task-checkbox-box.checked {
+      background: #10B981;
+      border-color: #065F46;
+    }
+
+    .task-checkbox-box.checked::after {
+      content: "✓";
+      font-size: 15px;
+      font-weight: 900;
+      color: #FFFFFF;
+    }
+
+    .task-content-block {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      overflow: hidden;
+    }
+
+    .task-meta-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    /* Badge Materia Colorati */
+    .task-subject-badge {
+      font-size: 0.72rem;
+      font-weight: 900;
+      padding: 2px 8px;
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+    }
+
+    .subj-italiano   { background: #FFE4E6; color: #9F1239; }
+    .subj-matematica { background: #DBEAFE; color: #1E40AF; }
+    .subj-scienze    { background: #D1FAE5; color: #065F46; }
+    .subj-storia     { background: #FEF3C7; color: #92400E; }
+    .subj-geografia  { background: #CCFBF1; color: #115E59; }
+    .subj-inglese    { background: #F3E8FF; color: #6B21A8; }
+    .subj-arte       { background: #FFEDD5; color: #9A3412; }
+    .subj-musica     { background: #FCE7F3; color: #9D174D; }
+    .subj-stem       { background: #E0E7FF; color: #3730A3; }
+    .subj-motoria    { background: #ECFCCB; color: #3F6212; }
+    .subj-default    { background: #F1F5F9; color: #334155; }
+
+    .task-date-badge {
+      font-size: 0.75rem;
+      font-family: var(--font-mono);
+      font-weight: 800;
+      color: #64748B;
+    }
+
+    .task-full-text {
+      font-size: 0.92rem;
+      font-weight: 700;
+      line-height: 1.35;
+      color: #0F172A;
+      word-break: break-word;
+    }
+
+    .task-card-full.done .task-full-text {
+      text-decoration: line-through;
+      color: #64748B;
+    }
+
+    /* PILLAR 3: SPESA ITEMS (FRESH MINT THEME) */
+    .grocery-item {
+      background: #FFFFFF;
+      border: var(--border-thin);
+      border-radius: var(--radius-item);
+      padding: 8px 12px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 48px;
+      cursor: pointer;
+      box-shadow: 2px 2px 0px var(--border-color);
+      transition: transform 0.08s ease, background 0.15s ease;
+    }
+
+    .grocery-item:active {
+      transform: translate(1px, 1px);
+      box-shadow: 1px 1px 0px var(--border-color);
+    }
+
+    .grocery-checkbox {
+      width: 24px;
+      height: 24px;
+      border: var(--border-thick);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #FFFFFF;
+      flex-shrink: 0;
+    }
+
+    .grocery-checkbox.checked {
+      background: #10B981;
+      border-color: #065F46;
+    }
+
+    .grocery-checkbox.checked::after {
+      content: "✕";
+      font-size: 15px;
+      font-weight: 900;
+      color: #FFFFFF;
+    }
+
+    .grocery-text-col {
+      flex: 1;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .grocery-name {
+      font-size: 0.98rem;
+      font-weight: 800;
+      line-height: 1.25;
+      color: #0F172A;
+    }
+
+    .grocery-author-tag {
+      font-size: 0.68rem;
+      font-weight: 800;
+      color: #64748B;
+      text-transform: uppercase;
+    }
+
+    .grocery-item.done {
+      background: #F8FAFC;
+      border-style: dashed;
+    }
+
+    .grocery-item.done .grocery-name {
+      text-decoration: line-through;
+      color: #94A3B8;
+    }
+
+    /* EMPTY STATES */
+    .empty-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      padding: 24px 12px;
+      text-align: center;
+      opacity: 0.75;
+      margin: auto;
+    }
+
+    .empty-icon { font-size: 1.6rem; }
+    .empty-msg { font-size: 0.88rem; font-weight: 700; color: #475569; }
+
+    /* SWITCHER BANNER IN ALTO A DESTRA PER CONFRONTO */
+    .preview-mode-switch {
+      position: fixed;
+      bottom: 8px;
+      right: 16px;
+      background: #0F172A;
+      color: #FFFFFF;
+      border: 2px solid #FFFFFF;
+      border-radius: 30px;
+      padding: 6px 14px;
+      font-size: 0.75rem;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      z-index: 500;
+      text-decoration: none;
+    }
+
+    /* MODAL SETTIMANA */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(15, 23, 42, 0.75);
+      display: none; align-items: center; justify-content: center;
+      z-index: 1000; backdrop-filter: blur(3px);
+    }
+    .modal-overlay.open { display: flex; }
+
+    .modal-content-bento {
+      background: #FFFFFF;
+      border: var(--border-thick);
+      border-radius: var(--radius-card);
+      box-shadow: 8px 8px 0px #0F172A;
+      width: 92vw; max-width: 1100px; max-height: 85vh;
+      padding: 20px; display: flex; flex-direction: column; gap: 14px;
+      animation: popIn 0.15s ease-out;
+    }
+
+    @keyframes popIn {
+      from { transform: scale(0.95); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+
+    .modal-head {
+      display: flex; align-items: center; justify-content: space-between;
+      border-bottom: var(--border-thick); padding-bottom: 10px;
+    }
+
+    .modal-title {
+      font-size: 1.3rem; font-weight: 900; letter-spacing: 0.5px;
+      display: flex; align-items: center; gap: 8px; color: #1E293B;
+    }
+
+    .week-grid-6col {
+      display: grid; grid-template-columns: repeat(6, 1fr);
+      gap: 10px; overflow-y: auto; flex: 1;
+    }
+
+    .day-column-box {
+      border: var(--border-thin); border-radius: var(--radius-item);
+      display: flex; flex-direction: column; background: #FFFFFF;
+      box-shadow: 2px 2px 0px var(--border-color); overflow: hidden;
+    }
+
+    .day-column-box.today {
+      border: var(--border-thick); box-shadow: 3px 3px 0px var(--border-color);
+      background: #F8FAFC;
+    }
+
+    .day-header {
+      background: #1E293B; color: #FFFFFF; font-size: 0.8rem;
+      font-weight: 900; text-align: center; padding: 4px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+
+    .day-column-box.today .day-header {
+      background: #4F46E5;
+    }
+
+    .day-lessons-list {
+      padding: 6px; display: flex; flex-direction: column; gap: 6px;
+    }
+
+    .lesson-row {
+      display: flex; flex-direction: column;
+      border-bottom: 1px solid #E2E8F0; padding-bottom: 3px;
+    }
+    .lesson-row:last-child { border-bottom: none; }
+    .lesson-time { font-size: 0.65rem; font-family: var(--font-mono); font-weight: 800; color: #64748B; }
+    .lesson-name { font-size: 0.82rem; font-weight: 900; color: #0F172A; }
+  </style>
+</head>
+<body>
+
+  <div class="app-container">
+
+    <!-- ====================================================================
+         1. HEADER: BRANDING, DATA & LIVE CLOCK
+         ==================================================================== -->
+    <header class="bento-header">
+      <div class="header-left">
+        <div class="family-badge">
+          <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          <span>Casa Rapallo</span>
+        </div>
+        <div class="date-display" id="date-display">Caricamento data...</div>
+      </div>
+
+      <div class="header-right">
+        <div class="bot-status-pill" id="bot-status-pill">
+          <span class="status-dot"></span>
+          <span id="bot-status-text">TELEGRAM ON</span>
+        </div>
+
+        <div class="clock-box">
+          <span class="clock-time" id="clock-time">--:--</span>
+          <span class="clock-seconds" id="clock-seconds">--</span>
+        </div>
+
+        <div class="header-actions">
+          <button class="btn-icon" onclick="fetchLiveBackendData()" title="Aggiorna Dati">
+            <svg class="icon" viewBox="0 0 24 24" id="refresh-icon"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+          </button>
+          <button class="btn-icon" onclick="toggleFullScreen()" title="Schermo Intero">
+            <svg class="icon" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- ====================================================================
+         2. TOP ROW (3 SYMMETRICAL CARDS: METEO, DIFFERENZIATA, SCUOLA DOMANI)
+         ==================================================================== -->
+    <section class="row-trio">
+
+      <!-- CARD 1: METEO SALEMI (SKY BLUE) -->
+      <div class="bento-card card-weather">
+        <div class="card-top-tag">
+          <div class="card-label" style="color: #0369A1;">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            <span>Meteo Salemi (TP)</span>
+          </div>
+          <span class="card-sub-pill" id="weather-rain-pill" style="background:#E0F2FE; color:#0369A1;">PIOGGIA 0%</span>
+        </div>
+        <div class="meteo-content">
+          <div>
+            <div class="meteo-primary">
+              <span class="temp-big" id="weather-temp">--°C</span>
+              <span class="cond-text" id="weather-cond">SERENO</span>
+            </div>
+            <div class="meteo-meta-lines" id="weather-minmax">MIN --° • MAX --°</div>
+          </div>
+          <div class="forecast-duo" id="weather-forecast-duo">
+            <!-- Popolato da JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- CARD 2: DIFFERENZIATA STASERA (ECO GREEN) -->
+      <div class="bento-card card-recycle">
+        <div class="card-top-tag">
+          <div class="card-label" style="color: #047857;">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+            <span>Differenziata Stasera</span>
+          </div>
+          <span class="card-sub-pill" id="recycle-target-day" style="background:#D1FAE5; color:#065F46;">DOMANI</span>
+        </div>
+        <div class="recycle-content">
+          <div class="recycle-highlight" id="recycle-type">ORGANICO (Umido)</div>
+          <div class="recycle-instructions" id="recycle-details">Ritiro domani mattina • Esporre stasera entro le 22:00</div>
+        </div>
+      </div>
+
+      <!-- CARD 3: SCUOLA DOMANI (WARM POST-IT) -->
+      <div class="bento-card card-school-prep">
+        <div class="card-top-tag">
+          <div class="card-label" style="color: #B45309;">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10M6 10h10M6 14h6"/></svg>
+            <span id="school-prep-title">Scuola Domani</span>
+          </div>
+          <button class="btn-action-sm" onclick="openWeekModal()" style="padding: 2px 7px; font-size: 0.68rem; background:#FEF3C7;">
+            Settimana 👁️
+          </button>
+        </div>
+
+        <div class="school-prep-content">
+          <div class="alert-banner-box" id="teacher-alert-box">
+            <span class="alert-tag-mini" id="teacher-alert-tag">AVVISO</span>
+            <span class="alert-text-mini" id="teacher-alert-msg">Nessun avviso per domani. Cartella pronta!</span>
+          </div>
+
+          <div class="subjects-mini-row" id="tomorrow-subjects-mini">
+            <!-- Popolato da JS -->
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ====================================================================
+         3. MAIN SECTION: 3 TALL PILLARS (NOTE | COMPITI RE | SPESA)
+         ==================================================================== -->
+    <section class="row-pillars">
+
+      <!-- PILASTRO 1: BACHECA NOTE TELEGRAM -->
+      <div class="bento-card">
+        <div class="card-header-bar">
+          <div class="card-title-group">
+            <div class="card-title" style="color: #6D28D9;">
+              <svg class="icon" viewBox="0 0 24 24"><path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/></svg>
+              <span>Note Famiglia</span>
+            </div>
+            <span class="counter-badge" id="notes-counter" style="background:#7C3AED;">0 NOTE</span>
+          </div>
+          <button class="btn-action-sm" onclick="clearNotesBackend()">Svuota</button>
+        </div>
+
+        <div class="scroll-body" id="telegram-feed-list">
+          <div class="empty-box">
+            <span class="empty-icon">📝</span>
+            <span class="empty-msg">Nessuna nota presente sulla bacheca.<br>Invia un messaggio al bot Telegram per appuntarlo qui!</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- PILASTRO 2: COMPITI DA FARE (AXIOS RE) -->
+      <div class="bento-card">
+        <div class="card-header-bar">
+          <div class="card-title-group">
+            <div class="card-title" style="color: #1D4ED8;">
+              <svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+              <span>Compiti da Fare</span>
+            </div>
+            <span class="counter-badge" id="tasks-counter" style="background:#2563EB;">0 DA FARE</span>
+          </div>
+          <button class="btn-action-sm" onclick="triggerAxiosSync()">Sincronizza RE</button>
+        </div>
+
+        <div class="scroll-body" id="axios-tasks-container">
+          <!-- Popolato da JS con testo completo e dettagli -->
+        </div>
+      </div>
+
+      <!-- PILASTRO 3: LISTA DELLA SPESA -->
+      <div class="bento-card">
+        <div class="card-header-bar">
+          <div class="card-title-group">
+            <div class="card-title" style="color: #047857;">
+              <svg class="icon" viewBox="0 0 24 24"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+              <span>Lista Spesa</span>
+            </div>
+            <span class="counter-badge" id="groceries-counter" style="background:#059669;">0 DA COMPRARE</span>
+          </div>
+          <button class="btn-action-sm" onclick="clearDoneGroceriesBackend()">Pulisci Presi</button>
+        </div>
+
+        <div class="scroll-body" id="shopping-items-list">
+          <div class="empty-box">
+            <span class="empty-icon">🛒</span>
+            <span class="empty-msg">Spesa vuota!<br>Scrivi <code>spesa pane, latte</code> al bot Telegram.</span>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- LINK VELOCE PER TORNARE ALLA VERSIONE BIANCO/NERO -->
+  <a href="/" class="preview-mode-switch" title="Torna alla versione Bianco e Nero">
+    <span>⬛ Passa a Bianco & Nero</span>
+  </a>
+
+  <!-- ====================================================================
+       4. MODAL POPUP: ORARIO SETTIMANALE COMPLETO (6 GIORNI)
+       ==================================================================== -->
+  <div class="modal-overlay" id="week-modal" onclick="closeWeekModal(event)">
+    <div class="modal-content-bento" onclick="event.stopPropagation()">
+      <div class="modal-head">
+        <div class="modal-title">
+          <svg class="icon" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>Orario Scolastico Completo • Settimana 2026/27</span>
+        </div>
+        <button class="btn-action-sm" onclick="closeWeekModal()">Chiudi ✕</button>
+      </div>
+
+      <div class="week-grid-6col" id="modal-week-grid">
+        <!-- Generato da renderModalWeekSchedule() -->
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT APPLICATIVO -->
+  <script>
+    const schoolWeekData = {
+      'LUN': [
+        { time: "08:30", subject: "Storia" },
+        { time: "09:30", subject: "Geografia" },
+        { time: "10:30", subject: "Geografia" },
+        { time: "11:30", subject: "STEM" },
+        { time: "12:30", subject: "STEM" }
+      ],
+      'MAR': [
+        { time: "08:30", subject: "Religione" },
+        { time: "09:30", subject: "Religione" },
+        { time: "10:30", subject: "Italiano" },
+        { time: "11:30", subject: "Italiano" },
+        { time: "12:30", subject: "Arte e Immagine" }
+      ],
+      'MER': [
+        { time: "08:30", subject: "Matematica" },
+        { time: "09:30", subject: "Matematica" },
+        { time: "10:30", subject: "Storia" },
+        { time: "11:30", subject: "Inglese" },
+        { time: "12:30", subject: "Musica" }
+      ],
+      'GIO': [
+        { time: "08:30", subject: "Italiano" },
+        { time: "09:30", subject: "Italiano" },
+        { time: "10:30", subject: "Italiano" },
+        { time: "11:30", subject: "Matematica" },
+        { time: "12:30", subject: "Tecnologia" }
+      ],
+      'VEN': [
+        { time: "08:30", subject: "Italiano" },
+        { time: "09:30", subject: "Italiano" },
+        { time: "10:30", subject: "Scienze" },
+        { time: "11:30", subject: "Scienze" },
+        { time: "12:30", subject: "Motoria" }
+      ],
+      'SAB': [
+        { time: "08:30", subject: "Inglese" },
+        { time: "09:30", subject: "Inglese" },
+        { time: "10:30", subject: "Matematica" },
+        { time: "11:30", subject: "Matematica" }
+      ]
+    };
+
+    const DAYS_MAP = ['DOM', 'LUN', 'MAR', 'MER', 'GIO', 'VEN', 'SAB'];
+    const DAYS_FULL = ['Domenica', 'Lunedì', 'Martedì', 'Mercoledì', 'Giovedì', 'Venerdì', 'Sabato'];
+    const MONTHS = ['Gennaio', 'Febbraio', 'Marzo', 'Aprile', 'Maggio', 'Giugno', 'Luglio', 'Agosto', 'Settembre', 'Ottobre', 'Novembre', 'Dicembre'];
+
+    let serverTimeDelta = 0;
+
+    function updateLiveClock() {
+      const now = new Date(Date.now() + serverTimeDelta);
+      const h = String(now.getHours()).padStart(2, '0');
+      const m = String(now.getMinutes()).padStart(2, '0');
+      const s = String(now.getSeconds()).padStart(2, '0');
+
+      document.getElementById('clock-time').textContent = `${h}:${m}`;
+      document.getElementById('clock-seconds').textContent = s;
+
+      const dayName = DAYS_FULL[now.getDay()];
+      const dayNum = now.getDate();
+      const monthName = MONTHS[now.getMonth()];
+      const year = now.getFullYear();
+      document.getElementById('date-display').textContent = `${dayName} ${dayNum} ${monthName} ${year}`;
+    }
+
+    setInterval(updateLiveClock, 1000);
+    updateLiveClock();
+
+    async function fetchLiveBackendData() {
+      const refreshIcon = document.getElementById('refresh-icon');
+      if (refreshIcon) refreshIcon.style.transform = 'rotate(180deg)';
+
+      try {
+        const res = await fetch('/api/data?t=' + Date.now());
+        if (!res.ok) throw new Error("Errore API");
+        const data = await res.json();
+
+        if (data.server_time && data.server_time.timestamp_ms) {
+          serverTimeDelta = data.server_time.timestamp_ms - Date.now();
+        }
+
+        renderWeather(data.weather);
+        renderRecycle(data.recycle);
+        renderSchoolPrep(data);
+        renderNotes(data.notes || []);
+        renderTasks(data.tasks || []);
+        renderGroceries(data.groceries || []);
+      } catch (err) {
+        console.error("Errore fetch data:", err);
+      } finally {
+        if (refreshIcon) setTimeout(() => { refreshIcon.style.transform = 'none'; }, 300);
+      }
+    }
+
+    function renderWeather(w) {
+      if (!w) return;
+      document.getElementById('weather-temp').textContent = w.temp || '--°C';
+      document.getElementById('weather-cond').textContent = (w.condition || 'VARIABILE').toUpperCase();
+      document.getElementById('weather-minmax').textContent = w.min_max || 'MIN --° • MAX --°';
+      document.getElementById('weather-rain-pill').textContent = w.rain || 'PIOGGIA 0%';
+
+      const duoContainer = document.getElementById('weather-forecast-duo');
+      if (w.forecast && w.forecast.length > 0) {
+        duoContainer.innerHTML = w.forecast.slice(0, 2).map(f => `
+          <div class="forecast-slot">
+            <span class="forecast-time-badge">${f.time}</span>
+            <span style="font-weight:900; color:#0369A1;">${f.temp}</span>
+            <span style="opacity:0.8; font-weight:600;">(${f.desc})</span>
+          </div>
+        `).join('');
+      } else {
+        duoContainer.innerHTML = '';
+      }
+    }
+
+    function renderRecycle(r) {
+      if (!r) return;
+      document.getElementById('recycle-type').textContent = r.type || 'NESSUNA';
+      document.getElementById('recycle-details').textContent = r.details || 'Verifica il calendario comunale.';
+      document.getElementById('recycle-target-day').textContent = (r.target_day || 'DOMANI').toUpperCase();
+    }
+
+    function renderSchoolPrep(d) {
+      const now = new Date(Date.now() + serverTimeDelta);
+      const tomorrow = new Date(now);
+      tomorrow.setDate(now.getDate() + 1);
+
+      const tDayKey = DAYS_MAP[tomorrow.getDay()];
+      const tDayName = DAYS_FULL[tomorrow.getDay()];
+      document.getElementById('school-prep-title').textContent = `Scuola (${tDayName})`;
+
+      const alertTag = document.getElementById('teacher-alert-tag');
+      const alertMsg = document.getElementById('teacher-alert-msg');
+      if (d.backpack_active && d.backpack) {
+        alertTag.textContent = d.backpack_pill || 'PER DOMANI';
+        alertTag.style.background = '#F59E0B';
+        alertMsg.textContent = cleanTeacherText(d.backpack);
+      } else {
+        alertTag.textContent = 'ZAINO OK';
+        alertTag.style.background = '#10B981';
+        alertMsg.textContent = 'Nessun avviso per domani. Cartella pronta!';
+      }
+
+      const subContainer = document.getElementById('tomorrow-subjects-mini');
+      const subjects = schoolWeekData[tDayKey];
+
+      if (!subjects || subjects.length === 0) {
+        subContainer.innerHTML = '<span style="font-size:0.75rem; font-weight:700; color:#B45309;">🛋️ Domani riposo! Nessuna lezione prevista.</span>';
+      } else {
+        subContainer.innerHTML = subjects.map((s, idx) => `
+          <div class="sub-pill-compact">
+            <span class="sub-num">${idx + 1}ª</span>
+            <span>${escapeHtml(s.subject)}</span>
+          </div>
+        `).join('');
+      }
+    }
+
+    function cleanTeacherText(txt) {
+      if (!txt) return "";
+      return txt.replace(/^\d{1,2}\/\d{1,2}(?:\/\d{2,4})?:\s*/, '')
+                .replace(/^[A-Za-zÀ-ÖØ-öø-ÿ\s]{4,35}:\s*/, '');
+    }
+
+    // CLASSI COLORE PER AUTORE
+    function getAuthorColorClass(author) {
+      const a = (author || '').toUpperCase();
+      if (a.includes('MAMMA')) return 'author-mamma';
+      if (a.includes('PAPA') || a.includes('PAPÀ')) return 'author-papa';
+      if (a.includes('LUCA') || a.includes('IRVINE') || a.includes('FLAVIO')) return 'author-figli';
+      return 'author-other';
+    }
+
+    function renderNotes(notes) {
+      const container = document.getElementById('telegram-feed-list');
+      const counter = document.getElementById('notes-counter');
+      counter.textContent = notes.length + (notes.length === 1 ? ' NOTA' : ' NOTE');
+
+      if (!notes || notes.length === 0) {
+        container.innerHTML = `
+          <div class="empty-box">
+            <span class="empty-icon">📝</span>
+            <span class="empty-msg">Nessuna nota presente sulla bacheca.<br>Invia un messaggio al bot Telegram per appuntarlo qui!</span>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = notes.map(n => {
+        const authorClass = getAuthorColorClass(n.author);
+        return `
+          <div class="note-item">
+            <div class="note-header-line">
+              <span class="author-pill ${authorClass}">${escapeHtml(n.author || 'FAMIGLIA')}</span>
+              <span class="note-time-label">${n.time || ''}</span>
+            </div>
+            <div class="note-body-text">${escapeHtml(n.text || '')}</div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    // CLASSI COLORE PER MATERIA SCOLASTICA
+    function getSubjectColorClass(subj) {
+      const s = (subj || '').toLowerCase();
+      if (s.includes('ital')) return 'subj-italiano';
+      if (s.includes('matem')) return 'subj-matematica';
+      if (s.includes('scien')) return 'subj-scienze';
+      if (s.includes('stor')) return 'subj-storia';
+      if (s.includes('geog')) return 'subj-geografia';
+      if (s.includes('ingl')) return 'subj-inglese';
+      if (s.includes('arte')) return 'subj-arte';
+      if (s.includes('music')) return 'subj-musica';
+      if (s.includes('stem')) return 'subj-stem';
+      if (s.includes('motor')) return 'subj-motoria';
+      return 'subj-default';
+    }
+
+    function renderTasks(tasks) {
+      const container = document.getElementById('axios-tasks-container');
+      const counter = document.getElementById('tasks-counter');
+      const pending = tasks.filter(t => !t.done);
+      counter.textContent = pending.length + ' DA FARE';
+
+      if (!tasks || tasks.length === 0) {
+        container.innerHTML = `
+          <div class="empty-box">
+            <span class="empty-icon">🎉</span>
+            <span class="empty-msg">Nessun compito da fare!<br>Tutti i compiti per questa settimana sono completati.</span>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = tasks.map(t => {
+        const subjClass = getSubjectColorClass(t.subject);
+        return `
+          <div class="task-card-full ${t.done ? 'done' : ''}" onclick="toggleTaskBackend(${t.id})">
+            <div class="task-checkbox-box ${t.done ? 'checked' : ''}"></div>
+            <div class="task-content-block">
+              <div class="task-meta-row">
+                <span class="task-subject-badge ${subjClass}">${escapeHtml(t.subject)}</span>
+                <span class="task-date-badge">${t.date ? 'Per il ' + t.date.slice(0,5) : ''}</span>
+              </div>
+              <div class="task-full-text">${escapeHtml(t.text)}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function renderGroceries(groceries) {
+      const container = document.getElementById('shopping-items-list');
+      const counter = document.getElementById('groceries-counter');
+      const pending = groceries.filter(g => !g.done);
+      counter.textContent = pending.length + ' DA COMPRARE';
+
+      if (!groceries || groceries.length === 0) {
+        container.innerHTML = `
+          <div class="empty-box">
+            <span class="empty-icon">🛒</span>
+            <span class="empty-msg">Spesa vuota!<br>Scrivi <code>spesa pane, latte</code> al bot Telegram.</span>
+          </div>
+        `;
+        return;
+      }
+
+      const sorted = [...groceries].sort((a, b) => (a.done === b.done ? 0 : a.done ? 1 : -1));
+
+      container.innerHTML = sorted.map(g => `
+        <div class="grocery-item ${g.done ? 'done' : ''}" onclick="toggleGroceryBackend(${g.id})">
+          <div class="grocery-checkbox ${g.done ? 'checked' : ''}"></div>
+          <div class="grocery-text-col">
+            <span class="grocery-name">${escapeHtml(g.text)}</span>
+            ${g.author ? `<span class="grocery-author-tag">(${escapeHtml(g.author)})</span>` : ''}
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderModalWeekSchedule() {
+      const container = document.getElementById('modal-week-grid');
+      const now = new Date(Date.now() + serverTimeDelta);
+      const currentDayKey = DAYS_MAP[now.getDay()];
+
+      const days = ['LUN', 'MAR', 'MER', 'GIO', 'VEN', 'SAB'];
+      const daysFullNames = {
+        'LUN': 'Lunedì', 'MAR': 'Martedì', 'MER': 'Mercoledì',
+        'GIO': 'Giovedì', 'VEN': 'Venerdì', 'SAB': 'Sabato'
+      };
+
+      container.innerHTML = days.map(dayKey => {
+        const isToday = (dayKey === currentDayKey);
+        const subjects = schoolWeekData[dayKey] || [];
+
+        return `
+          <div class="day-column-box ${isToday ? 'today' : ''}">
+            <div class="day-header">
+              ${daysFullNames[dayKey]} ${isToday ? '• OGGI' : ''}
+            </div>
+            <div class="day-lessons-list">
+              ${subjects.map((sub, idx) => `
+                <div class="lesson-row">
+                  <span class="lesson-time">${idx + 1}ª ora (${sub.time})</span>
+                  <span class="lesson-name">${escapeHtml(sub.subject)}</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function openWeekModal() {
+      renderModalWeekSchedule();
+      document.getElementById('week-modal').classList.add('open');
+    }
+
+    function closeWeekModal() {
+      document.getElementById('week-modal').classList.remove('open');
+    }
+
+    async function toggleGroceryBackend(id) {
+      try {
+        await fetch('/api/toggle-grocery', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ id })
+        });
+        fetchLiveBackendData();
+      } catch (e) { console.error(e); }
+    }
+
+    async function clearDoneGroceriesBackend() {
+      try {
+        await fetch('/api/clear-groceries', { method: 'POST' });
+        fetchLiveBackendData();
+      } catch (e) { console.error(e); }
+    }
+
+    async function toggleTaskBackend(id) {
+      try {
+        await fetch('/api/toggle-task', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ id })
+        });
+        fetchLiveBackendData();
+      } catch (e) { console.error(e); }
+    }
+
+    async function clearNotesBackend() {
+      if (!confirm("Vuoi cancellare tutte le note dalla bacheca?")) return;
+      try {
+        await fetch('/api/clear-notes', { method: 'POST' });
+        fetchLiveBackendData();
+      } catch (e) { console.error(e); }
+    }
+
+    async function triggerAxiosSync() {
+      try {
+        await fetch('/api/sync-axios', { method: 'POST' });
+        fetchLiveBackendData();
+      } catch (e) { console.error(e); }
+    }
+
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        document.documentElement.requestFullscreen().catch(() => {});
+      } else {
+        document.exitFullscreen().catch(() => {});
+      }
+    }
+
+    function escapeHtml(text) {
+      if (!text) return "";
+      return text
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    fetchLiveBackendData();
+    setInterval(fetchLiveBackendData, 10000);
+  </script>
+</body>
+</html>

@@ -838,6 +838,30 @@
       font-size: 0.82rem;
       font-weight: 900;
     }
+
+    /* SWITCHER PER LA PREVIEW A COLORI */
+    .preview-mode-switch {
+      position: fixed;
+      bottom: 8px;
+      right: 16px;
+      background: #0F172A;
+      color: #FFFFFF;
+      border: 2px solid #FFFFFF;
+      border-radius: 30px;
+      padding: 6px 14px;
+      font-size: 0.75rem;
+      font-weight: 900;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+      z-index: 500;
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .preview-mode-switch:hover {
+      transform: translateY(-1px);
+    }
   </style>
 </head>
 <body>
@@ -1020,6 +1044,11 @@
     </section>
 
   </div>
+
+  <!-- LINK VELOCE PER PROVARE LA VERSIONE A COLORI -->
+  <a href="/color.html" class="preview-mode-switch" title="Prova la versione a Colori">
+    <span>🎨 Prova UI a Colori</span>
+  </a>
 
   <!-- ====================================================================
        4. MODAL POPUP: ORARIO SETTIMANALE COMPLETO (6 GIORNI)

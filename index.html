@@ -3,42 +3,107 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>KindleFridge 10" - Family Magnetic Bento Preview</title>
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="theme-color" content="#4F46E5">
+  <title>Casa Rapallo - KindleFridge 10" Smart Dashboard</title>
   <style>
     /* ==========================================================================
-       DESIGN SYSTEM: FAMILY MAGNETIC BENTO (UI/UX PRO MAX - MONOCHROME EDITION)
-       - High-contrast pure black & white (#111111 / #ffffff / #f8f9fa)
-       - Soft Neubrutalism: 2.5px solid borders, 18px radius, 4px 4px 0 hard shadows
-       - 3 Tall Pillars (Note | Compiti RE | Spesa) for 10" landscape tablets
-       - Min 48px touch targets for effortless family use
+       DESIGN SYSTEM: FAMILY PASTEL BENTO (UI/UX PRO MAX)
+       - Soft Neubrutalism with warm pastel accents & 2.5px solid dark slate outlines
+       - 3.5px hard drop shadows for tactile fridge magnets
+       - Subject & Author Color Coding for instant recognition
+       - 10" Fullscreen Landscape Optimized (100dvh, zero overflow)
        ========================================================================== */
     :root {
-      --bg: #f8f9fa;
-      --card-bg: #ffffff;
-      --fg: #111111;
-      --border-color: #111111;
+      --bg: #F8FAFC;
+      --card-bg: #FFFFFF;
+      --fg: #0F172A;
+      --border-color: #0F172A;
       --border-thick: 2.5px solid var(--border-color);
       --border-thin: 1.5px solid var(--border-color);
-      --border-hairline: 1px solid var(--border-color);
-      --shadow-solid: 4px 4px 0px var(--border-color);
+      --shadow-solid: 3.5px 3.5px 0px var(--border-color);
       --shadow-sm: 2px 2px 0px var(--border-color);
-      --radius-card: 18px;
-      --radius-item: 12px;
+      --radius-card: 16px;
+      --radius-item: 10px;
       --radius-pill: 8px;
       --font-main: -apple-system, BlinkMacSystemFont, "Plus Jakarta Sans", "Outfit", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
       --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", monospace;
+
+      /* PALETTE COLORATA ACCENTS */
+      --c-brand: #4F46E5;
+      --c-brand-bg: #EEF2FF;
+      --c-weather: #0284C7;
+      --c-weather-bg: #E0F2FE;
+      --c-recycle: #059669;
+      --c-recycle-bg: #D1FAE5;
+      --c-school: #D97706;
+      --c-school-bg: #FEF3C7;
+      --c-notes: #7C3AED;
+      --c-notes-bg: #EDE9FE;
+      --c-groceries: #059669;
+      --c-groceries-bg: #ECFDF5;
     }
 
-    body.dark-mode {
-      --bg: #121212;
-      --card-bg: #1c1c1e;
-      --fg: #f5f5f7;
-      --border-color: #f5f5f7;
-      --border-thick: 2.5px solid var(--border-color);
-      --border-thin: 1.5px solid var(--border-color);
-      --border-hairline: 1px solid var(--border-color);
-      --shadow-solid: 4px 4px 0px var(--border-color);
-      --shadow-sm: 2px 2px 0px var(--border-color);
+    /* THEME MONOCHROME (E-INK / BIANCO & NERO) */
+    body.theme-mono {
+      --bg: #F1F3F5;
+      --card-bg: #FFFFFF;
+      --c-brand: #0F172A;
+      --c-brand-bg: #F1F5F9;
+      --c-weather: #0F172A;
+      --c-weather-bg: #F8FAFC;
+      --c-recycle: #0F172A;
+      --c-recycle-bg: #F8FAFC;
+      --c-school: #0F172A;
+      --c-school-bg: #F8FAFC;
+      --c-notes: #0F172A;
+      --c-notes-bg: #F8FAFC;
+      --c-groceries: #0F172A;
+      --c-groceries-bg: #F8FAFC;
+    }
+    body.theme-mono .card-school-prep,
+    body.theme-mono .card-weather,
+    body.theme-mono .card-recycle {
+      background: #FFFFFF !important;
+    }
+    body.theme-mono .task-subject-badge,
+    body.theme-mono .sub-pill-compact,
+    body.theme-mono .author-pill {
+      background: #F1F5F9 !important;
+      color: #0F172A !important;
+      border: 1.5px solid #0F172A !important;
+    }
+
+    /* THEME DARK / NIGHT MODE */
+    body.theme-dark {
+      --bg: #090D16;
+      --card-bg: #131B2A;
+      --fg: #F8FAFC;
+      --border-color: #F8FAFC;
+      --shadow-solid: 3.5px 3.5px 0px rgba(255,255,255,0.85);
+      --shadow-sm: 2px 2px 0px rgba(255,255,255,0.85);
+    }
+    body.theme-dark .bento-card {
+      background: #131B2A !important;
+      color: #F8FAFC;
+    }
+    body.theme-dark .task-card-full,
+    body.theme-dark .note-item,
+    body.theme-dark .grocery-item,
+    body.theme-dark .btn-action-sm,
+    body.theme-dark .btn-icon,
+    body.theme-dark .clock-box {
+      background: #1E293B !important;
+      color: #F8FAFC !important;
+      border-color: #F8FAFC !important;
+    }
+    body.theme-dark .note-body-text,
+    body.theme-dark .task-body-text,
+    body.theme-dark .grocery-name,
+    body.theme-dark .recycle-highlight,
+    body.theme-dark .temp-big {
+      color: #FFFFFF !important;
     }
 
     * {
@@ -52,28 +117,33 @@
     html, body {
       width: 100%;
       height: 100%;
+      height: 100dvh;
       overflow: hidden;
       background-color: var(--bg);
       color: var(--fg);
       font-family: var(--font-main);
       -webkit-font-smoothing: antialiased;
+      transition: background-color 0.2s ease, color 0.2s ease;
     }
 
-    /* APP WRAPPER 10" FULLSCREEN */
+    /* CONTENITORE PRINCIPALE SCHERMO INTERO 10" (Landscape) */
     .app-container {
       display: flex;
       flex-direction: column;
       width: 100vw;
       height: 100vh;
-      padding: 12px 16px;
-      gap: 12px;
+      height: 100dvh;
+      max-height: 100dvh;
+      padding: 8px 12px;
+      gap: 8px;
       box-sizing: border-box;
+      overflow: hidden;
     }
 
-    /* ICONS */
+    /* ICONE SVG */
     .icon {
-      width: 20px;
-      height: 20px;
+      width: 19px;
+      height: 19px;
       stroke: currentColor;
       fill: none;
       stroke-width: 2.3;
@@ -82,11 +152,11 @@
       vertical-align: middle;
       flex-shrink: 0;
     }
-    .icon-sm { width: 16px; height: 16px; stroke-width: 2.2; }
-    .icon-lg { width: 28px; height: 28px; stroke-width: 2.4; }
+    .icon-sm { width: 15px; height: 15px; stroke-width: 2.2; }
+    .icon-xs { width: 13px; height: 13px; stroke-width: 2.2; }
 
     /* ==========================================================================
-       1. HEADER BAR: FAMILY BRANDING, DATE & LIVE CLOCK
+       1. HEADER BAR: LOGO FAMIGLIA, DATA LIVE & OROLOGIO
        ========================================================================== */
     header.bento-header {
       display: flex;
@@ -96,8 +166,8 @@
       border: var(--border-thick);
       border-radius: var(--radius-card);
       box-shadow: var(--shadow-solid);
-      padding: 8px 18px;
-      min-height: 56px;
+      padding: 6px 14px;
+      min-height: 48px;
       flex-shrink: 0;
     }
 
@@ -108,13 +178,15 @@
     }
 
     .family-badge {
-      background: var(--fg);
-      color: var(--card-bg);
-      font-size: 0.95rem;
+      background: var(--c-brand);
+      color: #FFFFFF;
+      font-size: 0.90rem;
       font-weight: 900;
-      letter-spacing: 0.8px;
-      padding: 6px 12px;
+      letter-spacing: 0.6px;
+      padding: 5px 12px;
       border-radius: var(--radius-pill);
+      border: 2px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
       display: flex;
       align-items: center;
       gap: 6px;
@@ -122,83 +194,90 @@
     }
 
     .date-display {
-      font-size: 1.05rem;
+      font-size: 0.98rem;
       font-weight: 800;
-      letter-spacing: 0.3px;
-      text-transform: capitalize;
+      letter-spacing: -0.2px;
+      color: var(--fg);
     }
 
     .header-right {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
     }
 
     .bot-status-pill {
       display: flex;
       align-items: center;
       gap: 6px;
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 800;
-      border: var(--border-thin);
-      padding: 4px 10px;
+      padding: 3px 8px;
       border-radius: var(--radius-pill);
-      background: var(--card-bg);
-      letter-spacing: 0.4px;
+      border: var(--border-thin);
+      background: #F8FAFC;
+      color: #334155;
     }
 
     .status-dot {
-      width: 9px;
-      height: 9px;
+      width: 8px;
+      height: 8px;
       border-radius: 50%;
-      background: #10b981;
-      display: inline-block;
+      background: #10B981;
+      box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
+      animation: pulseDot 2s infinite ease-in-out;
+    }
+
+    @keyframes pulseDot {
+      0%, 100% { transform: scale(1); opacity: 1; }
+      50% { transform: scale(1.25); opacity: 0.7; }
     }
 
     .clock-box {
       display: flex;
       align-items: baseline;
-      gap: 4px;
-      background: var(--fg);
-      color: var(--card-bg);
-      padding: 4px 12px;
+      background: #0F172A;
+      color: #FFFFFF;
+      padding: 3px 10px;
       border-radius: var(--radius-pill);
-    }
-
-    .clock-time {
-      font-size: 1.55rem;
+      border: 2px solid var(--border-color);
+      box-shadow: var(--shadow-sm);
+      font-family: var(--font-mono);
       font-weight: 900;
-      letter-spacing: -0.5px;
-      font-variant-numeric: tabular-nums;
       line-height: 1;
     }
 
+    .clock-time {
+      font-size: 1.45rem;
+      letter-spacing: -0.5px;
+    }
+
     .clock-seconds {
-      font-size: 0.75rem;
-      font-family: var(--font-mono);
-      font-weight: 800;
+      font-size: 0.80rem;
       opacity: 0.85;
+      margin-left: 3px;
     }
 
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
     }
 
     .btn-icon {
-      width: 38px;
-      height: 38px;
-      border: var(--border-thick);
+      background: #FFFFFF;
+      border: var(--border-thin);
       border-radius: var(--radius-pill);
-      background: var(--card-bg);
-      color: var(--fg);
-      box-shadow: var(--shadow-sm);
+      width: 32px;
+      height: 32px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      transition: transform 0.08s ease, box-shadow 0.08s ease;
+      box-shadow: var(--shadow-sm);
+      transition: transform 0.08s ease;
+      color: var(--fg);
+      font-size: 0.90rem;
     }
 
     .btn-icon:active {
@@ -207,14 +286,14 @@
     }
 
     /* ==========================================================================
-       2. TOP STATUS ROW: 3 SYMMETRICAL CARDS (METEO, DIFFERENZIATA, SCUOLA DOMANI)
+       2. TOP STATUS ROW: 3 SCHEDE SIMMETRICHE (METEO, DIFFERENZIATA, SCUOLA DOMANI)
        ========================================================================== */
     .row-trio {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
-      gap: 12px;
+      gap: 10px;
       flex-shrink: 0;
-      height: 125px;
+      height: 114px;
     }
 
     .bento-card {
@@ -222,7 +301,7 @@
       border: var(--border-thick);
       border-radius: var(--radius-card);
       box-shadow: var(--shadow-solid);
-      padding: 10px 14px;
+      padding: 8px 12px;
       display: flex;
       flex-direction: column;
       position: relative;
@@ -233,14 +312,14 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 6px;
+      margin-bottom: 4px;
       flex-shrink: 0;
     }
 
     .card-label {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 900;
-      letter-spacing: 0.6px;
+      letter-spacing: 0.5px;
       text-transform: uppercase;
       display: flex;
       align-items: center;
@@ -248,21 +327,28 @@
     }
 
     .card-sub-pill {
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       font-weight: 800;
-      background: var(--fg);
-      color: var(--card-bg);
-      padding: 2px 7px;
+      padding: 1.5px 6px;
       border-radius: var(--radius-pill);
+      border: 1px solid var(--border-color);
       letter-spacing: 0.3px;
+      background: #F1F5F9;
+      color: #0F172A;
+      white-space: nowrap;
     }
 
-    /* CARD 1: METEO CONTENT */
+    /* CARD 1: METEO SALEMI (SKY BLUE) */
+    .bento-card.card-weather {
+      background: linear-gradient(135deg, #FFFFFF 65%, #F0F9FF 100%);
+    }
+
     .meteo-content {
       display: flex;
       align-items: center;
       justify-content: space-between;
       height: 100%;
+      padding: 0 2px;
     }
 
     .meteo-primary {
@@ -272,105 +358,117 @@
     }
 
     .temp-big {
-      font-size: 2.2rem;
+      font-size: 2.1rem;
       font-weight: 900;
       letter-spacing: -1px;
       line-height: 1;
+      color: var(--c-weather);
     }
 
     .cond-text {
-      font-size: 0.85rem;
+      font-size: 0.82rem;
       font-weight: 800;
       text-transform: uppercase;
+      color: #0369A1;
     }
 
     .meteo-meta-lines {
-      font-size: 0.75rem;
+      font-size: 0.72rem;
       font-weight: 700;
-      opacity: 0.85;
-      margin-top: 3px;
+      color: #475569;
+      margin-top: 2px;
     }
 
     .forecast-duo {
       display: flex;
       flex-direction: column;
-      gap: 4px;
-      border-left: var(--border-thin);
-      padding-left: 10px;
+      gap: 3px;
+      border-left: 2px solid #BAE6FD;
+      padding-left: 8px;
     }
 
     .forecast-slot {
       display: flex;
       align-items: center;
-      gap: 6px;
-      font-size: 0.75rem;
+      gap: 5px;
+      font-size: 0.72rem;
       font-weight: 800;
+      white-space: nowrap;
     }
 
     .forecast-time-badge {
-      background: var(--fg);
-      color: var(--card-bg);
-      padding: 1px 5px;
+      background: #0284C7;
+      color: #FFFFFF;
+      padding: 1px 4px;
       border-radius: 4px;
-      font-size: 0.68rem;
+      font-size: 0.65rem;
       font-family: var(--font-mono);
+      font-weight: 900;
     }
 
-    /* CARD 2: DIFFERENZIATA CONTENT */
+    /* CARD 2: DIFFERENZIATA (EMERALD ECO) */
+    .bento-card.card-recycle {
+      background: linear-gradient(135deg, #FFFFFF 65%, #F0FDF4 100%);
+    }
+
     .recycle-content {
       display: flex;
       flex-direction: column;
       justify-content: center;
       height: 100%;
-      gap: 4px;
+      gap: 3px;
     }
 
     .recycle-highlight {
-      font-size: 1.15rem;
+      font-size: 1.10rem;
       font-weight: 900;
       letter-spacing: 0.3px;
       text-transform: uppercase;
-      line-height: 1.2;
+      line-height: 1.15;
+      color: #047857;
     }
 
     .recycle-instructions {
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       font-weight: 700;
-      opacity: 0.85;
-      line-height: 1.25;
+      color: #334155;
+      line-height: 1.2;
     }
 
-    /* CARD 3: SCUOLA DOMANI (AVVISO ZAINO + MATERIE) */
+    /* CARD 3: SCUOLA DOMANI (WARM AMBER / CORAL POST-IT) */
+    .bento-card.card-school-prep {
+      background: linear-gradient(135deg, #FFFFFF 65%, #FFFBEB 100%);
+    }
+
     .school-prep-content {
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       height: 100%;
       overflow: hidden;
+      gap: 4px;
     }
 
     .alert-banner-box {
       border: var(--border-thin);
       border-radius: var(--radius-item);
-      padding: 4px 8px;
-      background: #eeeeee;
+      padding: 3px 6px;
+      background: #FEF3C7;
       display: flex;
       align-items: center;
-      gap: 6px;
-      font-size: 0.78rem;
+      gap: 5px;
+      font-size: 0.74rem;
       font-weight: 700;
-      line-height: 1.2;
-    }
-    body.dark-mode .alert-banner-box {
-      background: #27272a;
+      color: #92400E;
+      line-height: 1.15;
     }
 
     .alert-tag-mini {
-      background: var(--fg);
-      color: var(--card-bg);
-      font-size: 0.65rem;
+      background: #F59E0B;
+      color: #FFFFFF;
+      font-size: 0.62rem;
       font-weight: 900;
-      padding: 1px 5px;
+      padding: 1px 4px;
       border-radius: 4px;
       flex-shrink: 0;
       letter-spacing: 0.3px;
@@ -383,46 +481,48 @@
       flex: 1;
     }
 
+    /* RIGA MATERIE WRAP (TUTTE VISIBILI SENZA TRONCAMENTI) */
     .subjects-mini-row {
       display: flex;
+      flex-wrap: wrap;
       align-items: center;
-      gap: 5px;
-      overflow-x: auto;
-      padding: 2px 0;
+      gap: 4px;
+      overflow: hidden;
     }
 
     .sub-pill-compact {
-      background: var(--card-bg);
-      border: var(--border-thin);
+      background: #FFFFFF;
+      border: 1.5px solid var(--border-color);
       border-radius: 6px;
-      padding: 3px 7px;
-      font-size: 0.72rem;
+      padding: 2px 6px;
+      font-size: 0.68rem;
       font-weight: 800;
-      display: flex;
+      display: inline-flex;
       align-items: center;
       gap: 4px;
       white-space: nowrap;
       flex-shrink: 0;
       box-shadow: 1px 1px 0px var(--border-color);
+      line-height: 1.2;
     }
 
     .sub-num {
-      background: var(--fg);
-      color: var(--card-bg);
-      font-size: 0.62rem;
+      background: #0F172A;
+      color: #FFFFFF;
+      font-size: 0.60rem;
       font-family: var(--font-mono);
       font-weight: 900;
-      padding: 1px 4px;
+      padding: 0.5px 3px;
       border-radius: 3px;
     }
 
     /* ==========================================================================
-       3. MAIN SECTION: 3 TALL PILLARS (NOTE | COMPITI RE | SPESA)
+       3. SEZIONE PRINCIPALE: 3 PILASTRI ALTI (NOTE | COMPITI | SPESA)
        ========================================================================== */
     .row-pillars {
       display: grid;
       grid-template-columns: 1fr 1.15fr 1fr;
-      gap: 12px;
+      gap: 10px;
       flex: 1;
       min-height: 0;
     }
@@ -431,49 +531,60 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding-bottom: 8px;
-      border-bottom: var(--border-thin);
-      margin-bottom: 8px;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #E2E8F0;
+      margin-bottom: 6px;
       flex-shrink: 0;
+      gap: 6px;
     }
 
     .card-title-group {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
+      min-width: 0;
+      overflow: hidden;
     }
 
     .card-title {
-      font-size: 0.95rem;
+      font-size: 0.88rem;
       font-weight: 900;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
       text-transform: uppercase;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 5px;
+      white-space: nowrap;
     }
 
     .counter-badge {
-      background: var(--fg);
-      color: var(--card-bg);
-      font-size: 0.72rem;
+      background: #0F172A;
+      color: #FFFFFF;
+      font-size: 0.68rem;
       font-weight: 900;
-      padding: 2px 8px;
+      padding: 2px 6px;
       border-radius: var(--radius-pill);
+      white-space: nowrap;
     }
 
+    /* BOTTONI AZIONE COMPATTI SENZA ANDARE A CAPO */
     .btn-action-sm {
-      background: var(--card-bg);
+      background: #FFFFFF;
       color: var(--fg);
       border: var(--border-thick);
-      padding: 4px 10px;
+      padding: 3px 8px;
       border-radius: var(--radius-pill);
-      font-size: 0.72rem;
+      font-size: 0.70rem;
       font-weight: 900;
       cursor: pointer;
       box-shadow: var(--shadow-sm);
       text-transform: uppercase;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.2px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
       transition: transform 0.08s ease, box-shadow 0.08s ease;
     }
 
@@ -485,22 +596,41 @@
     .scroll-body {
       flex: 1;
       overflow-y: auto;
-      padding-right: 4px;
+      padding-right: 3px;
       display: flex;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
+      min-height: 0;
+    }
+
+    /* Custom Slim Scrollbar */
+    .scroll-body::-webkit-scrollbar {
+      width: 5px;
+    }
+    .scroll-body::-webkit-scrollbar-track {
+      background: #F1F5F9;
+      border-radius: 4px;
+    }
+    .scroll-body::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 4px;
+    }
+    .scroll-body::-webkit-scrollbar-thumb:hover {
+      background: #94A3B8;
     }
 
     /* PILLAR 1: NOTE TELEGRAM */
     .note-item {
-      background: var(--card-bg);
+      background: #FFFFFF;
       border: var(--border-thin);
       border-radius: var(--radius-item);
-      padding: 10px 12px;
+      padding: 8px 10px;
       display: flex;
       flex-direction: column;
-      gap: 5px;
+      gap: 4px;
       box-shadow: 2px 2px 0px var(--border-color);
+      transition: transform 0.08s ease;
+      position: relative;
     }
 
     .note-header-line {
@@ -510,77 +640,86 @@
     }
 
     .author-pill {
-      background: var(--fg);
-      color: var(--card-bg);
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       font-weight: 900;
-      letter-spacing: 0.5px;
-      padding: 2px 8px;
-      border-radius: 6px;
+      letter-spacing: 0.4px;
+      padding: 1.5px 6px;
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
       text-transform: uppercase;
     }
 
+    .author-mamma { background: #FFE4E6; color: #BE123C; }
+    .author-papa  { background: #DBEAFE; color: #1D4ED8; }
+    .author-figli { background: #D1FAE5; color: #047857; }
+    .author-other { background: #FEF3C7; color: #B45309; }
+
     .note-time-label {
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       font-family: var(--font-mono);
       font-weight: 800;
-      opacity: 0.8;
+      color: #64748B;
     }
 
     .note-body-text {
-      font-size: 0.95rem;
+      font-size: 0.88rem;
       font-weight: 700;
-      line-height: 1.35;
+      line-height: 1.30;
+      color: #1E293B;
       word-break: break-word;
     }
 
-    /* PILLAR 2: COMPITI RE (SPAZIOSO & MULTILINEA COMPLETO) */
+    /* PILLAR 2: COMPITI RE (AXIOS) - OTTIMIZZATO PER FAR ENTRARE TUTTI I TASK */
     .task-card-full {
-      background: var(--card-bg);
+      background: #FFFFFF;
       border: var(--border-thin);
       border-radius: var(--radius-item);
-      padding: 10px 12px;
+      padding: 7px 9px;
       display: flex;
       align-items: flex-start;
-      gap: 10px;
+      gap: 8px;
       box-shadow: 2px 2px 0px var(--border-color);
       cursor: pointer;
-      transition: transform 0.08s ease;
+      transition: transform 0.08s ease, background 0.15s ease;
+      flex-shrink: 0;
     }
 
     .task-card-full.done {
-      background: #eeeeee;
+      background: #F1F5F9;
       border-style: dashed;
-    }
-    body.dark-mode .task-card-full.done {
-      background: #27272a;
+      opacity: 0.65;
     }
 
     .task-checkbox-box {
-      width: 22px;
-      height: 22px;
+      width: 20px;
+      height: 20px;
       border: var(--border-thick);
-      border-radius: 6px;
+      border-radius: 5px;
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
-      margin-top: 2px;
-      background: var(--card-bg);
+      margin-top: 1px;
+      background: #FFFFFF;
+    }
+
+    .task-checkbox-box.checked {
+      background: #10B981;
+      border-color: #065F46;
     }
 
     .task-checkbox-box.checked::after {
       content: "✓";
-      font-size: 16px;
+      font-size: 13px;
       font-weight: 900;
-      color: var(--fg);
+      color: #FFFFFF;
     }
 
     .task-content-block {
       flex: 1;
       display: flex;
       flex-direction: column;
-      gap: 4px;
+      gap: 2px;
       overflow: hidden;
     }
 
@@ -588,133 +727,153 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 8px;
+      gap: 6px;
     }
 
+    /* BADGE MATERIE COLORATE */
     .task-subject-badge {
-      background: var(--fg);
-      color: var(--card-bg);
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       font-weight: 900;
-      padding: 2px 7px;
+      padding: 1.5px 6px;
       border-radius: 4px;
-      letter-spacing: 0.5px;
+      border: 1px solid var(--border-color);
+      letter-spacing: 0.4px;
       text-transform: uppercase;
+      white-space: nowrap;
     }
+
+    .subj-italiano   { background: #FFE4E6; color: #9F1239; }
+    .subj-matematica { background: #DBEAFE; color: #1E40AF; }
+    .subj-scienze    { background: #D1FAE5; color: #065F46; }
+    .subj-storia     { background: #FEF3C7; color: #92400E; }
+    .subj-geografia  { background: #CCFBF1; color: #115E59; }
+    .subj-inglese    { background: #F3E8FF; color: #6B21A8; }
+    .subj-arte       { background: #FFEDD5; color: #9A3412; }
+    .subj-musica     { background: #FCE7F3; color: #9D174D; }
+    .subj-stem       { background: #E0E7FF; color: #3730A3; }
+    .subj-motoria    { background: #ECFCCB; color: #3F6212; }
+    .subj-default    { background: #F1F5F9; color: #334155; }
 
     .task-date-badge {
-      font-size: 0.75rem;
-      font-family: var(--font-mono);
+      font-size: 0.70rem;
       font-weight: 800;
-      opacity: 0.85;
+      color: #475569;
+      font-family: var(--font-mono);
+      white-space: nowrap;
     }
 
     .task-full-text {
-      font-size: 0.92rem;
+      font-size: 0.82rem;
       font-weight: 700;
-      line-height: 1.35;
+      line-height: 1.25;
+      color: #1E293B;
       word-break: break-word;
     }
 
     .task-card-full.done .task-full-text {
       text-decoration: line-through;
-      opacity: 0.55;
+      color: #64748B;
     }
 
-    /* PILLAR 3: SPESA ITEMS */
+    /* PILLAR 3: LISTA SPESA */
     .grocery-item {
-      background: var(--card-bg);
+      background: #FFFFFF;
       border: var(--border-thin);
       border-radius: var(--radius-item);
-      padding: 8px 12px;
+      padding: 7px 10px;
       display: flex;
       align-items: center;
-      gap: 12px;
-      min-height: 48px;
-      cursor: pointer;
+      gap: 8px;
       box-shadow: 2px 2px 0px var(--border-color);
+      cursor: pointer;
       transition: transform 0.08s ease, background 0.15s ease;
-    }
-
-    .grocery-item:active {
-      transform: translate(1px, 1px);
-      box-shadow: 1px 1px 0px var(--border-color);
-    }
-
-    .grocery-checkbox {
-      width: 24px;
-      height: 24px;
-      border: var(--border-thick);
-      border-radius: 6px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: var(--card-bg);
       flex-shrink: 0;
     }
 
+    .grocery-item.done {
+      background: #F1F5F9;
+      border-style: dashed;
+      opacity: 0.65;
+    }
+
+    .grocery-checkbox {
+      width: 20px;
+      height: 20px;
+      border: var(--border-thick);
+      border-radius: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      background: #FFFFFF;
+    }
+
+    .grocery-checkbox.checked {
+      background: #10B981;
+      border-color: #065F46;
+    }
+
     .grocery-checkbox.checked::after {
-      content: "✕";
-      font-size: 16px;
+      content: "✓";
+      font-size: 13px;
       font-weight: 900;
-      color: var(--fg);
+      color: #FFFFFF;
     }
 
     .grocery-text-col {
       flex: 1;
       display: flex;
       align-items: baseline;
-      justify-content: space-between;
-      gap: 8px;
+      gap: 6px;
+      overflow: hidden;
     }
 
     .grocery-name {
-      font-size: 0.98rem;
+      font-size: 0.86rem;
       font-weight: 800;
       line-height: 1.25;
-    }
-
-    .grocery-author-tag {
-      font-size: 0.68rem;
-      font-weight: 800;
-      opacity: 0.75;
-      text-transform: uppercase;
-    }
-
-    .grocery-item.done {
-      background: #eeeeee;
-      border-style: dashed;
-    }
-
-    body.dark-mode .grocery-item.done {
-      background: #2a2a2c;
+      color: #1E293B;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
     }
 
     .grocery-item.done .grocery-name {
       text-decoration: line-through;
-      opacity: 0.55;
+      color: #64748B;
     }
 
-    /* EMPTY STATES */
+    .grocery-author-tag {
+      font-size: 0.65rem;
+      font-weight: 800;
+      color: #64748B;
+      flex-shrink: 0;
+    }
+
+    /* STATO VUOTO */
     .empty-box {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 6px;
-      padding: 24px 12px;
+      height: 100%;
+      min-height: 140px;
+      padding: 16px;
       text-align: center;
-      opacity: 0.75;
-      margin: auto;
+      gap: 8px;
+      opacity: 0.85;
     }
 
     .empty-icon {
-      font-size: 1.6rem;
+      font-size: 2.2rem;
+      line-height: 1;
     }
 
     .empty-msg {
-      font-size: 0.88rem;
+      font-size: 0.80rem;
       font-weight: 700;
+      line-height: 1.35;
+      color: #475569;
     }
 
     /* ==========================================================================
@@ -722,16 +881,13 @@
        ========================================================================== */
     .modal-overlay {
       position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.75);
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: rgba(15, 23, 42, 0.75);
       display: none;
       align-items: center;
       justify-content: center;
       z-index: 1000;
-      backdrop-filter: blur(2px);
+      backdrop-filter: blur(3px);
     }
 
     .modal-overlay.open {
@@ -741,20 +897,20 @@
     .modal-content-bento {
       background: var(--card-bg);
       border: var(--border-thick);
-      border-radius: var(--radius-card);
-      box-shadow: 8px 8px 0px #000;
-      width: 92vw;
+      border-radius: 20px;
+      box-shadow: 8px 8px 0px #000000;
+      width: 94vw;
       max-width: 1100px;
-      max-height: 85vh;
-      padding: 20px;
+      max-height: 88vh;
+      padding: 16px 20px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 12px;
       animation: popIn 0.15s ease-out;
     }
 
     @keyframes popIn {
-      from { transform: scale(0.95); opacity: 0; }
+      from { transform: scale(0.96); opacity: 0; }
       to { transform: scale(1); opacity: 1; }
     }
 
@@ -763,34 +919,34 @@
       align-items: center;
       justify-content: space-between;
       border-bottom: var(--border-thick);
-      padding-bottom: 10px;
+      padding-bottom: 8px;
     }
 
     .modal-title {
-      font-size: 1.3rem;
+      font-size: 1.15rem;
       font-weight: 900;
+      text-transform: uppercase;
       letter-spacing: 0.5px;
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
-    .week-grid-6col {
+    .modal-week-grid {
       display: grid;
       grid-template-columns: repeat(6, 1fr);
-      gap: 10px;
-      overflow-y: auto;
+      gap: 8px;
       flex: 1;
+      overflow-y: auto;
     }
 
     .day-column-box {
       border: var(--border-thin);
       border-radius: var(--radius-item);
+      overflow: hidden;
+      background: #FFFFFF;
       display: flex;
       flex-direction: column;
-      background: var(--card-bg);
-      box-shadow: 2px 2px 0px var(--border-color);
-      overflow: hidden;
     }
 
     .day-column-box.today {
@@ -799,68 +955,49 @@
     }
 
     .day-header {
-      background: var(--fg);
-      color: var(--card-bg);
-      font-size: 0.8rem;
+      background: #0F172A;
+      color: #FFFFFF;
+      font-size: 0.76rem;
       font-weight: 900;
       text-align: center;
       padding: 4px;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.4px;
+    }
+
+    .day-column-box.today .day-header {
+      background: #4F46E5;
     }
 
     .day-lessons-list {
-      padding: 6px;
+      padding: 5px;
       display: flex;
       flex-direction: column;
-      gap: 6px;
+      gap: 4px;
     }
 
     .lesson-row {
-      display: flex;
-      flex-direction: column;
-      border-bottom: var(--border-hairline);
+      border-bottom: 1px dashed #E2E8F0;
       padding-bottom: 3px;
     }
 
     .lesson-row:last-child {
       border-bottom: none;
+      padding-bottom: 0;
     }
 
     .lesson-time {
-      font-size: 0.65rem;
+      font-size: 0.62rem;
       font-family: var(--font-mono);
       font-weight: 800;
-      opacity: 0.75;
+      color: #64748B;
+      display: block;
     }
 
     .lesson-name {
-      font-size: 0.82rem;
+      font-size: 0.76rem;
       font-weight: 900;
-    }
-
-    /* SWITCHER PER LA PREVIEW A COLORI */
-    .preview-mode-switch {
-      position: fixed;
-      bottom: 8px;
-      right: 16px;
-      background: #0F172A;
-      color: #FFFFFF;
-      border: 2px solid #FFFFFF;
-      border-radius: 30px;
-      padding: 6px 14px;
-      font-size: 0.75rem;
-      font-weight: 900;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.25);
-      z-index: 500;
-      text-decoration: none;
-      cursor: pointer;
-    }
-    .preview-mode-switch:hover {
-      transform: translateY(-1px);
+      color: #0F172A;
     }
   </style>
 </head>
@@ -883,7 +1020,7 @@
       <div class="header-right">
         <div class="bot-status-pill" id="bot-status-pill">
           <span class="status-dot"></span>
-          <span id="bot-status-text">BOT ATTIVO</span>
+          <span id="bot-status-text">TELEGRAM ON</span>
         </div>
 
         <div class="clock-box">
@@ -892,82 +1029,85 @@
         </div>
 
         <div class="header-actions">
-          <button class="btn-icon" onclick="toggleDarkMode()" title="Inverti Bianco/Nero">
-            <svg class="icon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          <button class="btn-icon" onclick="toggleColorTheme()" id="theme-toggle-btn" title="Passa a Colori / Bianco e Nero">
+            🎨
+          </button>
+          <button class="btn-icon" onclick="toggleDarkMode()" title="Modalità Notte">
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
           </button>
           <button class="btn-icon" onclick="fetchLiveBackendData()" title="Aggiorna Dati">
-            <svg class="icon" viewBox="0 0 24 24" id="refresh-icon"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            <svg class="icon icon-sm" viewBox="0 0 24 24" id="refresh-icon"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
           </button>
           <button class="btn-icon" onclick="toggleFullScreen()" title="Schermo Intero">
-            <svg class="icon" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+            <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
           </button>
         </div>
       </div>
     </header>
 
     <!-- ====================================================================
-         2. TOP ROW (3 SYMMETRICAL CARDS: METEO, DIFFERENZIATA, SCUOLA DOMANI)
+         2. TOP ROW (3 SCHEDE SIMMETRICHE: METEO, DIFFERENZIATA, SCUOLA DOMANI)
          ==================================================================== -->
     <section class="row-trio">
 
       <!-- CARD 1: METEO SALEMI -->
-      <div class="bento-card">
+      <div class="bento-card card-weather">
         <div class="card-top-tag">
-          <div class="card-label">
+          <div class="card-label" style="color: #0284C7;">
             <svg class="icon icon-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
             <span>Meteo Salemi (TP)</span>
           </div>
           <span class="card-sub-pill" id="weather-rain-pill">PIOGGIA 0%</span>
         </div>
         <div class="meteo-content">
-          <div>
+          <div class="meteo-left">
             <div class="meteo-primary">
               <span class="temp-big" id="weather-temp">--°C</span>
-              <span class="cond-text" id="weather-cond">SERENO</span>
+              <span class="cond-text" id="weather-cond">CARICAMENTO</span>
             </div>
             <div class="meteo-meta-lines" id="weather-minmax">MIN --° • MAX --°</div>
           </div>
           <div class="forecast-duo" id="weather-forecast-duo">
-            <!-- Popolato da JS -->
+            <!-- Popolato dinamicamente con previsioni orarie -->
           </div>
         </div>
       </div>
 
       <!-- CARD 2: DIFFERENZIATA STASERA -->
-      <div class="bento-card">
+      <div class="bento-card card-recycle">
         <div class="card-top-tag">
-          <div class="card-label">
+          <div class="card-label" style="color: #047857;">
             <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
             <span>Differenziata Stasera</span>
           </div>
-          <span class="card-sub-pill" id="recycle-target-day">DOMANI</span>
+          <span class="card-sub-pill" id="recycle-target-day" style="background:#D1FAE5; color:#065F46; font-weight:900;">DOMANI</span>
         </div>
         <div class="recycle-content">
           <div class="recycle-highlight" id="recycle-type">ORGANICO (Umido)</div>
-          <div class="recycle-instructions" id="recycle-details">Ritiro domani mattina • Esporre stasera entro le 22:00</div>
+          <div class="recycle-instructions" id="recycle-details">Ritiro domani mattina • Esporre stasera</div>
         </div>
       </div>
 
-      <!-- CARD 3: SCUOLA DOMANI (AVVISO ZAINO + ORARIO MATERIE) -->
-      <div class="bento-card">
+      <!-- CARD 3: SCUOLA DOMANI (WARM POST-IT CON TUTTE LE MATERIE WRAPPED) -->
+      <div class="bento-card card-school-prep">
         <div class="card-top-tag">
-          <div class="card-label">
+          <div class="card-label" style="color: #B45309;">
             <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10M6 10h10M6 14h6"/></svg>
             <span id="school-prep-title">Scuola Domani</span>
           </div>
-          <button class="btn-action-sm" onclick="openWeekModal()" style="padding: 2px 7px; font-size: 0.68rem;">
+          <button class="btn-action-sm" onclick="openWeekModal()" style="padding: 2px 7px; font-size: 0.68rem; background:#FEF3C7;">
             Settimana 👁️
           </button>
         </div>
 
         <div class="school-prep-content">
-          <!-- Blocco Avviso Maestra se presente -->
+          <!-- Avviso Maestra se attivo -->
           <div class="alert-banner-box" id="teacher-alert-box">
-            <span class="alert-tag-mini" id="teacher-alert-tag">AVVISO</span>
+            <span class="alert-tag-mini" id="teacher-alert-tag">ZAINO OK</span>
             <span class="alert-text-mini" id="teacher-alert-msg">Nessun avviso per domani. Cartella pronta!</span>
           </div>
 
-          <!-- Materie di Domani -->
+          <!-- Materie di Domani a colori con wrap automatico -->
           <div class="subjects-mini-row" id="tomorrow-subjects-mini">
             <!-- Popolato da JS -->
           </div>
@@ -977,7 +1117,7 @@
     </section>
 
     <!-- ====================================================================
-         3. MAIN SECTION: 3 TALL PILLARS (NOTE | COMPITI RE | SPESA)
+         3. MAIN SECTION: 3 PILASTRI ALTI (NOTE | COMPITI | SPESA)
          ==================================================================== -->
     <section class="row-pillars">
 
@@ -1002,7 +1142,7 @@
         </div>
       </div>
 
-      <!-- PILASTRO 2: COMPITI DA FARE (AXIOS RE) - SPAZIO GRANDE & MULTILINEA -->
+      <!-- PILASTRO 2: COMPITI DA FARE (AXIOS RE) -->
       <div class="bento-card">
         <div class="card-header-bar">
           <div class="card-title-group">
@@ -1012,11 +1152,14 @@
             </div>
             <span class="counter-badge" id="tasks-counter">0 DA FARE</span>
           </div>
-          <button class="btn-action-sm" onclick="triggerAxiosSync()">Sincronizza RE</button>
+          <button class="btn-action-sm" onclick="triggerAxiosSync()" title="Sincronizza Registro Elettronico Axios">
+            <svg class="icon-xs" viewBox="0 0 24 24"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+            <span>Sync RE</span>
+          </button>
         </div>
 
         <div class="scroll-body" id="axios-tasks-container">
-          <!-- Popolato da JS con testo completo e dettagli -->
+          <!-- Popolato da JS -->
         </div>
       </div>
 
@@ -1045,11 +1188,6 @@
 
   </div>
 
-  <!-- LINK VELOCE PER PROVARE LA VERSIONE A COLORI -->
-  <a href="/color.html" class="preview-mode-switch" title="Prova la versione a Colori">
-    <span>🎨 Prova UI a Colori</span>
-  </a>
-
   <!-- ====================================================================
        4. MODAL POPUP: ORARIO SETTIMANALE COMPLETO (6 GIORNI)
        ==================================================================== -->
@@ -1063,15 +1201,16 @@
         <button class="btn-action-sm" onclick="closeWeekModal()">Chiudi ✕</button>
       </div>
 
-      <div class="week-grid-6col" id="modal-week-grid">
-        <!-- Generato da renderModalWeekSchedule() -->
+      <div class="modal-week-grid" id="modal-week-grid">
+        <!-- Popolato via JS con tutti e 6 i giorni -->
       </div>
     </div>
   </div>
 
-  <!-- SCRIPT APPLICATIVO -->
   <script>
-    // 1. ORARIO SCUOLA 2026/2027 (Lunedì - Sabato)
+    // ========================================================================
+    // 1. DATI STATICI ORARIO SCOLASTICO (SETTIMANA TIPO 2026/2027)
+    // ========================================================================
     const schoolWeekData = {
       'LUN': [
         { time: "08:30", subject: "Storia" },
@@ -1099,7 +1238,7 @@
         { time: "09:30", subject: "Italiano" },
         { time: "10:30", subject: "Italiano" },
         { time: "11:30", subject: "Matematica" },
-        { time: "12:30", subject: "Tecnologia" }
+        { time: "12:30", subject: "Matematica" }
       ],
       'VEN': [
         { time: "08:30", subject: "Italiano" },
@@ -1112,7 +1251,8 @@
         { time: "08:30", subject: "Inglese" },
         { time: "09:30", subject: "Inglese" },
         { time: "10:30", subject: "Matematica" },
-        { time: "11:30", subject: "Matematica" }
+        { time: "11:30", subject: "Italiano" },
+        { time: "12:30", subject: "Italiano" }
       ]
     };
 
@@ -1122,7 +1262,39 @@
 
     let serverTimeDelta = 0;
 
-    // 2. OROLOGIO & DATA LIVE
+    // ========================================================================
+    // 2. THEME MANAGER (COLOR vs MONO vs DARK)
+    // ========================================================================
+    function initTheme() {
+      const savedTheme = localStorage.getItem('kindle_theme') || 'color';
+      if (savedTheme === 'mono') {
+        document.body.classList.add('theme-mono');
+        document.getElementById('theme-toggle-btn').textContent = '⬛';
+      } else {
+        document.body.classList.remove('theme-mono');
+        document.getElementById('theme-toggle-btn').textContent = '🎨';
+      }
+    }
+
+    function toggleColorTheme() {
+      const isMono = document.body.classList.toggle('theme-mono');
+      const btn = document.getElementById('theme-toggle-btn');
+      if (isMono) {
+        btn.textContent = '⬛';
+        localStorage.setItem('kindle_theme', 'mono');
+      } else {
+        btn.textContent = '🎨';
+        localStorage.setItem('kindle_theme', 'color');
+      }
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle('theme-dark');
+    }
+
+    // ========================================================================
+    // 3. OROLOGIO & DATA LIVE
+    // ========================================================================
     function updateLiveClock() {
       const now = new Date(Date.now() + serverTimeDelta);
       const h = String(now.getHours()).padStart(2, '0');
@@ -1142,7 +1314,9 @@
     setInterval(updateLiveClock, 1000);
     updateLiveClock();
 
-    // 3. FETCH LIVE DATA DA BACKEND
+    // ========================================================================
+    // 4. CHIAMATE API BACKEND & RENDERING
+    // ========================================================================
     async function fetchLiveBackendData() {
       const refreshIcon = document.getElementById('refresh-icon');
       if (refreshIcon) refreshIcon.style.transform = 'rotate(180deg)';
@@ -1156,7 +1330,7 @@
           serverTimeDelta = data.server_time.timestamp_ms - Date.now();
         }
 
-        renderBotStatus(data.bot_active);
+        renderBotStatus(data.bot_active !== false);
         renderWeather(data.weather);
         renderRecycle(data.recycle);
         renderSchoolPrep(data);
@@ -1170,7 +1344,18 @@
       }
     }
 
-    // RENDER METEO
+    function renderBotStatus(active) {
+      const dot = document.querySelector('.status-dot');
+      const txt = document.getElementById('bot-status-text');
+      if (active) {
+        dot.style.background = '#10B981';
+        txt.textContent = 'TELEGRAM ON';
+      } else {
+        dot.style.background = '#888888';
+        txt.textContent = 'BOT STANDBY';
+      }
+    }
+
     function renderWeather(w) {
       if (!w) return;
       document.getElementById('weather-temp').textContent = w.temp || '--°C';
@@ -1183,7 +1368,7 @@
         duoContainer.innerHTML = w.forecast.slice(0, 2).map(f => `
           <div class="forecast-slot">
             <span class="forecast-time-badge">${f.time}</span>
-            <span>${f.temp}</span>
+            <span style="font-weight:900; color:#0369A1;">${f.temp}</span>
             <span style="opacity:0.8; font-weight:600;">(${f.desc})</span>
           </div>
         `).join('');
@@ -1192,7 +1377,6 @@
       }
     }
 
-    // RENDER DIFFERENZIATA
     function renderRecycle(r) {
       if (!r) return;
       document.getElementById('recycle-type').textContent = r.type || 'NESSUNA';
@@ -1200,7 +1384,22 @@
       document.getElementById('recycle-target-day').textContent = (r.target_day || 'DOMANI').toUpperCase();
     }
 
-    // RENDER SCUOLA DOMANI (AVVISO ZAINO + MATERIE COMPATTE)
+    // CLASSI COLORE PER MATERIA SCOLASTICA
+    function getSubjectColorClass(subj) {
+      const s = (subj || '').toLowerCase();
+      if (s.includes('ital')) return 'subj-italiano';
+      if (s.includes('matem')) return 'subj-matematica';
+      if (s.includes('scien')) return 'subj-scienze';
+      if (s.includes('stor')) return 'subj-storia';
+      if (s.includes('geog')) return 'subj-geografia';
+      if (s.includes('ingl')) return 'subj-inglese';
+      if (s.includes('arte')) return 'subj-arte';
+      if (s.includes('music')) return 'subj-musica';
+      if (s.includes('stem')) return 'subj-stem';
+      if (s.includes('motor')) return 'subj-motoria';
+      return 'subj-default';
+    }
+
     function renderSchoolPrep(d) {
       const now = new Date(Date.now() + serverTimeDelta);
       const tomorrow = new Date(now);
@@ -1210,34 +1409,34 @@
       const tDayName = DAYS_FULL[tomorrow.getDay()];
       document.getElementById('school-prep-title').textContent = `Scuola (${tDayName})`;
 
-      // 1. Avviso Maestra / Zaino
       const alertTag = document.getElementById('teacher-alert-tag');
       const alertMsg = document.getElementById('teacher-alert-msg');
       if (d.backpack_active && d.backpack) {
         alertTag.textContent = d.backpack_pill || 'PER DOMANI';
-        alertTag.style.background = '#111';
-        alertTag.style.color = '#fff';
+        alertTag.style.background = '#F59E0B';
         alertMsg.textContent = cleanTeacherText(d.backpack);
       } else {
         alertTag.textContent = 'ZAINO OK';
-        alertTag.style.background = '#444';
-        alertTag.style.color = '#fff';
+        alertTag.style.background = '#10B981';
         alertMsg.textContent = 'Nessun avviso per domani. Cartella pronta!';
       }
 
-      // 2. Materie di domani
       const subContainer = document.getElementById('tomorrow-subjects-mini');
       const subjects = schoolWeekData[tDayKey];
 
       if (!subjects || subjects.length === 0) {
-        subContainer.innerHTML = '<span style="font-size:0.75rem; font-weight:700; opacity:0.8;">🛋️ Domani riposo! Nessuna lezione prevista.</span>';
+        subContainer.innerHTML = '<span style="font-size:0.72rem; font-weight:700; color:#B45309;">🛋️ Domani riposo! Nessuna lezione prevista.</span>';
       } else {
-        subContainer.innerHTML = subjects.map((s, idx) => `
-          <div class="sub-pill-compact">
-            <span class="sub-num">${idx + 1}ª</span>
-            <span>${escapeHtml(s.subject)}</span>
-          </div>
-        `).join('');
+        // Pillole colorate con wrap: entrano tutte le ore senza tagliarsi
+        subContainer.innerHTML = subjects.map((s, idx) => {
+          const colClass = getSubjectColorClass(s.subject);
+          return `
+            <div class="sub-pill-compact ${colClass}">
+              <span class="sub-num">${idx + 1}ª</span>
+              <span>${escapeHtml(s.subject)}</span>
+            </div>
+          `;
+        }).join('');
       }
     }
 
@@ -1247,7 +1446,15 @@
                 .replace(/^[A-Za-zÀ-ÖØ-öø-ÿ\s]{4,35}:\s*/, '');
     }
 
-    // RENDER NOTE TELEGRAM
+    // CLASSI COLORE PER AUTORE NOTE
+    function getAuthorColorClass(author) {
+      const a = (author || '').toUpperCase();
+      if (a.includes('MAMMA')) return 'author-mamma';
+      if (a.includes('PAPA') || a.includes('PAPÀ')) return 'author-papa';
+      if (a.includes('LUCA') || a.includes('IRVINE') || a.includes('FLAVIO')) return 'author-figli';
+      return 'author-other';
+    }
+
     function renderNotes(notes) {
       const container = document.getElementById('telegram-feed-list');
       const counter = document.getElementById('notes-counter');
@@ -1263,18 +1470,20 @@
         return;
       }
 
-      container.innerHTML = notes.map(n => `
-        <div class="note-item">
-          <div class="note-header-line">
-            <span class="author-pill">${escapeHtml(n.author || 'FAMIGLIA')}</span>
-            <span class="note-time-label">${n.time || ''}</span>
+      container.innerHTML = notes.map(n => {
+        const authorClass = getAuthorColorClass(n.author);
+        return `
+          <div class="note-item">
+            <div class="note-header-line">
+              <span class="author-pill ${authorClass}">${escapeHtml(n.author || 'FAMIGLIA')}</span>
+              <span class="note-time-label">${n.time || ''}</span>
+            </div>
+            <div class="note-body-text">${escapeHtml(n.text || '')}</div>
           </div>
-          <div class="note-body-text">${escapeHtml(n.text || '')}</div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
-    // RENDER COMPITI RE (AMPIO SPAZIO VERTICALE CON TESTO MULTILINEA COMPLETO)
     function renderTasks(tasks) {
       const container = document.getElementById('axios-tasks-container');
       const counter = document.getElementById('tasks-counter');
@@ -1291,21 +1500,23 @@
         return;
       }
 
-      container.innerHTML = tasks.map(t => `
-        <div class="task-card-full ${t.done ? 'done' : ''}" onclick="toggleTaskBackend(${t.id})">
-          <div class="task-checkbox-box ${t.done ? 'checked' : ''}"></div>
-          <div class="task-content-block">
-            <div class="task-meta-row">
-              <span class="task-subject-badge">${escapeHtml(t.subject)}</span>
-              <span class="task-date-badge">${t.date ? 'Per il ' + t.date.slice(0,5) : ''}</span>
+      container.innerHTML = tasks.map(t => {
+        const subjClass = getSubjectColorClass(t.subject);
+        return `
+          <div class="task-card-full ${t.done ? 'done' : ''}" onclick="toggleTaskBackend(${t.id})">
+            <div class="task-checkbox-box ${t.done ? 'checked' : ''}"></div>
+            <div class="task-content-block">
+              <div class="task-meta-row">
+                <span class="task-subject-badge ${subjClass}">${escapeHtml(t.subject)}</span>
+                <span class="task-date-badge">${t.date ? 'Per il ' + t.date.slice(0,5) : ''}</span>
+              </div>
+              <div class="task-full-text">${escapeHtml(t.text)}</div>
             </div>
-            <div class="task-full-text">${escapeHtml(t.text)}</div>
           </div>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
-    // RENDER SPESA
     function renderGroceries(groceries) {
       const container = document.getElementById('shopping-items-list');
       const counter = document.getElementById('groceries-counter');
@@ -1335,7 +1546,6 @@
       `).join('');
     }
 
-    // RENDER MODAL ORARIO SETTIMANALE (6 GIORNI)
     function renderModalWeekSchedule() {
       const container = document.getElementById('modal-week-grid');
       const now = new Date(Date.now() + serverTimeDelta);
@@ -1353,7 +1563,7 @@
 
         return `
           <div class="day-column-box ${isToday ? 'today' : ''}">
-            <div class="day-header" style="${isToday ? 'background: var(--fg); color: var(--card-bg); font-weight:900;' : ''}">
+            <div class="day-header">
               ${daysFullNames[dayKey]} ${isToday ? '• OGGI' : ''}
             </div>
             <div class="day-lessons-list">
@@ -1378,7 +1588,6 @@
       document.getElementById('week-modal').classList.remove('open');
     }
 
-    // AZIONI BACKEND
     async function toggleGroceryBackend(id) {
       try {
         await fetch('/api/toggle-grocery', {
@@ -1387,18 +1596,14 @@
           body: JSON.stringify({ id })
         });
         fetchLiveBackendData();
-      } catch (e) {
-        console.error(e);
-      }
+      } catch (e) { console.error(e); }
     }
 
     async function clearDoneGroceriesBackend() {
       try {
         await fetch('/api/clear-groceries', { method: 'POST' });
         fetchLiveBackendData();
-      } catch (e) {
-        console.error(e);
-      }
+      } catch (e) { console.error(e); }
     }
 
     async function toggleTaskBackend(id) {
@@ -1409,9 +1614,7 @@
           body: JSON.stringify({ id })
         });
         fetchLiveBackendData();
-      } catch (e) {
-        console.error(e);
-      }
+      } catch (e) { console.error(e); }
     }
 
     async function clearNotesBackend() {
@@ -1419,34 +1622,14 @@
       try {
         await fetch('/api/clear-notes', { method: 'POST' });
         fetchLiveBackendData();
-      } catch (e) {
-        console.error(e);
-      }
+      } catch (e) { console.error(e); }
     }
 
     async function triggerAxiosSync() {
       try {
         await fetch('/api/sync-axios', { method: 'POST' });
         fetchLiveBackendData();
-      } catch (e) {
-        console.error(e);
-      }
-    }
-
-    function renderBotStatus(active) {
-      const dot = document.querySelector('.status-dot');
-      const txt = document.getElementById('bot-status-text');
-      if (active) {
-        txt.textContent = "TELEGRAM ON";
-        dot.style.background = "#10b981";
-      } else {
-        txt.textContent = "BOT STANDBY";
-        dot.style.background = "#888888";
-      }
-    }
-
-    function toggleDarkMode() {
-      document.body.classList.toggle('dark-mode');
+      } catch (e) { console.error(e); }
     }
 
     function toggleFullScreen() {
@@ -1467,7 +1650,8 @@
         .replace(/'/g, "&#039;");
     }
 
-    // Polling automatico ogni 10 secondi
+    // Inizializza tema e dati
+    initTheme();
     fetchLiveBackendData();
     setInterval(fetchLiveBackendData, 10000);
   </script>

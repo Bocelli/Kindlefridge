@@ -286,14 +286,14 @@
     }
 
     /* ==========================================================================
-       2. TOP STATUS ROW: 3 SCHEDE SIMMETRICHE (METEO, DIFFERENZIATA, SCUOLA DOMANI)
+       2. TOP STATUS ROW: 3 SCHEDE SIMMETRICHE (ALTEZZA OTTIMIZZATA A 138px)
        ========================================================================== */
     .row-trio {
       display: grid;
       grid-template-columns: 1fr 1fr 1fr;
       gap: 10px;
       flex-shrink: 0;
-      height: 114px;
+      height: 138px;
     }
 
     .bento-card {
@@ -348,50 +348,70 @@
       align-items: center;
       justify-content: space-between;
       height: 100%;
-      padding: 0 2px;
+      padding: 2px 2px;
+      gap: 8px;
     }
 
-    .meteo-primary {
+    .meteo-left {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .meteo-primary-row {
       display: flex;
-      align-items: baseline;
-      gap: 6px;
+      align-items: center;
+      gap: 10px;
     }
 
     .temp-big {
-      font-size: 2.1rem;
+      font-size: 2.2rem;
       font-weight: 900;
       letter-spacing: -1px;
       line-height: 1;
       color: var(--c-weather);
+      flex-shrink: 0;
+    }
+
+    .meteo-cond-col {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
     }
 
     .cond-text {
-      font-size: 0.82rem;
+      font-size: 0.85rem;
       font-weight: 800;
       text-transform: uppercase;
       color: #0369A1;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.2;
     }
 
-    .meteo-meta-lines {
+    .meteo-minmax-text {
       font-size: 0.72rem;
-      font-weight: 700;
+      font-weight: 800;
       color: #475569;
-      margin-top: 2px;
+      font-family: var(--font-mono);
+      white-space: nowrap;
     }
 
     .forecast-duo {
       display: flex;
       flex-direction: column;
-      gap: 3px;
+      gap: 5px;
       border-left: 2px solid #BAE6FD;
-      padding-left: 8px;
+      padding-left: 10px;
+      flex-shrink: 0;
     }
 
     .forecast-slot {
       display: flex;
       align-items: center;
-      gap: 5px;
-      font-size: 0.72rem;
+      gap: 6px;
+      font-size: 0.75rem;
       font-weight: 800;
       white-space: nowrap;
     }
@@ -399,11 +419,23 @@
     .forecast-time-badge {
       background: #0284C7;
       color: #FFFFFF;
-      padding: 1px 4px;
+      padding: 1.5px 5px;
       border-radius: 4px;
       font-size: 0.65rem;
       font-family: var(--font-mono);
       font-weight: 900;
+    }
+
+    .forecast-emoji {
+      font-size: 0.95rem;
+      line-height: 1;
+    }
+
+    .forecast-temp {
+      font-weight: 900;
+      color: #0369A1;
+      font-family: var(--font-mono);
+      font-size: 0.80rem;
     }
 
     /* CARD 2: DIFFERENZIATA (EMERALD ECO) */
@@ -416,11 +448,11 @@
       flex-direction: column;
       justify-content: center;
       height: 100%;
-      gap: 3px;
+      gap: 4px;
     }
 
     .recycle-highlight {
-      font-size: 1.10rem;
+      font-size: 1.15rem;
       font-weight: 900;
       letter-spacing: 0.3px;
       text-transform: uppercase;
@@ -429,10 +461,10 @@
     }
 
     .recycle-instructions {
-      font-size: 0.78rem;
+      font-size: 0.80rem;
       font-weight: 700;
       color: #334155;
-      line-height: 1.2;
+      line-height: 1.25;
     }
 
     /* CARD 3: SCUOLA DOMANI (WARM AMBER / CORAL POST-IT) */
@@ -443,10 +475,10 @@
     .school-prep-content {
       display: flex;
       flex-direction: column;
-      justify-content: space-between;
+      justify-content: flex-start;
       height: 100%;
       overflow: hidden;
-      gap: 4px;
+      gap: 6px;
     }
 
     .alert-banner-box {
@@ -461,6 +493,7 @@
       font-weight: 700;
       color: #92400E;
       line-height: 1.15;
+      flex-shrink: 0;
     }
 
     .alert-tag-mini {
@@ -481,12 +514,12 @@
       flex: 1;
     }
 
-    /* RIGA MATERIE WRAP (TUTTE VISIBILI SENZA TRONCAMENTI) */
+    /* RIGA MATERIE WRAP (CON ORARI E SPAZIO AMPIO) */
     .subjects-mini-row {
       display: flex;
       flex-wrap: wrap;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
       overflow: hidden;
     }
 
@@ -494,12 +527,12 @@
       background: #FFFFFF;
       border: 1.5px solid var(--border-color);
       border-radius: 6px;
-      padding: 2px 6px;
-      font-size: 0.68rem;
+      padding: 2.5px 7px;
+      font-size: 0.70rem;
       font-weight: 800;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
       white-space: nowrap;
       flex-shrink: 0;
       box-shadow: 1px 1px 0px var(--border-color);
@@ -512,8 +545,16 @@
       font-size: 0.60rem;
       font-family: var(--font-mono);
       font-weight: 900;
-      padding: 0.5px 3px;
+      padding: 0.5px 3.5px;
       border-radius: 3px;
+    }
+
+    .sub-time {
+      font-size: 0.62rem;
+      font-family: var(--font-mono);
+      font-weight: 800;
+      color: #475569;
+      opacity: 0.85;
     }
 
     /* ==========================================================================
@@ -1061,14 +1102,16 @@
         </div>
         <div class="meteo-content">
           <div class="meteo-left">
-            <div class="meteo-primary">
+            <div class="meteo-primary-row">
               <span class="temp-big" id="weather-temp">--°C</span>
-              <span class="cond-text" id="weather-cond">CARICAMENTO</span>
+              <div class="meteo-cond-col">
+                <span class="cond-text" id="weather-cond">CARICAMENTO</span>
+                <span class="meteo-minmax-text" id="weather-minmax">MIN --° • MAX --°</span>
+              </div>
             </div>
-            <div class="meteo-meta-lines" id="weather-minmax">MIN --° • MAX --°</div>
           </div>
           <div class="forecast-duo" id="weather-forecast-duo">
-            <!-- Popolato dinamicamente con previsioni orarie -->
+            <!-- Popolato dinamicamente con previsioni orarie e icone -->
           </div>
         </div>
       </div>
@@ -1088,14 +1131,15 @@
         </div>
       </div>
 
-      <!-- CARD 3: SCUOLA DOMANI (WARM POST-IT CON TUTTE LE MATERIE WRAPPED) -->
+      <!-- CARD 3: SCUOLA DOMANI (CON ORARI COMPLETI E AMPIO SPAZIO) -->
       <div class="bento-card card-school-prep">
         <div class="card-top-tag">
           <div class="card-label" style="color: #B45309;">
             <svg class="icon icon-sm" viewBox="0 0 24 24"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10M6 10h10M6 14h6"/></svg>
             <span id="school-prep-title">Scuola Domani</span>
+            <span class="card-sub-pill" id="school-prep-hours" style="background:#FEF3C7; color:#92400E; font-weight:900; margin-left:4px;">08:30 - 13:30</span>
           </div>
-          <button class="btn-action-sm" onclick="openWeekModal()" style="padding: 2px 7px; font-size: 0.68rem; background:#FEF3C7;">
+          <button class="btn-action-sm" onclick="openWeekModal()" style="padding: 2px 7px; font-size: 0.68rem; background:#FFFFFF;">
             Settimana 👁️
           </button>
         </div>
@@ -1104,10 +1148,10 @@
           <!-- Avviso Maestra se attivo -->
           <div class="alert-banner-box" id="teacher-alert-box">
             <span class="alert-tag-mini" id="teacher-alert-tag">ZAINO OK</span>
-            <span class="alert-text-mini" id="teacher-alert-msg">Nessun avviso per domani. Cartella pronta!</span>
+            <span class="alert-text-mini" id="teacher-alert-msg">Nessun avviso per domani</span>
           </div>
 
-          <!-- Materie di Domani a colori con wrap automatico -->
+          <!-- Materie di Domani con orari e wrap -->
           <div class="subjects-mini-row" id="tomorrow-subjects-mini">
             <!-- Popolato da JS -->
           </div>
@@ -1356,6 +1400,17 @@
       }
     }
 
+    function getWeatherEmoji(code) {
+      if (code === 0) return '☀️';
+      if (code === 1 || code === 2) return '⛅';
+      if (code === 3) return '☁️';
+      if (code === 45 || code === 48) return '🌫️';
+      if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) return '🌧️';
+      if ((code >= 71 && code <= 77) || code === 85 || code === 86) return '❄️';
+      if (code >= 95) return '⛈️';
+      return '🌤️';
+    }
+
     function renderWeather(w) {
       if (!w) return;
       document.getElementById('weather-temp').textContent = w.temp || '--°C';
@@ -1365,13 +1420,16 @@
 
       const duoContainer = document.getElementById('weather-forecast-duo');
       if (w.forecast && w.forecast.length > 0) {
-        duoContainer.innerHTML = w.forecast.slice(0, 2).map(f => `
-          <div class="forecast-slot">
-            <span class="forecast-time-badge">${f.time}</span>
-            <span style="font-weight:900; color:#0369A1;">${f.temp}</span>
-            <span style="opacity:0.8; font-weight:600;">(${f.desc})</span>
-          </div>
-        `).join('');
+        duoContainer.innerHTML = w.forecast.slice(0, 2).map(f => {
+          const emoji = getWeatherEmoji(f.code);
+          return `
+            <div class="forecast-slot">
+              <span class="forecast-time-badge">${f.time}</span>
+              <span class="forecast-emoji">${emoji}</span>
+              <span class="forecast-temp">${f.temp}</span>
+            </div>
+          `;
+        }).join('');
       } else {
         duoContainer.innerHTML = '';
       }
@@ -1409,6 +1467,15 @@
       const tDayName = DAYS_FULL[tomorrow.getDay()];
       document.getElementById('school-prep-title').textContent = `Scuola (${tDayName})`;
 
+      const subjects = schoolWeekData[tDayKey];
+      const hoursBadge = document.getElementById('school-prep-hours');
+      if (subjects && subjects.length > 0) {
+        hoursBadge.textContent = `${subjects[0].time} - 13:30`;
+        hoursBadge.style.display = 'inline-block';
+      } else {
+        hoursBadge.style.display = 'none';
+      }
+
       const alertTag = document.getElementById('teacher-alert-tag');
       const alertMsg = document.getElementById('teacher-alert-msg');
       if (d.backpack_active && d.backpack) {
@@ -1418,22 +1485,22 @@
       } else {
         alertTag.textContent = 'ZAINO OK';
         alertTag.style.background = '#10B981';
-        alertMsg.textContent = 'Nessun avviso per domani. Cartella pronta!';
+        alertMsg.textContent = 'Nessun avviso per domani';
       }
 
       const subContainer = document.getElementById('tomorrow-subjects-mini');
-      const subjects = schoolWeekData[tDayKey];
 
       if (!subjects || subjects.length === 0) {
-        subContainer.innerHTML = '<span style="font-size:0.72rem; font-weight:700; color:#B45309;">🛋️ Domani riposo! Nessuna lezione prevista.</span>';
+        subContainer.innerHTML = '<span style="font-size:0.75rem; font-weight:700; color:#B45309;">🛋️ Domani riposo! Nessuna lezione prevista.</span>';
       } else {
-        // Pillole colorate con wrap: entrano tutte le ore senza tagliarsi
+        // Pillole con numero d'ora, orario e materia a colori
         subContainer.innerHTML = subjects.map((s, idx) => {
           const colClass = getSubjectColorClass(s.subject);
           return `
             <div class="sub-pill-compact ${colClass}">
               <span class="sub-num">${idx + 1}ª</span>
-              <span>${escapeHtml(s.subject)}</span>
+              <span class="sub-name">${escapeHtml(s.subject)}</span>
+              <span class="sub-time">${s.time}</span>
             </div>
           `;
         }).join('');

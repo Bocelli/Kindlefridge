@@ -261,14 +261,26 @@ def get_salemi_weather():
                 break
 
         forecast_slots = []
-        for step in [6, 12]:
-            target_idx = curr_idx + step
-            if target_idx < len(h_times):
-                t_str = h_times[target_idx].split("T")[1]
-                temp_val = round(hourly["temperature_2m"][target_idx])
-                c_val = hourly["weather_code"][target_idx]
+        target_slots = ['08:00', '14:00', '20:00']
+        for idx in range(curr_idx + 1, len(h_times)):
+            t_str = h_times[idx].split("T")[1]
+            if t_str in target_slots:
+                temp_val = round(hourly["temperature_2m"][idx])
+                c_val = hourly["weather_code"][idx]
                 desc_val = WMO_CODES.get(c_val, "Variabile").capitalize()
                 forecast_slots.append({"time": t_str, "temp": f"{temp_val}°", "desc": desc_val, "code": c_val})
+                if len(forecast_slots) == 2:
+                    break
+
+        if not forecast_slots:
+            for step in [6, 12]:
+                target_idx = curr_idx + step
+                if target_idx < len(h_times):
+                    t_str = h_times[target_idx].split("T")[1]
+                    temp_val = round(hourly["temperature_2m"][target_idx])
+                    c_val = hourly["weather_code"][target_idx]
+                    desc_val = WMO_CODES.get(c_val, "Variabile").capitalize()
+                    forecast_slots.append({"time": t_str, "temp": f"{temp_val}°", "desc": desc_val, "code": c_val})
 
         cached_weather = {
             "city": "Salemi (TP)",
@@ -293,8 +305,8 @@ def get_salemi_weather():
             "rain": "PIOGGIA 0%",
             "code": 2,
             "forecast": [
-                {"time": "03:00", "temp": "13°", "desc": "Poco nuv.", "code": 2},
-                {"time": "09:00", "temp": "18°", "desc": "Sereno", "code": 0}
+                {"time": "08:00", "temp": "14°", "desc": "Poco nuv.", "code": 2},
+                {"time": "14:00", "temp": "20°", "desc": "Sereno", "code": 0}
             ]
         }
 

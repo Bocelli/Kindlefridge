@@ -74,6 +74,16 @@
       color: #0F172A !important;
       border: 1.5px solid #0F172A !important;
     }
+    body.theme-mono .forecast-duo {
+      background: #FFFFFF !important;
+      border: 1.5px solid #0F172A !important;
+    }
+    body.theme-mono .btn-check-green {
+      background: #FFFFFF !important;
+      color: #000000 !important;
+      border: 2px solid #000000 !important;
+      box-shadow: 2px 2px 0px #000000 !important;
+    }
 
     /* THEME DARK / NIGHT MODE */
     body.theme-dark {
@@ -97,6 +107,16 @@
       background: #1E293B !important;
       color: #F8FAFC !important;
       border-color: #F8FAFC !important;
+    }
+    body.theme-dark .forecast-duo {
+      background: rgba(14, 165, 233, 0.12) !important;
+      border-color: #0284C7 !important;
+    }
+    body.theme-dark .btn-check-green {
+      background: #059669 !important;
+      border-color: #34D399 !important;
+      box-shadow: 2px 2px 0px #34D399 !important;
+      color: #FFFFFF !important;
     }
     body.theme-dark .note-body-text,
     body.theme-dark .task-body-text,
@@ -348,58 +368,57 @@
       align-items: center;
       justify-content: space-between;
       height: 100%;
-      padding: 2px 0;
-      gap: 10px;
+      padding: 1px 0;
+      gap: 12px;
     }
 
     .meteo-left {
       display: flex;
       flex-direction: column;
       justify-content: center;
-      gap: 4px;
+      gap: 2px;
       min-width: 0;
-      flex: 1;
-    }
-
-    .meteo-primary-row {
-      display: flex;
-      align-items: baseline;
-      gap: 8px;
-      min-width: 0;
+      flex-shrink: 0;
     }
 
     .temp-big {
-      font-size: 2.1rem;
+      font-size: 1.95rem;
       font-weight: 900;
       letter-spacing: -1px;
       line-height: 1;
       color: var(--c-weather);
-      flex-shrink: 0;
     }
 
     .cond-text {
-      font-size: 0.85rem;
+      font-size: 0.80rem;
       font-weight: 800;
       color: #0369A1;
       line-height: 1.15;
       white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 150px;
     }
 
     .meteo-minmax-text {
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       font-weight: 800;
       color: #475569;
       font-family: var(--font-mono);
       white-space: nowrap;
+      line-height: 1.1;
     }
 
     .forecast-duo {
       display: flex;
       flex-direction: column;
-      gap: 5px;
-      border-left: 2px solid #BAE6FD;
-      padding-left: 10px;
+      gap: 4px;
       flex-shrink: 0;
+      justify-content: center;
+      background: rgba(224, 242, 254, 0.45);
+      border: 1.5px solid #BAE6FD;
+      border-radius: 8px;
+      padding: 4px 7px;
     }
 
     .forecast-slot {
@@ -571,15 +590,15 @@
       border-bottom: 2px solid #E2E8F0;
       margin-bottom: 6px;
       flex-shrink: 0;
-      gap: 4px;
+      gap: 6px;
     }
 
     .card-title-group {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
       min-width: 0;
-      overflow: hidden;
+      flex-shrink: 1;
     }
 
     .card-title {
@@ -591,6 +610,7 @@
       align-items: center;
       gap: 4px;
       white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .counter-badge {
@@ -598,9 +618,10 @@
       color: #FFFFFF;
       font-size: 0.65rem;
       font-weight: 900;
-      padding: 1.5px 5px;
+      padding: 1.5px 6px;
       border-radius: var(--radius-pill);
       white-space: nowrap;
+      flex-shrink: 0;
     }
 
     /* BOTTONI AZIONE COMPATTI SENZA ANDARE A CAPO */
@@ -627,6 +648,39 @@
     .btn-action-sm:active {
       transform: translate(2px, 2px);
       box-shadow: none;
+    }
+
+    /* BOTTONE CHECK VERDE SPESA */
+    .btn-check-green {
+      background: #10B981;
+      color: #FFFFFF;
+      border: 2px solid #047857;
+      padding: 2.5px 8px;
+      border-radius: var(--radius-pill);
+      font-size: 0.68rem;
+      font-weight: 900;
+      cursor: pointer;
+      box-shadow: 2px 2px 0px #047857;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+      white-space: nowrap;
+      flex-shrink: 0;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      line-height: 1.1;
+      transition: transform 0.08s ease, box-shadow 0.08s ease;
+    }
+
+    .btn-check-green:active {
+      transform: translate(2px, 2px);
+      box-shadow: none;
+    }
+
+    .btn-check-green svg {
+      width: 12px;
+      height: 12px;
+      stroke-width: 3.5;
     }
 
     .scroll-body {
@@ -1097,10 +1151,8 @@
         </div>
         <div class="meteo-content">
           <div class="meteo-left">
-            <div class="meteo-primary-row">
-              <span class="temp-big" id="weather-temp">--°C</span>
-              <span class="cond-text" id="weather-cond">CARICAMENTO</span>
-            </div>
+            <div class="temp-big" id="weather-temp">--°C</div>
+            <div class="cond-text" id="weather-cond">CARICAMENTO</div>
             <div class="meteo-minmax-text" id="weather-minmax">MIN --° • MAX --°</div>
           </div>
           <div class="forecast-duo" id="weather-forecast-duo">
@@ -1185,7 +1237,7 @@
           <div class="card-title-group">
             <div class="card-title">
               <svg class="icon" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
-              <span>Compiti da Fare</span>
+              <span>Compiti</span>
             </div>
             <span class="counter-badge" id="tasks-counter">0 DA FARE</span>
           </div>
@@ -1208,9 +1260,12 @@
               <svg class="icon" viewBox="0 0 24 24"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
               <span>Lista Spesa</span>
             </div>
-            <span class="counter-badge" id="groceries-counter">0 DA COMPRARE</span>
+            <span class="counter-badge" id="groceries-counter">0 DA PRENDERE</span>
           </div>
-          <button class="btn-action-sm" onclick="clearDoneGroceriesBackend()">Pulisci Presi</button>
+          <button class="btn-check-green" onclick="clearDoneGroceriesBackend()" title="Elimina articoli già presi (spuntati)">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+            <span>Presi</span>
+          </button>
         </div>
 
         <div class="scroll-body" id="shopping-items-list">
@@ -1611,7 +1666,7 @@
       const container = document.getElementById('shopping-items-list');
       const counter = document.getElementById('groceries-counter');
       const pending = groceries.filter(g => !g.done);
-      counter.textContent = pending.length + ' DA COMPRARE';
+      counter.textContent = pending.length + ' DA PRENDERE';
 
       if (!groceries || groceries.length === 0) {
         container.innerHTML = `

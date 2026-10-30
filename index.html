@@ -1404,8 +1404,7 @@
         { time: "08:30", subject: "Inglese" },
         { time: "09:30", subject: "Inglese" },
         { time: "10:30", subject: "Matematica" },
-        { time: "11:30", subject: "Italiano" },
-        { time: "12:30", subject: "Italiano" }
+        { time: "11:30", subject: "Matematica" }
       ]
     };
 
@@ -1608,7 +1607,12 @@
       const subjects = schoolWeekData[tDayKey];
       const hoursBadge = document.getElementById('school-prep-hours');
       if (subjects && subjects.length > 0) {
-        hoursBadge.textContent = `${subjects[0].time} - 13:30`;
+        const firstTime = subjects[0].time;
+        const lastTime = subjects[subjects.length - 1].time;
+        const [lh, lm] = lastTime.split(':').map(Number);
+        const endHour = String(lh + 1).padStart(2, '0');
+        const endMinute = String(lm).padStart(2, '0');
+        hoursBadge.textContent = `${firstTime} - ${endHour}:${endMinute}`;
         hoursBadge.style.display = 'inline-block';
       } else {
         hoursBadge.style.display = 'none';

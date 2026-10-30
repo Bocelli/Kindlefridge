@@ -332,7 +332,7 @@ def sync_axios_safe():
         except Exception:
             current_data = {}
 
-        # Filtra compiti nella finestra richiesta [da domani fino a lunedì della settimana dopo]
+        # Filtra compiti nella finestra richiesta (14 giorni / 2 settimane)
         new_tasks = [t for t in result.get("tasks", []) if is_task_in_sync_window(t.get("date"))]
 
         # Preserva lo stato 'fatto' dei compiti già spuntati
@@ -658,7 +658,7 @@ class FridgeRequestHandler(SimpleHTTPRequestHandler):
             data["recycle"] = get_recycle_for_day(rn)
             data["weather"] = get_salemi_weather()
             
-            # Filtro compiti attivi [domani -> lunedì della settimana dopo]
+            # Filtro compiti attivi nella finestra di 14 giorni (2 settimane)
             data["tasks"] = [t for t in data.get("tasks", []) if is_task_in_sync_window(t.get("date"), rn)]
 
             # Calcola l'avviso zaino/maestra attivo per la giornata

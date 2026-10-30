@@ -45,19 +45,18 @@ def parse_alert_date(date_str, rn=None):
 
 def is_task_in_sync_window(date_str, rn=None):
     """
-    Verifica se il compito rientra nella finestra richiesta:
-    - Dal giorno dopo (domani: today + 1)
-    - Fino al lunedì della settimana successiva (incluso).
+    Verifica se il compito rientra nella finestra di 14 giorni (2 settimane):
+    - Da oggi (today)
+    - Fino a 14 giorni nel futuro (incluso: today + 14 giorni).
     """
     if rn is None:
         rn = get_rome_now()
     today = rn.date()
-    start_date = today + timedelta(days=1)
-    next_monday = today + timedelta(days=(7 - today.weekday()))
+    end_date = today + timedelta(days=14)
     t_date = parse_alert_date(date_str, rn)
     if not t_date:
         return True
-    return start_date <= t_date <= next_monday
+    return today <= t_date <= end_date
 
 def load_config():
     cfg = {}

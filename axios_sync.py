@@ -119,69 +119,112 @@ def fetch_axios_data():
         if alunno_el:
             student_name = alunno_el[0].text_content().strip()
 
-        # 4. Richiedi Registro di classe
+        # 4. Richiedi Registro di classe per la finestra di 14 giorni (3 settimane coperte)
+        now_dt = get_rome_now()
+        weeks_to_query = [
+            (now_dt + timedelta(days=7)).strftime("%d/%m/%Y"),
+            (now_dt + timedelta(days=14)).strftime("%d/%m/%Y")
+        ]
+
+        html_weeks = []
         reg_res = s.post("https://registrofamiglie.axioscloud.it/Pages/APP/APP_Ajax_Get.aspx?action=FAMILY_REGISTRO_CLASSE", timeout=20)
         j_reg = reg_res.json()
 
-        if j_reg.get("errorcode") != "0" or "html" not in j_reg:
+        if j_reg.get("errorcode") == "0" and "html" in j_reg:
+            html_weeks.append(j_reg["html"])
+        else:
             print("[Axios] Errore risposta registro:", j_reg.get("errormsg"))
             return None
 
-        tree = html.fromstring(j_reg["html"])
-        rows = tree.xpath("//table//tr")
+        # Carica le settimane successive per coprire 14 giorni
+        for w_date in weeks_to_query:
+            try:
+                res_w = s.post(
+                    "https://registrofamiglie.axioscloud.it/Pages/APP/APP_Ajax_Get.aspx?action=FAMILY_REGISTRO_CLASSE_SETTIMANA",
+                    data=json.dumps({"fdData": w_date}),
+                    timeout=20
+                )
+                j_w = res_w.json()
+                if j_w.get("errorcode") == "0" and "html" in j_w:
+                    html_weeks.append(j_w["html"])
+            except Exception as e_w:
+                print(f"[Axios] Avviso: impossibile caricare settimana {w_date}:", e_w)
 
         homework_list = []
         backpack_alerts = []
         task_id = 1
+        seen_tasks = set()
+        seen_alerts = set()
 
-        for row in rows:
-            cells = [c.text_content().strip().replace('\r', '').replace('\n', ' ') for c in row.xpath("./th | ./td")]
-            if len(cells) < 7 or cells[0].lower().startswith("data"):
-                continue
+        for hw in html_weeks:
+            tree = html.fromstring(hw)
+            rows = tree.xpath("//table//tr")
 
-            date_raw = cells[0] # es: "27/10/2026martedì"
-            compiti = cells[2]
-            annotazioni = cells[5]
+            for row in rows:
+                cells = [c.text_content().strip().replace('\r', '').replace('\n', ' ') for c in row.xpath("./th | ./td")]
+                if len(cells) < 7 or cells[0].lower().startswith("data"):
+                    continue
 
-            # Estrai data numerica pulita
-            m_date = re.search(r'(\d{2}/\d{2}/\d{4})', date_raw)
-            clean_date = m_date.group(1) if m_date else date_raw
+                date_raw = cells[0] # es: "27/10/2026martedì"
+                compiti = cells[2]
+                annotazioni = cells[5]
 
-            # Se ci sono compiti e rientrano nella finestra richiesta [domani, lunedì prossimo]
-            if compiti and is_task_in_sync_window(clean_date):
-                parts = re.split(r'([A-ZÀ-Ú\s]{3,20}:)', compiti)
-                if len(parts) > 1:
-                    i = 1
-                    while i < len(parts):
-                        subj = parts[i].replace(":", "").strip()
-                        text = parts[i+1].strip() if i+1 < len(parts) else ""
-                        if text:
+                # Estrai data numerica pulita
+                m_date = re.search(r'(\d{2}/\d{2}/\d{4})', date_raw)
+                clean_date = m_date.group(1) if m_date else date_raw
+
+                # Se ci sono compiti e rientrano nella finestra richiesta (14 giorni)
+                if compiti and is_task_in_sync_window(clean_date):
+                    parts = re.split(r'([A-ZÀ-Ú\s]{3,20}:)', compiti)
+                    if len(parts) > 1:
+                        i = 1
+                        while i < len(parts):
+                            subj = parts[i].replace(":", "").strip()
+                            text = parts[i+1].strip() if i+1 < len(parts) else ""
+                            key = (clean_date, subj, text)
+                            if text and key not in seen_tasks:
+                                seen_tasks.add(key)
+                                homework_list.append({
+                                    "id": task_id,
+                                    "date": clean_date,
+                                    "subject": subj,
+                                    "text": text,
+                                    "done": False
+                                })
+                                task_id += 1
+                            i += 2
+                    else:
+                        key = (clean_date, "COMPITI", compiti)
+                        if key not in seen_tasks:
+                            seen_tasks.add(key)
                             homework_list.append({
                                 "id": task_id,
                                 "date": clean_date,
-                                "subject": subj,
-                                "text": text,
+                                "subject": "COMPITI",
+                                "text": compiti,
                                 "done": False
                             })
                             task_id += 1
-                        i += 2
-                else:
-                    homework_list.append({
-                        "id": task_id,
-                        "date": clean_date,
-                        "subject": "COMPITI",
-                        "text": compiti,
-                        "done": False
-                    })
-                    task_id += 1
 
-            # Annotazioni del giorno per zaino (rimuovendo eventuale nome docente)
-            if annotazioni:
-                clean_ann = annotazioni.strip()
-                m_doc = re.match(r'^[A-Za-zÀ-ÖØ-öø-ÿ\s]{4,35}:\s*(.*)', clean_ann)
-                if m_doc:
-                    clean_ann = m_doc.group(1).strip()
-                backpack_alerts.append(f"{clean_date}: {clean_ann}")
+                # Annotazioni del giorno per zaino (rimuovendo eventuale nome docente)
+                if annotazioni:
+                    clean_ann = annotazioni.strip()
+                    m_doc = re.match(r'^[A-Za-zÀ-ÖØ-öø-ÿ\s]{4,35}:\s*(.*)', clean_ann)
+                    if m_doc:
+                        clean_ann = m_doc.group(1).strip()
+                    alert_str = f"{clean_date}: {clean_ann}"
+                    if alert_str not in seen_alerts:
+                        seen_alerts.add(alert_str)
+                        backpack_alerts.append(alert_str)
+
+        # Ordina i compiti cronologicamente per data
+        def parse_date_key(t):
+            d = parse_alert_date(t.get("date"))
+            return d if d else datetime(2099, 1, 1).date()
+
+        homework_list.sort(key=parse_date_key)
+        for idx, t in enumerate(homework_list, start=1):
+            t["id"] = idx
 
         return {
             "student_name": student_name,

@@ -84,6 +84,12 @@
       border: 2px solid #000000 !important;
       box-shadow: 2px 2px 0px #000000 !important;
     }
+    body.theme-mono .btn-note-delete {
+      background: #FFFFFF !important;
+      border: 1.5px solid #0F172A !important;
+      color: #0F172A !important;
+      box-shadow: 1px 1px 0px #0F172A !important;
+    }
 
     /* THEME DARK / NIGHT MODE */
     body.theme-dark {
@@ -117,6 +123,18 @@
       border-color: #34D399 !important;
       box-shadow: 2px 2px 0px #34D399 !important;
       color: #FFFFFF !important;
+    }
+    body.theme-dark .btn-note-delete {
+      background: #1E293B !important;
+      border: 1.5px solid #475569 !important;
+      color: #94A3B8 !important;
+      box-shadow: 1px 1px 0px rgba(255, 255, 255, 0.15) !important;
+    }
+    body.theme-dark .btn-note-delete:hover,
+    body.theme-dark .btn-note-delete:active {
+      background: #7F1D1D !important;
+      border-color: #EF4444 !important;
+      color: #FCA5A5 !important;
     }
     body.theme-dark .note-body-text,
     body.theme-dark .task-body-text,
@@ -727,6 +745,50 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 6px;
+    }
+
+    .note-meta-right {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-note-delete {
+      background: #F8FAFC;
+      border: 1.5px solid #CBD5E1;
+      color: #64748B;
+      width: 22px;
+      height: 22px;
+      border-radius: 5px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      padding: 0;
+      box-shadow: 1px 1px 0px rgba(0, 0, 0, 0.1);
+      transition: transform 0.08s ease, background 0.1s ease, color 0.1s ease, border-color 0.1s ease;
+      flex-shrink: 0;
+    }
+
+    .btn-note-delete:hover {
+      background: #FEE2E2;
+      color: #DC2626;
+      border-color: #FCA5A5;
+    }
+
+    .btn-note-delete:active {
+      background: #FEE2E2;
+      color: #DC2626;
+      border-color: #EF4444;
+      transform: translate(1px, 1px);
+      box-shadow: none;
+    }
+
+    .btn-note-delete svg {
+      width: 12px;
+      height: 12px;
+      stroke-width: 2.8;
     }
 
     .author-pill {
@@ -1260,7 +1322,6 @@
               <svg class="icon" viewBox="0 0 24 24"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
               <span>Lista Spesa</span>
             </div>
-            <span class="counter-badge" id="groceries-counter">0 DA PRENDERE</span>
           </div>
           <button class="btn-check-green" onclick="clearDoneGroceriesBackend()" title="Elimina articoli già presi (spuntati)">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
@@ -1603,7 +1664,9 @@
     function renderNotes(notes) {
       const container = document.getElementById('telegram-feed-list');
       const counter = document.getElementById('notes-counter');
-      counter.textContent = notes.length + (notes.length === 1 ? ' NOTA' : ' NOTE');
+      if (counter) {
+        counter.textContent = notes.length + (notes.length === 1 ? ' NOTA' : ' NOTE');
+      }
 
       if (!notes || notes.length === 0) {
         container.innerHTML = `
@@ -1621,7 +1684,12 @@
           <div class="note-item">
             <div class="note-header-line">
               <span class="author-pill ${authorClass}">${escapeHtml(n.author || 'FAMIGLIA')}</span>
-              <span class="note-time-label">${n.time || ''}</span>
+              <div class="note-meta-right">
+                <span class="note-time-label">${n.time || ''}</span>
+                <button class="btn-note-delete" onclick="deleteNoteBackend(event, ${n.id})" title="Elimina questa nota">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                </button>
+              </div>
             </div>
             <div class="note-body-text">${escapeHtml(n.text || '')}</div>
           </div>
@@ -1664,9 +1732,6 @@
 
     function renderGroceries(groceries) {
       const container = document.getElementById('shopping-items-list');
-      const counter = document.getElementById('groceries-counter');
-      const pending = groceries.filter(g => !g.done);
-      counter.textContent = pending.length + ' DA PRENDERE';
 
       if (!groceries || groceries.length === 0) {
         container.innerHTML = `
@@ -1681,7 +1746,7 @@
       const sorted = [...groceries].sort((a, b) => (a.done === b.done ? 0 : a.done ? 1 : -1));
 
       container.innerHTML = sorted.map(g => `
-        <div class="grocery-item ${g.done ? 'done' : ''}" onclick="toggleGroceryBackend(${g.id})">
+        <div class="grocery-item ${g.done ? 'done' : ''}" onclick="toggleGroceryBackend(${g.id}, this)">
           <div class="grocery-checkbox ${g.done ? 'checked' : ''}"></div>
           <div class="grocery-text-col">
             <span class="grocery-name">${escapeHtml(g.text)}</span>
@@ -1733,7 +1798,12 @@
       document.getElementById('week-modal').classList.remove('open');
     }
 
-    async function toggleGroceryBackend(id) {
+    async function toggleGroceryBackend(id, el) {
+      if (el) {
+        el.classList.toggle('done');
+        const box = el.querySelector('.grocery-checkbox');
+        if (box) box.classList.toggle('checked');
+      }
       try {
         await fetch('/api/toggle-grocery', {
           method: 'POST',
@@ -1741,7 +1811,35 @@
           body: JSON.stringify({ id })
         });
         fetchLiveBackendData();
-      } catch (e) { console.error(e); }
+      } catch (e) {
+        console.error("Errore toggle spesa:", e);
+        fetchLiveBackendData();
+      }
+    }
+
+    async function deleteNoteBackend(event, id) {
+      if (event) {
+        event.stopPropagation();
+        event.preventDefault();
+      }
+      const btn = event ? (event.currentTarget || event.target) : null;
+      const noteCard = btn ? btn.closest('.note-item') : null;
+      if (noteCard) {
+        noteCard.style.transition = 'opacity 0.15s ease, transform 0.15s ease';
+        noteCard.style.opacity = '0';
+        noteCard.style.transform = 'scale(0.92)';
+      }
+      try {
+        await fetch('/api/delete-note', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({ id })
+        });
+        fetchLiveBackendData();
+      } catch (e) {
+        console.error("Errore cancellazione nota:", e);
+        fetchLiveBackendData();
+      }
     }
 
     async function clearDoneGroceriesBackend() {

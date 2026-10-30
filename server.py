@@ -45,6 +45,15 @@ def load_data():
                 d.setdefault("notes", [])
                 d.setdefault("groceries", [])
                 d.setdefault("tasks", [])
+                max_id = max([n.get("id", 0) for n in d["notes"] if isinstance(n.get("id"), int)] + [0])
+                updated = False
+                for n in d["notes"]:
+                    if not n.get("id"):
+                        max_id += 1
+                        n["id"] = max_id
+                        updated = True
+                if updated:
+                    save_data(d)
                 return d
         except Exception:
             return {"notes": [], "groceries": [], "backpack": "", "tasks": []}
@@ -692,7 +701,7 @@ class FridgeRequestHandler(SimpleHTTPRequestHandler):
 
         if parsed.path == "/api/delete-note":
             nid = req_data.get("id")
-            data["notes"] = [n for n in data.get("notes", []) if n.get("id") != nid]
+            data["notes"] = [n for n in data.get("notes", []) if str(n.get("id")) != str(nid)]
             save_data(data)
             self._send_json({"ok": True, "data": data})
             return
@@ -706,7 +715,7 @@ class FridgeRequestHandler(SimpleHTTPRequestHandler):
         if parsed.path == "/api/toggle-grocery":
             gid = req_data.get("id")
             for item in data.get("groceries", []):
-                if item.get("id") == gid:
+                if str(item.get("id")) == str(gid):
                     item["done"] = not item.get("done", False)
                     break
             save_data(data)
@@ -716,7 +725,7 @@ class FridgeRequestHandler(SimpleHTTPRequestHandler):
         if parsed.path == "/api/toggle-task":
             tid = req_data.get("id")
             for item in data.get("tasks", []):
-                if item.get("id") == tid:
+                if str(item.get("id")) == str(tid):
                     item["done"] = not item.get("done", False)
                     break
             save_data(data)
